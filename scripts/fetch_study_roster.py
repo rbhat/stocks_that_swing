@@ -240,7 +240,13 @@ def main() -> None:
                 eta = (max(0, need_fill + len(must_fetch) - fetched)) * (elapsed / max(1, fetched))
                 print(f"  [{len(have) + fetched}/{args.target_total}] {sym:<6} ({tag}) ok  "
                       f"{len(df):>6} bars {y0}-{y1}   elapsed {_fmt_eta(elapsed)} · ETA {_fmt_eta(eta)}")
-                failures.discard(sym) and _save_failures(failures)
+                # A prior dead name that now fetched clean: drop it from the
+                # sidecar and persist. `set.discard` returns None, so the old
+                # `discard(sym) and _save_failures(...)` NEVER saved — guard on
+                # membership instead.
+                if sym in failures:
+                    failures.discard(sym)
+                    _save_failures(failures)
         except (FetchError, Exception) as e:  # noqa: BLE001 — any fetch error -> record & continue
             print(f"  [{attempts}] {sym:<6} ({tag}) FAILED: {type(e).__name__}: {str(e)[:70]} — skipped")
             failures.add(sym)

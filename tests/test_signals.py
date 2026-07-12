@@ -328,8 +328,9 @@ def _avwap_dropped_rows():
 
 
 def test_squeeze_trend_filter_none_is_byte_identical():
-    """Default ("none"), an explicit "none", and an unrecognized value must
-    all apply no filter -- pins default-inert AND fail-open together."""
+    """Default ("none") and an explicit "none" must apply no filter -- pins
+    default-inert. An UNRECOGNIZED value must fail closed (raise), not
+    silently drop the filter under the study's registered label."""
     rows = _shrinking_tr_rows()
     rows.append(dict(TRIGGER_BAR))
     df = make_frame(rows)
@@ -338,12 +339,12 @@ def test_squeeze_trend_filter_none_is_byte_identical():
     explicit_none = _events_by_date(
         detect_squeeze("TEST", df, {"trend_filter": "none"}, "vol_squeeze_v1")
     )
-    unknown = _events_by_date(
-        detect_squeeze("TEST", df, {"trend_filter": "bogus"}, "vol_squeeze_v1")
-    )
 
     assert base  # sanity: the recipe fires
-    assert base == explicit_none == unknown
+    assert base == explicit_none
+
+    with pytest.raises(ValueError, match="trend_filter"):
+        detect_squeeze("TEST", df, {"trend_filter": "bogus"}, "vol_squeeze_v1")
 
 
 def test_squeeze_trend_filter_bos():

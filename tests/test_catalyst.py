@@ -158,6 +158,25 @@ def test_load_earnings_json_populates_events(tmp_path):
     assert cal.fetched_at == "2026-06-01T00:00:00Z"
 
 
+def test_auto_earnings_block_entry_only_not_exit_before(tmp_path):
+    # Charter permits holding through earnings (VISION.md): auto-fetched
+    # earnings must embargo new entries but NEVER force a pre-event exit.
+    earnings = tmp_path / "earnings.json"
+    earnings.write_text(
+        json.dumps(
+            {
+                "fetched_at": "2026-06-01T00:00:00Z",
+                "symbols": {
+                    "AAPL": {"dates": ["2026-06-26"], "fetched_at": "2026-06-01T00:00:00Z", "error": None}
+                },
+            }
+        )
+    )
+    cal = CatalystCalendar.load(earnings_path=earnings, curated_path=tmp_path / "missing.yaml")
+    assert cal.catalyst_within("AAPL", FRI, 0, "block_entry") is not None
+    assert cal.catalyst_within("AAPL", FRI, 0, "exit_before") is None
+
+
 # --------------------------------------------------------------------- curated yaml action mapping
 
 

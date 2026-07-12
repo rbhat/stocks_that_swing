@@ -101,6 +101,69 @@ def test_simulate_events_structure_mode_stop_out():
     assert result["n_skipped"] == 0
 
 
+def test_simulate_events_entry_bar_stop_beats_later_target():
+    # Regression (codex_review Fix-1): risk must be live AT entry. The entry
+    # bar (idx25) itself crosses the stop, then the NEXT bar (idx26) reaches
+    # the target. If the entry bar were skipped, this would wrongly report
+    # +1R; managed from entry it must resolve to the stop loss (-1R).
+    #   entry (idx25 open) = 100, atr_stop = 96, atr_target = 104.
+    #   idx25: open=100, low=95 (<= stop 96), high=101 -> stop hit, fill = 96.
+    #   idx26 (would-be target): high=105 -> never reached, event already out.
+    rows = [flat_bar() for _ in range(25)]
+    rows.append({"open": 100.0, "high": 101.0, "low": 95.0, "close": 97.0, "volume": 1000})  # idx25 entry bar crosses stop
+    rows.append({"open": 100.0, "high": 105.0, "low": 99.0, "close": 104.0, "volume": 1000})  # idx26 hits target
+    df = make_frame(rows)
+    signal_date = df.index[24].date()
+
+    result = eventsim.simulate_events(
+        {"TEST": df}, "fixed_v1", {}, detector=_fixed_date_detector(signal_date)
+    )
+
+    assert result["n"] == 1
+    # stop fill at 96 -> r = (96-100)/(100-96) = -1.0, NOT +1.0.
+    assert result["expectancy_r"] == pytest.approx(-1.0)
+    assert result["median_hold_sessions"] == pytest.approx(0.0)  # exited on entry bar
+    assert result["n_skipped"] == 0
+
+
+def test_simulate_events_structure_mode_reads_swing_levels():
+    # Adapter (codex_review H3): detectors emit swing_low/swing_high, not
+    # stop_level/target_level. Structure mode must read those directly instead
+    # of skipping every real structure event.
+    rows = [flat_bar() for _ in range(25)]
+    rows.append(flat_bar())  # idx 25: entry bar, open=100
+    rows.append({"open": 100.0, "high": 106.0, "low": 99.0, "close": 105.0, "volume": 1000})
+    df = make_frame(rows)
+    signal_date = df.index[24].date()
+
+    def _detector(symbol, d, params, config_name):
+        base = _fixed_date_detector(signal_date)(symbol, d, params, config_name)
+        for ev in base:
+            ev.trigger_values["swing_low"] = 95.0    # -> structure stop
+            ev.trigger_values["swing_high"] = 105.0  # -> structure target
+        return base
+
+    params = {"stop_mode": "structure", "target_mode": "structure"}
+    result = eventsim.simulate_events({"TEST": df}, "fixed_v1", params, detector=_detector)
+
+    assert result["n"] == 1
+    assert result["n_skipped"] == 0
+    # target 105 hit at idx26 (high 106) -> fill max(105,100)=105
+    # -> r = (105-100)/(100-95) = 1.0
+    assert result["expectancy_r"] == pytest.approx(1.0)
+
+
+def test_simulate_events_rejects_unknown_stop_mode():
+    rows = [flat_bar() for _ in range(27)]
+    df = make_frame(rows)
+    signal_date = df.index[24].date()
+    with pytest.raises(ValueError, match="stop_mode"):
+        eventsim.simulate_events(
+            {"TEST": df}, "fixed_v1", {"stop_mode": "atrr"},
+            detector=_fixed_date_detector(signal_date),
+        )
+
+
 def test_simulate_events_structure_mode_skips_missing_level():
     rows = [flat_bar() for _ in range(25)]
     rows.append(flat_bar())
@@ -147,12 +210,13 @@ def test_simulate_events_no_next_bar_skips():
 def test_simulate_events_time_stop_exit_path():
     # 25 warmup bars (idx 0-24) -> ATR(14) settles to 2.0 (see module comment
     # above). Entry at idx25 open=100 -> stop=96, target=104 (2xATR each).
-    # 15 flat post-entry bars (idx26-40), all inside (96,104) -> never hit
-    # stop or target -> the hard 15-session time stop must fire on the 15th
-    # managed bar (idx40), exiting at that bar's close.
+    # Risk is live AT entry, so the entry bar (idx25) is the position's first
+    # held session and starts the 15-session clock. With all bars inside
+    # (96,104), the hard time stop fires on the 15th managed bar -- idx25+14 =
+    # idx39 -- exiting at that bar's close. hold = 39-25 = 14 elapsed sessions.
     rows = [flat_bar() for _ in range(25)]
-    rows.append(flat_bar())  # idx 25: entry bar, open=100
-    rows.extend(flat_bar() for _ in range(15))  # idx 26-40: 15 quiet bars
+    rows.append(flat_bar())  # idx 25: entry bar, open=100 (managed bar 1)
+    rows.extend(flat_bar() for _ in range(15))  # idx 26-40: quiet bars
     df = make_frame(rows)
     signal_date = df.index[24].date()
 
@@ -163,7 +227,7 @@ def test_simulate_events_time_stop_exit_path():
     assert result["n"] == 1
     # exit at bar_close=100.0 -> r = (100-100)/(100-96) = 0.0
     assert result["expectancy_r"] == pytest.approx(0.0)
-    assert result["median_hold_sessions"] == pytest.approx(15.0)
+    assert result["median_hold_sessions"] == pytest.approx(14.0)
     assert result["n_censored"] == 0
     assert result["n_skipped"] == 0
 

@@ -48,6 +48,13 @@ _ACTION_MAP = {
     "both": frozenset({"block_entry", "exit_before"}),
 }
 
+# Auto-fetched earnings only embargo NEW entries (no entries within 2 sessions
+# before a scheduled earnings date). They must NOT force a pre-event exit:
+# the charter permits holding through earnings (VISION.md "Entries &
+# catalysts"; H2 is the earnings-drift family). Curated events keep their own
+# explicit action; only auto earnings are pinned to block_entry here.
+_AUTO_EARNINGS_ACTIONS = frozenset({"block_entry"})
+
 
 @dataclass(frozen=True)
 class CatalystEvent:
@@ -155,6 +162,7 @@ class CatalystCalendar:
                                     date=dt.date.fromisoformat(d),
                                     type="earnings",
                                     source="earnings",
+                                    actions=_AUTO_EARNINGS_ACTIONS,
                                 )
                             )
                         except ValueError:

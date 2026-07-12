@@ -19,9 +19,10 @@ trend state at the event bar before a squeeze event is kept. Three values —
 (break-of-structure state, provenance transcripts/identifying_the_trend.md),
 and "avwap_252_above" (anchored-VWAP state, provenance transcripts/vwap.md).
 The feature constants below are the fixed definitions the source studies
-measured, not searchable knobs. Fail-open: any unrecognized value (including
-"none") applies no filter, so the state series are never even computed
-unless one of the two named filters is active.
+measured, not searchable knobs. Fail-closed: an unrecognized value raises
+ValueError (a typo must not silently drop the filter and run under the
+study's registered label); only "none" skips filtering, and the state series
+are never computed unless one of the two named filters is active.
 """
 
 from __future__ import annotations
@@ -155,7 +156,14 @@ def detect(symbol: str, df: pd.DataFrame, params: dict, config_name: str) -> lis
         triggered &= (_avwap_state(df) == "above")
     elif trend_filter == "bos_bullish":
         triggered &= (_bos_state(df) == "bullish")
-    # any other value (incl. "none") applies no filter — fail-open, house doctrine
+    elif trend_filter != "none":
+        # Fail CLOSED (codex_review): a typo such as "bos_bulish" must not
+        # silently drop the filter and run the study under its registered
+        # label. Only the three pre-registered values are legal.
+        raise ValueError(
+            f"trend_filter must be one of "
+            f"('none', 'bos_bullish', 'avwap_252_above'), got {trend_filter!r}"
+        )
 
     prior_low = low.shift(1).rolling(squeeze_window).min()
     prior_high = high.shift(1).rolling(squeeze_window).max()

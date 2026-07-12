@@ -55,6 +55,21 @@ _PARAM_DEFAULTS = {
     "atr_target_multiple": 2.0,
 }
 
+_VALID_MODES = ("atr", "structure")
+
+
+def _structure_level(ev: SignalEvent, kind: str) -> float | None:
+    """Detector-to-risk adapter for structure mode. Detectors emit
+    `swing_low`/`swing_high` in `trigger_values` (see sts.signals), so the
+    structure stop reads the swing low below entry and the structure target
+    reads the swing high above entry. An explicit `stop_level`/`target_level`
+    (a study wiring its own structure price) takes precedence when present.
+    Returns None if neither key is available — the event is then skipped."""
+    tv = ev.trigger_values
+    if kind == "stop":
+        return tv.get("stop_level", tv.get("swing_low"))
+    return tv.get("target_level", tv.get("swing_high"))
+
 
 def simulate_events(
     prices: dict[str, pd.DataFrame],
@@ -97,6 +112,14 @@ def simulate_events(
     "expectancy_r"}} keyed by the event's fire year.
     """
     p = {**_PARAM_DEFAULTS, **params}
+    # Fail closed: an unknown mode must NOT silently fall through to ATR — a
+    # typo would otherwise change the exit structure while keeping the study's
+    # registered label. Reject it before any event is simulated.
+    for mode_key in ("stop_mode", "target_mode"):
+        if p[mode_key] not in _VALID_MODES:
+            raise ValueError(
+                f"{mode_key} must be one of {_VALID_MODES}, got {p[mode_key]!r}"
+            )
     detect = detector if detector is not None else resolve_detector(config_name)
 
     rs: list[float] = []
@@ -180,7 +203,7 @@ def _sim_one(
 
     try:
         if stop_mode == "structure":
-            level = ev.trigger_values.get("stop_level")
+            level = _structure_level(ev, "stop")
             if level is None:
                 return None
             stop = risk.structure_stop(entry, float(level))
@@ -188,7 +211,7 @@ def _sim_one(
             stop = risk.atr_stop(entry, float(atr_value), p["atr_stop_multiple"])
 
         if target_mode == "structure":
-            level = ev.trigger_values.get("target_level")
+            level = _structure_level(ev, "target")
             if level is None:
                 return None
             target = risk.structure_target(float(level))
@@ -207,7 +230,13 @@ def _sim_one(
     except (ValueError, risk.RuleViolation):
         return None
 
-    j = entry_iloc + 1
+    # Risk is live AT entry (charter: "every position has a hard stop at
+    # entry", VISION.md). Management therefore starts on the entry bar itself,
+    # not the bar after: an entry bar that gaps/crosses the stop must resolve
+    # to a loss even if a later bar would have reached the target. The entry
+    # bar is the position's first held session, so it also starts the
+    # 15-session time-stop clock inside risk.manage_bar.
+    j = entry_iloc
     exit_iloc = entry_iloc
     r: float | None = None
     censored = False
