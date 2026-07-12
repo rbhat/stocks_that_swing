@@ -75,3 +75,42 @@ def test_write_roster_artifacts_shape(tmp_path, monkeypatch):
     entry = manifest["symbols"]["AAPL"]
     assert {"first_session", "last_session", "n_bars", "file_sha256"} <= entry.keys()
     assert manifest["adjustment_basis"] == "split+dividend adjusted total return (auto_adjust=True)"
+
+
+def test_dry_run_noop_does_not_write_artifacts(tmp_path, monkeypatch):
+    """--dry-run must be a pure preview: even on the 'target already met' no-op
+    path, it must never write study_roster.yaml / study_roster_manifest.json."""
+    monkeypatch.setattr(fsr, "STUDY_FRAMES_DIR", tmp_path)
+    store = StudyStore(root=tmp_path)
+    monkeypatch.setattr(fsr, "_store", lambda: store)
+
+    roster_yaml = tmp_path / "study_roster.yaml"
+    manifest_json = tmp_path / "study_roster_manifest.json"
+    monkeypatch.setattr(fsr, "ROSTER_YAML", roster_yaml)
+    monkeypatch.setattr(fsr, "ROSTER_MANIFEST", manifest_json)
+
+    constituents_json = tmp_path / "constituents.json"
+    constituents_json.write_text('{"symbols": ["SPY", "QQQ"]}')
+    monkeypatch.setattr(fsr, "CONSTITUENTS", constituents_json)
+    monkeypatch.setattr(fsr, "ANCHORS", ["SPY", "QQQ"])
+    monkeypatch.setattr(fsr, "_seed_symbols", lambda: [])
+    monkeypatch.setattr(fsr, "_load_failures", lambda: set())
+
+    # Pre-populate the store so must_fetch is empty and need_fill == 0
+    # (target already met -> the no-op branch).
+    store.write("SPY", _ohlcv())
+    store.write("QQQ", _ohlcv())
+
+    calls = []
+    monkeypatch.setattr(fsr, "_write_roster_artifacts", lambda **kw: calls.append(kw))
+
+    monkeypatch.setattr(
+        sys, "argv",
+        ["fetch_study_roster.py", "--dry-run", "--target-total", "2"],
+    )
+
+    fsr.main()
+
+    assert calls == []
+    assert not roster_yaml.exists()
+    assert not manifest_json.exists()

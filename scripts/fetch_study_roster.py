@@ -267,6 +267,9 @@ def main() -> None:
 
     if not must_fetch and need_fill == 0:
         print("target already met and all must-haves present — nothing to fetch (no-op).")
+        if args.dry_run:
+            print("  DRY RUN — skipping artifact write.")
+            return
         _write_roster_artifacts(seeds=seeds, anchors=ANCHORS)
         print(f"  wrote {ROSTER_YAML.relative_to(ROOT)} + {ROSTER_MANIFEST.relative_to(ROOT)}")
         return
