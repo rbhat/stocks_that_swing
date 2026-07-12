@@ -32,6 +32,14 @@ STOP. The parent taught us how to park; a new repo is not an excuse to forget.
   structure, never to a fixed percent designed for multi-year holds. Expectancy after friction
   is the governing criterion — not a reward-to-risk floor (the parent's ≥2R floor is the
   single biggest thing that broke swing there).
+- **No shared surface with the parent.** Code, data, decisions, and configuration are never
+  copied wholesale from `stocks_that_move`. LESSONS §7 names a short list of infrastructure
+  files (calendar, fetch, store, quality gate, atomic-write plumbing) ported near-verbatim
+  because they're horizon-agnostic; everything that encodes a risk, sizing, stop, target, or
+  exit *decision* is designed fresh from this charter. The parent's specific numbers and
+  geometry (30% stops, Fibonacci extension targets, fixed-% position sizing, the ≥2R floor)
+  are never carried over — not even by accident of copy-paste from a ported file. Only
+  LESSONS.md crosses the boundary as prior, never as design.
 - **Edge before ops.** No dashboard, no alerts, no cloud VM until a study survives its gates
   and the forward book exists. The parent built world-class operations around an unproven
   edge; this project inverts the order.

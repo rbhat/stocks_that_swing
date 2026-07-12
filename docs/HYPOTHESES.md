@@ -126,6 +126,88 @@ exits earn their keep in bear tapes — a long-only swing book is structurally b
 (parent named this bias explicitly). Parked until the Phase-5 book survives; requires a
 charter amendment (VISION), never a silent addition.
 
+## H6 — Additional entry setups (user-proposed 2026-07-11; open more trades, not gate fewer)
+
+Four candidate setups the user raised. **Framing (user, explicit): these are trade-*openers*,
+not filters** — they add ways into a position, they do not restrict the H1–H3 families. So
+each is judged as its own event family under the same bars (§ bars shape) and the same §0
+skepticism; none is allowed to loosen an existing family's rules. Two are uptrend
+*continuation* (H6a/H6b, cousins of H1/H3/H4-gap); two are long *reversal off a downtrend*
+(H6c/H6d) — a direction the project has never carried, so **lowest prior and highest
+overfitting risk** of anything here: they are pattern-recognition-heavy, structurally rare
+(small n ⇒ expect PARK-on-adequacy, not PROCEED), and drawn from practitioner canon (FVG/ICT,
+Wyckoff) with thin academic support. They earn a look, not belief. Daily-bar honesty applies
+throughout: no intraday timing, every fill next-session-open with slippage — which handicaps
+every one of these.
+
+**H6a — FVG break-and-retest in an uptrend.** *Setup:* in a confirmed uptrend (H1's HTF
+condition), price leaves an unfilled fair-value gap — a 3-bar imbalance where bar-1 high < bar-3
+low; when price later trades back down into a *key* FVG (one sitting at/under an HTF level or
+the origin of the impulse) and holds, enter on the reclaim. *Mechanism:* the gap marks
+where demand overwhelmed supply and left resting unfilled orders; the retest is where trapped
+sellers and breakout buyers transact — we're paid by those who faded the impulse. *Operational
+must-defines (prereg):* programmatic FVG detection, "key" = proximity to an HTF level/avwap,
+"holds" = close back above the gap top within N sessions. *Failure modes:* gaps fill and keep
+going (needs the hold confirmation, which costs the first move on a next-open fill); on daily
+bars an FVG is common ⇒ over-triggers, so "key" must be strict or it's noise. Overlaps H1
+(both are pullback-in-uptrend) — check whether it adds events H1 doesn't already catch, else
+it's a relabel.
+
+**H6b — Gap-up through resistance, buy the fib-discount pullback.** *Setup:* in an uptrend,
+price gaps up and closes above a well-defined resistance (prior swing high / range top); wait
+for a retracement into the *discount* zone of the breakout leg (~0.5–0.786 fib, i.e. the lower
+half of the impulse) that holds above the broken level, then enter. *Mechanism:* the broken
+resistance flips to support (old sellers now underwater defend break-even); buying the discount
+half of the leg instead of chasing the gap is a better price for the same continuation thesis.
+*Operational (prereg):* define the impulse leg (breakout bar to local high), the fib zone,
+"holds above broken level" as the invalidation, and the gap-size band (breakaway vs runaway).
+*Failure modes:* a deep-enough discount retrace often *is* a failed breakout — the stop must
+sit just under the broken level and the time stop enforced; gap partially fills before the
+zone, giving a worse entry than modeled. Cousin of H4-gap and H1 (buy-the-dip after a level
+break).
+
+**H6c — Island-bottom reversal.** *Setup:* after a downtrend, an exhaustion gap down, a brief
+basing range, then a gap up that leaves the base isolated between two gaps (an "island"). Treat
+the island top / gap-up bar as the trigger; research the entry (day-2 open vs reclaim of the
+island high). *Mechanism:* the two gaps strand the late shorts and capitulation sellers on the
+island — their covering fuels the reversal. *Operational (prereg):* gap definitions both sides,
+max base width, min prior-downtrend depth; **name the entry rule blind before looking.**
+*Failure modes:* genuinely rare on daily bars ⇒ n likely below the adequacy floor (PARK-on-
+adequacy is the expected honest outcome, not a fail); island patterns are easy to see in
+hindsight and hard to define crisply — resist tuning the definition to the winners.
+
+**H6d — Wyckoff accumulation → break/retest (reversal off a downtrend).** *Setup:* after a
+sustained downtrend, price stops trending and consolidates in a range (accumulation); watch for
+a false breakdown that reclaims (spring), then a break *up* out of the range, then a pullback/
+retest of the range top that holds — enter the retest. *Mechanism:* the spring runs stops
+below the range and transfers supply to stronger hands; the breakout-retest is where the
+doubters who sold the range give up — classic Wyckoff, stated plainly. *Operational (prereg):*
+full Wyckoff schematics are subjective — reduce to a **mechanical proxy**: range detection
+(volatility contraction + horizontal boundaries) → optional false-breakdown-reclaim flag →
+breakout close above range top → retest-holds entry. Backtest the proxy, not the drawing.
+*Failure modes:* the most discretionary setup here (highest researcher-degrees-of-freedom —
+prereg the proxy exactly); "downtrend then range then up" is survivorship-flavored (we only see
+the ranges that resolved up); retest may never come (miss) or fail (stop under range top).
+
+**Study handling.** H6a/H6b run on the H1/H3 harness (trend condition + trigger + entry mode +
+exit), detectors added, zero re-tuning. H6c/H6d need new reversal detectors and a
+*downtrend* HTF condition — a small new module, unit-tested like `risk.py`. All four obey the
+two-layer read (raw h=5/10/15 first) and the § bars. Priority: **below H1–H3, at/under H4** —
+Phase-3 budget permitting; H6c/H6d only if H6a/H6b or H4 show the exploratory round is worth
+extending.
+
+**Stretch — confluence across configs (not "one config wins").** The user's point: on a given
+name/date, several of these configs (and H1–H3) may fire together; the goal is not to crown a
+single config but to find where independent setups *agree* on an entry zone — a confluence
+region — and test whether agreement itself predicts better expectancy than any config alone.
+Method sketch: log every config's trigger events with timestamps and levels; cluster
+co-located events (same symbol, entries within k sessions / overlapping price zones); compare
+expectancy of confluence clusters vs singletons. **Hazard, stated up front:** more configs = more
+ways to manufacture a false positive (multiple comparisons). This is deferred to the Phase-4
+portfolio layer *after* individual families have passed their own blind bars — confluence is a
+combination study over survivors, never a fishing license to test all configs at once. Prereg
+the clustering rule and the comparison before running it.
+
 ---
 
 ## Bars shape (pre-registered per study; numbers locked in each prereg, these are the shape)

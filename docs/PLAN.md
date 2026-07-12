@@ -4,6 +4,12 @@ Each phase gates the next. The heart of the project is Phase 3 — everything be
 minimum harness needed to run honest studies; everything after it exists only if a study
 survives. Estimated effort assumes part-time sessions.
 
+**Guardrail (see VISION.md "No shared surface with the parent"):** LESSONS §7's ported files
+are infrastructure only. Every risk, sizing, stop, target, and exit rule in this plan is
+designed fresh from the charter numbers in VISION.md — never copied from the parent's
+defaults, even when a ported file (e.g. `eventsim.py`'s shape) came from there originally.
+When a phase says "port," read it as "port the mechanical pattern, redesign the numbers."
+
 ## Phase 0 — Charter ratification (user, ~1 session)
 
 Walk the decision list below; record each answer in a fresh `decisions.md` (append-only,
@@ -53,9 +59,10 @@ minus friction; shift-guard tests green.
 ## Phase 3 — Hypothesis studies (the heart; ~2–5 days each incl. review)
 
 Run the families in HYPOTHESES.md priority order: **H1 trend-conditioned pullback → H2
-earnings-reaction drift → H3 re-geometried breakouts**, then one exploratory round (H4) if
-warranted. Per study: prereg locked before the script → run (resumable, ETA) → verdict entry
-in decisions.md → independent review of any PROCEED.
+earnings-reaction drift → H3 re-geometried breakouts**, then one exploratory round (H4, with
+the user-proposed H6 setups as its named backlog) if warranted. Per study: prereg locked
+before the script → run (resumable, ETA) → verdict entry in decisions.md → independent review
+of any PROCEED.
 
 **Gate per family:** its locked bars (shape in HYPOTHESES §bars). **Project kill criterion:**
 all families PARK/STOP → record the STOP; do not invent H6 to keep the lights on.
@@ -70,6 +77,10 @@ Validation gate is gate-v2-shaped but swing-calibrated: event-level OOS n (large
 construction), year-by-year stability with a neutral band, fixed-horizon bootstrap, param
 jitter. Folds sized so a fold ≫ max hold — trivial at 15 sessions (a structural advantage:
 swing suffers no censoring problem).
+
+**Stretch (only over survivors):** the cross-config confluence study (HYPOTHESES §H6) —
+whether independent setups *agreeing* on an entry zone beats any single config — lives here,
+prereg'd, never as an all-configs-at-once fishing pass.
 
 **Gate:** locked prereg + independent review.
 
