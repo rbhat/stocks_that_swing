@@ -48,3 +48,30 @@ def test_fresh_scratch_symbols_uses_last_completed_session(tmp_path, monkeypatch
     fresh = fsr._fresh_scratch_symbols()
     assert "FRESH" in fresh
     assert "STALE" not in fresh
+
+
+def test_write_roster_artifacts_shape(tmp_path, monkeypatch):
+    monkeypatch.setattr(fsr, "STUDY_FRAMES_DIR", tmp_path)
+    store = StudyStore(root=tmp_path)
+    monkeypatch.setattr(fsr, "_store", lambda: store)
+    roster_yaml = tmp_path / "study_roster.yaml"
+    manifest_json = tmp_path / "study_roster_manifest.json"
+    monkeypatch.setattr(fsr, "ROSTER_YAML", roster_yaml)
+    monkeypatch.setattr(fsr, "ROSTER_MANIFEST", manifest_json)
+
+    store.write("AAPL", _ohlcv())
+    store.write("MSFT", _ohlcv())
+
+    fsr._write_roster_artifacts(seeds=["AAPL"], anchors=["SPY"])
+
+    import yaml, json
+    roster = yaml.safe_load(roster_yaml.read_text())
+    assert set(roster["symbols"]) == {"AAPL", "MSFT"}
+    assert roster["source"] == "cache/scan/constituents.json (S&P 500 + Nasdaq-100)"
+    assert "as_of" in roster and "seeds" in roster and "anchors" in roster
+
+    manifest = json.loads(manifest_json.read_text())
+    assert set(manifest["symbols"].keys()) == {"AAPL", "MSFT"}
+    entry = manifest["symbols"]["AAPL"]
+    assert {"first_session", "last_session", "n_bars", "file_sha256"} <= entry.keys()
+    assert manifest["adjustment_basis"] == "split+dividend adjusted total return (auto_adjust=True)"

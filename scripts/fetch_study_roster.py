@@ -48,6 +48,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import os
 import random
@@ -71,6 +72,9 @@ STORE_DIR = ROOT / "cache" / "ohlcv"
 CONSTITUENTS = ROOT / "cache" / "scan" / "constituents.json"
 UNIVERSE = ROOT / "universe.yaml"
 FAILURES_SIDECAR = STUDY_FRAMES_DIR / ".fetch_failures.json"
+CONFIGS_DIR = ROOT / "configs"
+ROSTER_YAML = CONFIGS_DIR / "study_roster.yaml"
+ROSTER_MANIFEST = CONFIGS_DIR / "study_roster_manifest.json"
 OHLC = ["open", "high", "low", "close"]
 
 _STORE: StudyStore | None = None
@@ -158,6 +162,51 @@ def _dedup(seq) -> list[str]:
     return out
 
 
+def _file_sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    h.update(path.read_bytes())
+    return h.hexdigest()
+
+
+def _write_roster_artifacts(seeds: list[str], anchors: list[str]) -> None:
+    """Commit-worthy roster contract: exact membership + rationale (YAML) and a
+    per-symbol data manifest (JSON) so the study population is reconstructable
+    from git alone, without re-deriving it from the gitignored parquet cache."""
+    CONFIGS_DIR.mkdir(parents=True, exist_ok=True)
+    symbols = _store().symbols()
+
+    roster = {
+        "as_of": dt.date.today().isoformat(),
+        "source": "cache/scan/constituents.json (S&P 500 + Nasdaq-100)",
+        "eligibility": {"min_price_usd": 5, "min_avg_dollar_vol_usd": 20_000_000},
+        "seeds": sorted(seeds),
+        "anchors": sorted(anchors),
+        "symbols": symbols,
+        "count": len(symbols),
+    }
+    tmp = ROSTER_YAML.with_suffix(".yaml.tmp")
+    tmp.write_text(yaml.safe_dump(roster, sort_keys=False))
+    os.replace(tmp, ROSTER_YAML)
+
+    manifest = {
+        "adjustment_basis": "split+dividend adjusted total return (auto_adjust=True)",
+        "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "symbols": {},
+    }
+    for sym in symbols:
+        df = _store().load(sym)
+        path = _store().path(sym)
+        manifest["symbols"][sym] = {
+            "first_session": df.index.min().date().isoformat(),
+            "last_session": df.index.max().date().isoformat(),
+            "n_bars": len(df),
+            "file_sha256": _file_sha256(path),
+        }
+    tmp = ROSTER_MANIFEST.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(manifest, indent=2, sort_keys=True))
+    os.replace(tmp, ROSTER_MANIFEST)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--target-total", type=int, default=250,
@@ -218,6 +267,8 @@ def main() -> None:
 
     if not must_fetch and need_fill == 0:
         print("target already met and all must-haves present — nothing to fetch (no-op).")
+        _write_roster_artifacts(seeds=seeds, anchors=ANCHORS)
+        print(f"  wrote {ROSTER_YAML.relative_to(ROOT)} + {ROSTER_MANIFEST.relative_to(ROOT)}")
         return
 
     if args.dry_run:
@@ -280,6 +331,9 @@ def main() -> None:
               f"symbols. Re-run with --retry-failed, or accept the current roster.")
     print(f"  dead-symbol sidecar: {FAILURES_SIDECAR} ({len(failures)} names)")
     print("  re-running this script now is a no-op (idempotent).")
+
+    _write_roster_artifacts(seeds=seeds, anchors=ANCHORS)
+    print(f"  wrote {ROSTER_YAML.relative_to(ROOT)} + {ROSTER_MANIFEST.relative_to(ROOT)}")
 
 
 if __name__ == "__main__":
