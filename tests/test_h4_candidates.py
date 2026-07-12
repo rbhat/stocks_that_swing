@@ -114,10 +114,11 @@ def test_h1_drops_candidate_within_catalyst_embargo():
     assert first["entry_date"] not in {c["entry_date"] for c in cands_embargoed if c["symbol"] == "TEST"}
 
 
-def test_h2_ignores_catalyst_embargo_by_construction():
-    """H2 entries are earnings reactions by construction (prereg-stated
-    exemption): an earnings-blocking calendar must not remove any H2
-    candidate, unlike H1/H3."""
+def test_h2_applies_catalyst_embargo_like_phase3():
+    """H2 applies the standing 2-session pre-earnings entry embargo, matching
+    its locked Phase-3 prereg (2026-07-12_h2-pead.md "Catalyst rule") and
+    h2_events' own collection/simulation filters: a calendar that blocks
+    every entry must remove every H2 candidate."""
     rows = []
     price = 100.0
     for _ in range(60):
@@ -131,15 +132,7 @@ def test_h2_ignores_catalyst_embargo_by_construction():
     df = make_frame(rows)
     prices = {"TEST": df, "SPY": df}
 
-    earnings_date = df.index[60].date()
     cal_empty = _empty_catalyst()
-    # Monkeypatch load_earnings_dates via a direct params override isn't
-    # exposed; instead exercise via the real adapter path using a temp
-    # earnings file would be heavier than needed here. This test asserts the
-    # documented behavior at the seam we control: candidates_for("h2", ...)
-    # never calls catalyst.catalyst_within at all (structural guarantee),
-    # which we verify by passing a calendar whose catalyst_within always
-    # blocks and confirming it has no effect vs. the empty calendar.
     class AlwaysBlockCalendar(CatalystCalendar):
         def catalyst_within(self, symbol, date, horizon_sessions, action):
             return CatalystEvent(
@@ -152,4 +145,7 @@ def test_h2_ignores_catalyst_embargo_by_construction():
     cands_blocked = candidates_for(
         "h2", prices, dt.date(2000, 1, 1), dt.date(2100, 1, 1), catalyst=always_block
     )
-    assert [c["entry_date"] for c in cands_empty] == [c["entry_date"] for c in cands_blocked]
+    assert cands_blocked == []
+    # The embargo binding is the only difference: with no blocking events the
+    # same candidates come through untouched.
+    assert len(cands_empty) >= len(cands_blocked)

@@ -25,11 +25,14 @@ also updating the cited prereg):
   the causal price/volume PEAD proxy — see `scripts/run_h2_study.py`
   `PRIMARY_CELL`.
 
-Catalyst embargo: H1/H3 apply the standing 2-session pre-earnings entry
-embargo (same as their Phase-3 event collection). H2 is EXEMPT — its entries
-are earnings reactions by construction, so blocking on the same earnings
-date that produced the signal would be nonsensical; the prereg states this
-exemption explicitly.
+Catalyst embargo: ALL THREE families apply the standing 2-session
+pre-earnings entry embargo (`block_entry`), matching their Phase-3 event
+collection exactly — H2's locked prereg (2026-07-12_h2-pead.md, "Catalyst
+rule") locks the embargo for H2 too, and `h2_events` applies it at both
+collection and simulation. An H2 entry sits ~a quarter away from the NEXT
+earnings date, so the filter rarely binds, but Phase 4 must not diverge
+from the locked family definition (independent-review finding F1,
+2026-07-12).
 """
 
 from __future__ import annotations
@@ -151,8 +154,6 @@ def _h2_candidates(
     catalyst: CatalystCalendar,
     risk_params: dict | None = None,
 ) -> list[dict]:
-    # `catalyst` is intentionally unused: H2's exemption (see module
-    # docstring) means no embargo filter is applied here at all.
     p = risk_params if risk_params is not None else FAMILY_PARAMS["h2"]["risk_params"]
     spy_df = prices.get("SPY")
     session_index = spy_df.index if spy_df is not None and not spy_df.empty else None
@@ -182,6 +183,8 @@ def _h2_candidates(
         atr_series = risk.atr(df, window=p["atr_window"])
         geo = entry_geometry(df, sig_iloc, atr_series, p)
         if geo is None:
+            continue
+        if catalyst.catalyst_within(symbol, geo["entry_date"], 2, "block_entry") is not None:
             continue
         out.append(_candidate(symbol, "h2", ev["signal_date"], geo))
     return out

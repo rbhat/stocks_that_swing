@@ -14,7 +14,7 @@
 - Costs: 5 bps/side + $1/order base arm; 2× arm (10 bps, $2) mandatory on every report.
 - **Phase-4 absolute bars (ratified 2026-07-12, user):** max peak-to-trough drawdown of net equity ≤ **25%**; average deployed fraction over the OOS window ≥ **20%**; net return > 0 (base cost arm); expectancy stable year-by-year (neutral band per prereg).
 - OOS wall 2024-01-01, immutable. OOS-only judgment; full-history runs only if a locked prereg names them.
-- Catalyst rule: no new entries within 2 sessions before a scheduled earnings date (`sts.catalyst.CatalystCalendar`), except H2 whose entries are earnings reactions by construction (prereg states this exemption explicitly).
+- Catalyst rule: no new entries within 2 sessions before a scheduled earnings date (`sts.catalyst.CatalystCalendar`) — **all three families**, H2 included: its locked Phase-3 prereg locks the embargo, so the plan's original H2 exemption was an error (corrected 2026-07-12 per independent-review finding F1).
 - Scripts must be resumable and log elapsed/ETA (user global rule).
 - Runner reports PASS/FAIL bars only; **never writes a decisions.md verdict** (verdicts are the user's).
 - SPY buy-and-hold reported for reference only — never a relative bar.
@@ -138,7 +138,7 @@ Behavior: loads roster frames; builds candidates (combined = concatenation of al
 
 **Files:** `docs/preregs/2026-07-12_h4-portfolio-h1.md`, `..._h4-portfolio-h3.md`, `..._h4-portfolio-h2.md` (PREREG_TEMPLATE.md shape).
 
-Each prereg locks, blind to any Phase-4 result: the simulator semantics of Task 1 (by reference to the module docstring at a named commit), the family's locked params, wall 2024-01-01, the four absolute bars (net>0 base-arm, DD≤25%, avg deployed≥20%, year stability with ±0.05R neutral band analyst-judged), both cost arms, the jitter spec (which keys, which values), bootstrap seed 20260712, SPY-reference-only clause, H2 catalyst exemption (H2 only), and H3's consumed-OOS caveat carried forward. Rubric maps to PROCEED/PARK/STOP identically to Phase 3.
+Each prereg locks, blind to any Phase-4 result: the simulator semantics of Task 1 (by reference to the module docstring at a named commit), the family's locked params, wall 2024-01-01, the four absolute bars (net>0 base-arm, DD≤25%, avg deployed≥20%, year stability with ±0.05R neutral band analyst-judged), both cost arms, the jitter spec (which keys, which values), bootstrap seed 20260712, SPY-reference-only clause, the catalyst embargo applying to all three families (F1 correction), same-session re-entry after an exit being permitted (mechanical consequence of exits-first ordering; review finding F2), and H3's consumed-OOS caveat carried forward. Rubric maps to PROCEED/PARK/STOP identically to Phase 3.
 
 - [ ] **Step 1: Write all three preregs.** **Step 2: Commit as a lock** (`chore: lock H4 family preregs (wall 2024-01-01) before any Phase-4 run`) — this commit must precede any commit containing Phase-4 run artifacts.
 
