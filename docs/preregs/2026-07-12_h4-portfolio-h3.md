@@ -74,6 +74,11 @@ user records the verdict.
 
 (append-only; none at lock)
 
+- 2026-07-12 (post-verdict): rubric mapped the run (runs/h4/h3/report.json, e63ef74) to
+  STOP (net −4.4% at base, adequate n and deployment); user overrode to PARK — revisit via
+  a fresh prereg for a different expression, never a rerun. Recorded in decisions.md with
+  adverse facts; rubric unchanged. Independent review NOT YET DONE.
+
 ## Sign-off
 
 - [ ] Independent review completed before any PROCEED is acted on.

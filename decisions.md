@@ -4,6 +4,41 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-12 — Phase-4 H1 portfolio expression: PROCEED (USER OVERRIDE of rubric STOP)
+
+Per locked prereg `docs/preregs/2026-07-12_h4-portfolio-h1.md` and `runs/h4/h1/report.json`
+(e63ef74), the rubric maps H1 to **STOP** for this portfolio expression: net return −3.1%
+(base arm) with adequate n (648 trades) and deployment (72.8%). The user overrode to
+**PROCEED** on 2026-07-12.
+
+Adverse facts, stated plainly: net return negative at both cost arms (−3.1% base, −10.4%
+at 2×); book expectancy −0.020R with bootstrap p_negative 70%; 2/3 years negative; jitter
+arms sign-flip (−9.0% to +34.9% net) — the prereg's fragility flag fires; 2,425 candidates
+skipped for slots. Post-verdict exploratory diagnostics (outside the judged read) attribute
+the failure to expression, not signal: all 3,207 OOS events independently still average
++0.113R (reproducing Phase 3 exactly), but slot-constrained, unranked selection captured a
++0.044R subset and clustered/correlated entries did the rest. The override does not rest on
+the locked bars; the rubric is unchanged. Independent review: NOT YET DONE.
+
+---
+
+## 2026-07-12 — Phase-4 H3 portfolio expression: PARK (USER OVERRIDE of rubric STOP)
+
+Per locked prereg `docs/preregs/2026-07-12_h4-portfolio-h3.md` and `runs/h4/h3/report.json`
+(e63ef74), the rubric maps H3 to **STOP**: net return −4.4% (base) with adequate n (583)
+and deployment (57.0%). The user overrode to **PARK — revisit later** on 2026-07-12.
+
+Adverse facts: negative at both arms (−4.4% / −11.7%); expectancy −0.089R, bootstrap
+p_negative 98%; all three years negative expectancy; every jitter arm negative expectancy.
+Exploratory diagnostics: even the taken subset's independent event expectancy is negative
+(−0.029R vs +0.070R for all 1,739 candidates); contested-day entries averaged −0.203R —
+the strongest adverse-selection/clustering signature of the three families. Any revisit is
+a fresh prereg for a different expression (ranked selection, burst throttle, or tighter
+fire rate), never a rerun of this one. Prior H3 caveats (2025+ OOS partially consumed by
+parent; two parent parks) carry forward. Rubric unchanged. Independent review: NOT YET DONE.
+
+---
+
 ## 2026-07-12 — Phase-4 H2 portfolio expression: PROCEED (rubric-mapped, user-recorded)
 
 Per the locked prereg `docs/preregs/2026-07-12_h4-portfolio-h2.md` and run artifact

@@ -94,6 +94,10 @@ Runner reports bars only; the verdict is recorded by the user in decisions.md.
 
 (append-only; none at lock)
 
+- 2026-07-12 (post-verdict): rubric mapped the run (runs/h4/h1/report.json, e63ef74) to
+  STOP (net −3.1% at base, adequate n and deployment); user overrode to PROCEED. Recorded
+  in decisions.md with adverse facts; rubric unchanged. Independent review NOT YET DONE.
+
 ## Sign-off
 
 - [ ] Independent review completed before any PROCEED is acted on.
