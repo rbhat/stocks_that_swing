@@ -56,6 +56,37 @@ The one genuinely new build:
 **Gate:** negative control — random entries through the harness yield ~zero gross expectancy
 minus friction; shift-guard tests green.
 
+## Phase 2.5 — Exploratory discovery pass (~2–4 sessions; optional, feeds Phase 3)
+
+**Purpose:** use the full IS window and any technique (grid sweeps, feature screens, ML models
+— classifiers/rankers on engineered features, clustering, whatever surfaces a pattern) to
+*generate* candidate hypotheses/configs, not to *validate* them. This is where "try everything
+and see what works" belongs — it is explicitly barred from Phase 3's confirmatory studies
+(HYPOTHESES §0, PREREG_TEMPLATE) because judging on the same data you searched is how the
+parent project got burned (LESSONS).
+
+**Hard rule — the OOS wall is load-bearing here too:** every exploratory run, sweep, or model
+fit in this phase uses only data strictly before 2025-07-01. No OOS bar, slice, or event is
+read, plotted, or fed to a model at any point in this phase — not even "just to look." A
+pattern discovered by peeking at OOS is not a discovery, it's a leak, and it poisons every
+study built on it afterward.
+
+**Output is candidates, never verdicts.** This phase cannot itself produce PROCEED / PARK /
+STOP — it has no locked prereg and no untouched OOS to judge against, so nothing it produces is
+evidence. Its only deliverable is a short list of named, specific configs (or a frozen model
+spec: architecture, features, training window) worth preregistering — added to HYPOTHESES.md
+as new H-entries or as refinements to existing ones (e.g. "H1 cell narrowed to X based on IS
+screen").
+
+**Promotion path (mandatory):** a candidate that looks good here does not skip Phase 3. It
+gets its own dated prereg (PREREG_TEMPLATE.md) naming that exact config/model as the primary
+cell, locked before it ever sees OOS data, then runs through Phase 3's normal two-layer read
+and locked bars. The IS performance from this phase is disclosed in that prereg as a *prior*,
+never substituted for the OOS verdict.
+
+**Gate:** none in the pass/fail sense — this phase can't fail, only produce zero, one, or many
+candidates. Optional: skip it entirely if the named H1–H3 families already look sufficient.
+
 ## Phase 3 — Hypothesis studies (the heart; ~2–5 days each incl. review)
 
 Run the families in HYPOTHESES.md priority order: **H1 trend-conditioned pullback → H2
