@@ -10,7 +10,7 @@ change. Layer (a) and Layer (b) both run OOS-only (signal_date >=
 confirmatory read the locked prereg exists to authorize.
 
 Usage:
-    python scripts/run_h1_study.py [--oos-start 2025-07-01] [--dry-run]
+    python scripts/run_h1_study.py [--oos-start 2024-01-01] [--dry-run]
 """
 
 from __future__ import annotations
@@ -33,7 +33,7 @@ from sts.eventsim import raw_forward_returns  # noqa: E402
 from sts.signals.trend_pullback import DEFAULTS as TREND_PULLBACK_DEFAULTS  # noqa: E402
 from sts.study.h1_events import collect_events, slice_by, summarize  # noqa: E402
 
-DEFAULT_OOS_START = dt.date(2025, 7, 1)
+DEFAULT_OOS_START = dt.date(2024, 1, 1)
 COST_ARMS = {"base": (5.0, 1.0), "2x": (10.0, 2.0)}
 DOLLAR_VOLUME_WINDOW = 20
 

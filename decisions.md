@@ -4,7 +4,23 @@ Append-only. Newest first.
 
 ---
 
-## 2026-07-11 — Phase 1 gate: reproducible 250-name study roster — gate PASSED
+## 2026-07-12 — Charter amendment: OOS wall re-ratified to 2024-01-01 (user)
+
+The OOS wall moves from 2025-07-01 to **2024-01-01, immutable** — IS = history through
+2023-12-31; OOS = 2024-01-01 through the last complete session in cache (~2.5 years: two
+full years, 2024 and 2025, plus 2026 YTD — enough for a real year-by-year stability read,
+and the window includes the 2024-08 and 2025-04 drawdowns). Ratified by the user 2026-07-12.
+
+Applied everywhere in the same change: VISION.md charter line, PLAN.md Phase-2.5 hard rule,
+PREREG_TEMPLATE.md, `scripts/run_h1_study.py` `DEFAULT_OOS_START`, and the staged study
+harness code in `port_from_run1/` (H2/H3 runners, Phase-2.5 orchestrator `OOS_WALL`). The
+H1 prereg was re-locked with the new wall before any run (see its deviations log); its
+window-derived stability-bar wording updated — the bars are now judgeable, not
+PARK-on-adequacy-by-construction.
+
+Data-side precondition verified 2026-07-12: all 250 cached frames match
+`configs/study_roster_manifest.json` sha256; roster dry-run reports a clean no-op; full
+test suite green (192 passed).
 
 Closed `codex_review.md` #3. `scripts/fetch_study_roster.py` writes now route through
 `sts.data.study_store.StudyStore.write` (validate + truncate-incomplete + atomic+fsync) instead

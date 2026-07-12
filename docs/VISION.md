@@ -86,8 +86,9 @@ Universe & data:
   truth; atomic writes (temp + fsync + replace); validate-before-write quality gate;
   split- and dividend-adjusted total-return basis, never mixed; incomplete bars never cached;
   jobs idempotent and resumable with ETA.
-- **OOS wall: 2025-07-01, immutable.** Nothing fits on or past it. (H3's entry families
-  partially consumed 2025+ in the parent — caveat carried in HYPOTHESES.)
+- **OOS wall: 2024-01-01, immutable** (re-ratified 2026-07-12, see decisions.md). Nothing
+  fits on or past it. (H3's entry families partially consumed 2025+ in the parent — caveat
+  carried in HYPOTHESES.)
 
 Process:
 - decisions.md append-only, newest first; every study pre-registered (bars locked before the

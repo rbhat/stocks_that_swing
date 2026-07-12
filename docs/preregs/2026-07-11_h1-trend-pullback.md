@@ -1,6 +1,7 @@
 # Prereg: Trend-conditioned pullback (H1)
 
-**Date locked:** 2026-07-11
+**Date locked:** 2026-07-11 (re-locked 2026-07-12 — OOS wall re-ratified to 2024-01-01
+before any run; no other change)
 **Family:** H1 (docs/HYPOTHESES.md)
 **Status:** LOCKED
 
@@ -21,8 +22,8 @@ reassert.
   `codex_review.md` item 3 (roster/manifest, StudyStore.write routing, reach 250) is deferred.
   This study does not run until that gate closes; recorded here as a hard dependency, not
   relitigated by this prereg.
-- OOS wall: **2025-07-01, immutable**, per VISION.md. IS = earliest cached history through
-  2025-06-30; OOS = 2025-07-01 through the last complete session in cache. No overlap with any
+- OOS wall: **2024-01-01, immutable**, per VISION.md. IS = earliest cached history through
+  2023-12-31; OOS = 2024-01-01 through the last complete session in cache. No overlap with any
   parent-study exposure (H1 is a new family; the parent never ran this exact grid).
 - Price basis: split/dividend-adjusted total return throughout.
 
@@ -92,10 +93,10 @@ primary.
 - [ ] Layer (b): OOS event-level expectancy > 0, net of 2× friction, n >= 100 OOS events.
       Below-n is PARK-on-adequacy, never STOP.
 - [ ] Year-by-year stability: >= 60% of judgeable OOS years positive, ±0.05R neutral zone
-      (years with |mean R| < 0.05 vote for nobody — this window has at most ~1.5 partial OOS
-      years, so this bar is likely PARK-on-adequacy rather than pass/fail; stated explicitly
-      per Fix-5 concern, not glossed over).
-- [ ] No single year > ~40% of total edge (same partial-OOS-years caveat applies).
+      (years with |mean R| < 0.05 vote for nobody — with the 2024-01-01 wall the window holds
+      two full OOS years, 2024 and 2025, plus partial 2026, so this bar is judgeable;
+      re-locked wording 2026-07-12, before any run).
+- [ ] No single year > ~40% of total edge (judged over the two full years + partial 2026).
 - [ ] Regime slice (SPY above/below 200d) reported; bull-only concentration flagged explicitly
       — this is H1's named failure mode (beta-dip-buying on a bull tape).
 - [ ] Cost sensitivity: verdict recomputed at 2x costs (10bps/side + $2/order); survives =
@@ -156,7 +157,10 @@ bar above, regardless of slice floors.)
 
 ## Deviations log
 
-(none yet — append-only from this point)
+- 2026-07-12 (pre-run): OOS wall re-ratified to 2024-01-01 (decisions.md); this prereg
+  re-locked with the new wall and the window-derived wording in the stability/concentration
+  bars updated accordingly. No run had occurred; grid, primary cell, bars, and rubric
+  otherwise unchanged.
 
 ## Sign-off
 

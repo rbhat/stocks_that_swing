@@ -66,7 +66,7 @@ and see what works" belongs — it is explicitly barred from Phase 3's confirmat
 parent project got burned (LESSONS).
 
 **Hard rule — the OOS wall is load-bearing here too:** every exploratory run, sweep, or model
-fit in this phase uses only data strictly before 2025-07-01. No OOS bar, slice, or event is
+fit in this phase uses only data strictly before 2024-01-01. No OOS bar, slice, or event is
 read, plotted, or fed to a model at any point in this phase — not even "just to look." A
 pattern discovered by peeking at OOS is not a discovery, it's a leak, and it poisons every
 study built on it afterward.

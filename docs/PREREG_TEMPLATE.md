@@ -18,7 +18,7 @@ this, the study isn't ready to prereg.
 ## Universe & data
 
 - Roster: 250-name roster (`universe.yaml`) unless narrowed — state the narrowing and why.
-- OOS wall: **2025-07-01, immutable.** State what fraction of this study's window is
+- OOS wall: **2024-01-01, immutable.** State what fraction of this study's window is
   in-sample vs. out-of-sample, and whether any of it overlaps a parent-study exposure
   (H3 caveat: 2025+ entries partially consumed by the parent's swing studies).
 - Price basis: split/dividend-adjusted total return (never mixed).
