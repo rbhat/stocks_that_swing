@@ -81,10 +81,14 @@ def _candidate(symbol: str, family: str, signal_date: dt.date, geo: dict) -> dic
 
 
 def _h1_candidates(
-    prices: dict[str, pd.DataFrame], oos_start: dt.date, oos_end: dt.date, catalyst: CatalystCalendar
+    prices: dict[str, pd.DataFrame],
+    oos_start: dt.date,
+    oos_end: dt.date,
+    catalyst: CatalystCalendar,
+    risk_params: dict | None = None,
 ) -> list[dict]:
     detector_params = FAMILY_PARAMS["h1"]["detector_params"]
-    p = FAMILY_PARAMS["h1"]["risk_params"]
+    p = risk_params if risk_params is not None else FAMILY_PARAMS["h1"]["risk_params"]
     out: list[dict] = []
     for symbol in sorted(prices):
         df = prices[symbol]
@@ -108,11 +112,15 @@ def _h1_candidates(
 
 
 def _h3_candidates(
-    prices: dict[str, pd.DataFrame], oos_start: dt.date, oos_end: dt.date, catalyst: CatalystCalendar
+    prices: dict[str, pd.DataFrame],
+    oos_start: dt.date,
+    oos_end: dt.date,
+    catalyst: CatalystCalendar,
+    risk_params: dict | None = None,
 ) -> list[dict]:
     config_name = FAMILY_PARAMS["h3"]["config_name"]
     detector_params = FAMILY_PARAMS["h3"]["detector_params"]
-    p = FAMILY_PARAMS["h3"]["risk_params"]
+    p = risk_params if risk_params is not None else FAMILY_PARAMS["h3"]["risk_params"]
     detect = resolve_detector(config_name)
     out: list[dict] = []
     for symbol in sorted(prices):
@@ -137,11 +145,15 @@ def _h3_candidates(
 
 
 def _h2_candidates(
-    prices: dict[str, pd.DataFrame], oos_start: dt.date, oos_end: dt.date, catalyst: CatalystCalendar
+    prices: dict[str, pd.DataFrame],
+    oos_start: dt.date,
+    oos_end: dt.date,
+    catalyst: CatalystCalendar,
+    risk_params: dict | None = None,
 ) -> list[dict]:
     # `catalyst` is intentionally unused: H2's exemption (see module
     # docstring) means no embargo filter is applied here at all.
-    p = FAMILY_PARAMS["h2"]["risk_params"]
+    p = risk_params if risk_params is not None else FAMILY_PARAMS["h2"]["risk_params"]
     spy_df = prices.get("SPY")
     session_index = spy_df.index if spy_df is not None and not spy_df.empty else None
 
@@ -184,11 +196,16 @@ def candidates_for(
     oos_start: dt.date,
     oos_end: dt.date,
     catalyst: CatalystCalendar | None = None,
+    risk_params: dict | None = None,
 ) -> list[dict]:
     """Uniform Task-1 candidate dicts for `family` in {"h1", "h3", "h2"} over
     `prices`, event `signal_date` in `[oos_start, oos_end)`. `catalyst`
-    defaults to `CatalystCalendar.load()`."""
+    defaults to `CatalystCalendar.load()`. `risk_params`, if given, overrides
+    `FAMILY_PARAMS[family]["risk_params"]` for this call only — used by the
+    Phase-4 runner's jitter arms; the detector params and decile/entry-mode
+    selection stay locked regardless (jitter only ever perturbs the risk
+    geometry, per the plan's jitter_grid scope)."""
     if family not in _ADAPTERS:
         raise ValueError(f"unknown family {family!r}, expected one of {sorted(_ADAPTERS)}")
     cal = catalyst if catalyst is not None else CatalystCalendar.load()
-    return _ADAPTERS[family](prices, oos_start, oos_end, cal)
+    return _ADAPTERS[family](prices, oos_start, oos_end, cal, risk_params)
