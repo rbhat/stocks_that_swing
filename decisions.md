@@ -4,6 +4,134 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-12 — Independent review of the three PROCEED verdicts: SIGN OFF
+
+Independent review (Opus subagent) audited the verdict record against the run artifacts
+and preregs before Phase 4 acts, per every prereg's sign-off clause. Result: **SIGN OFF.**
+Every quoted number reproduces exactly from the report.json files; judged cells are the
+prereg primary cells only; neutral-zone, adequacy-floor, and concentration arithmetic
+follow the locked wording (recomputed independently: H1 2024 = 63.9%, H3 2025 = 45.9%,
+H2 2024 = 69.2% of total edge); the PARK rubric mappings were correct; the H3
+partial-consumption caveat is present where mandated. Main session re-verified the
+reviewer's arithmetic against the reports.
+
+Two NITs, no file changes required:
+1. Override entry says books are "93–97%" bull-tape; H2 is 92.86% (rounds to 93) —
+   cosmetic.
+2. `report.json["bars"]` holds only the 4 machine-checkable bars, all PASS; the failing
+   concentration bar (and bars 3/5) are analyst-judged from `slices`. Phase-4 tooling must
+   not read `bars` alone as a clean bill — decisions.md is the governing record.
+
+Sign-off sections in all three preregs marked complete (reviewer, date 2026-07-12).
+
+## 2026-07-12 — User override: H1, H3, H2 all PARK → PROCEED (user directive)
+
+The user overrides all three rubric-mapped PARK verdicts (entries below) to **PROCEED** to
+Phase 4 portfolio expression. Per the standing override convention, the override is logged
+with the adverse facts intact; the rubric verdicts below are unchanged and remain the
+record of what the locked bars said.
+
+Adverse facts carried into Phase 4, not erased by the override:
+
+- **All three families failed the same locked bar** — no single year > ~40% of total edge
+  (H1: 2024 ≈ 64%; H3: 2025 ≈ 46%; H2: 2024 ≈ 69%). Partly structural on a ~2.5-year OOS
+  window, but unfalsified.
+- **H2's edge is fading monotonically** across the window (0.292R → 0.150R → 0.023R by
+  year; 2026 is inside the ±0.05R neutral zone), and its bear-regime behavior is unmeasured
+  (n=18, below the slice floor).
+- **H3's primary cell is the declared known-prior cell** and its 2025+ OOS is partially
+  consumed by the parent's swing studies — the dirtiest test of the three; forward paper
+  remains the clean arbiter.
+- **All three books are bull-tape-concentrated** (93–97% of events with SPY above its
+  200d); bear-regime evidence is thin (H1 n=144 positive; H3 n=54 unresolved; H2 not-run).
+
+Per every prereg's sign-off section, a PROCEED **requires independent review before
+anything acts on it** — that review is still pending and is the next gate before any
+Phase 4 portfolio work executes.
+
+## 2026-07-12 — H1 verdict: PARK (year-concentration bar failed on the short OOS window)
+
+Prereg: `docs/preregs/2026-07-11_h1-trend-pullback.md` (locked; wall 2024-01-01).
+Report: `runs/h1/20260712T191251Z/report.json` — primary cell only (Trend-1 × RSI(2)<10 ×
+reclaim entry × 2×ATR target), OOS 2024-01-01 .. 2026-07-11, n = 3207 events.
+
+Locked bars, judged as written:
+
+1. Layer (a) positive at h=15 — **PASS** (+1.28% mean, n=3324).
+2. Layer (b) OOS expectancy > 0 net of 2× friction, n ≥ 100 — **PASS**
+   (base-cost expectancy 0.1134R, 2×-cost 0.0873R, n=3207).
+3. Year-by-year stability ≥ 60% positive, ±0.05R neutral zone — **PASS**
+   (2024 +0.188R, 2025 +0.111R, 2026 +0.068R: 3/3 judgeable years positive).
+4. No single year > ~40% of total edge — **FAIL**: 2024 carries ~64% of total R
+   (2024 1517×0.188=285.8R vs total ~447.5R across 2024/2025/2026).
+5. Regime slice reported — **PASS/reported**: bear +0.264R (n=144), bull +0.134R
+   (n=3063). Not bull-only: the bear slice is positive and judgeable (n ≥ 30), though
+   95.5% of events fire in bull regime — bull concentration flagged as required.
+6. Cost sensitivity — **PASS/robust**: 2×-cost arm positive (0.0873R); the verdict
+   survives both arms.
+
+Rubric mapping (no override, no diagnostics beyond prereg slices): PROCEED requires all
+locked bars to pass — bar 4 fails. STOP requires layer (a) non-positive or a well-powered
+negative expectancy — neither holds. The prereg's PARK clause covers
+stability/concentration bars inconclusive on the partial-OOS window; with ~2.5 OOS years
+the largest year (47% of all events) structurally tends to exceed 40% of edge. **PARK** —
+revisitable as the post-wall window grows.
+
+## 2026-07-12 — H3 verdict: PARK (year-concentration bar failed marginally; partial-consumption caveat applies)
+
+Prereg: `docs/preregs/2026-07-12_h3-regeometried-breakout.md` (locked; wall 2024-01-01).
+Report: `runs/h3/oos_2024-01-01/report.json` — primary cell `avwap_squeeze_seed` only
+(declared known-prior cell), OOS 2024-01-01 .. 2026-07-11, n = 1739 events.
+
+Locked bars, judged as written:
+
+1. Layer (a) positive at h=15 — **PASS** (+1.49% mean, n=1781).
+2. Layer (b) OOS expectancy > 0 net of 2× friction, n ≥ 100 — **PASS**
+   (base-cost 0.0695R, 2×-cost 0.0400R, n=1739).
+3. Year-by-year stability ≥ 60% positive, ±0.05R neutral zone — **PASS**
+   (2024 +0.090R, 2025 +0.119R, 2026 +0.083R: 3/3 judgeable years positive).
+4. No single year > ~40% of total edge — **FAIL (marginal)**: 2025 carries ~46% of total R
+   (666×0.119=79.0R vs total ~172R).
+5. Regime slice reported — **PASS/reported**: bear +0.122R (n=54, judgeable but lower90
+   −0.059 — not resolved), bull +0.098R (n=1685). 96.9% of events fire in bull regime —
+   bull concentration flagged as required.
+6. Cost sensitivity — **PASS/robust**: 2×-cost arm positive (0.0400R).
+
+**Mandatory caveat (prereg + HYPOTHESES §H3):** 2025+ OOS is partially consumed for these
+entries — the parent's swing studies ran them under time-cap exits; the known-prior primary
+cell makes this the dirtier test by construction. Forward paper is the clean arbiter.
+
+Rubric mapping (no override): PROCEED needs all bars — bar 4 fails (45.9% vs ~40%). STOP
+conditions not met. **PARK** — revisitable as the post-wall window grows and forward paper
+accrues; the partial-consumption caveat stands regardless.
+
+## 2026-07-12 — H2 verdict: PARK (2026 in the neutral zone; 2024 dominates the edge)
+
+Prereg: `docs/preregs/2026-07-12_h2-pead.md` (locked; wall 2024-01-01).
+Report: `runs/h2/oos_2024-01-01/report.json` — primary cell `top_decile_day2_open` only,
+OOS 2024-01-01 .. 2026-07-11, n = 252 events.
+
+Locked bars, judged as written:
+
+1. Layer (a) positive at h=15 — **PASS** (+3.12% mean, n=250).
+2. Layer (b) OOS expectancy > 0 net of 2× friction, n ≥ 100 — **PASS**
+   (base-cost 0.1637R, 2×-cost 0.1434R, n=252).
+3. Year-by-year stability ≥ 60% positive, ±0.05R neutral zone — **PASS**: 2026 (+0.023R,
+   n=55) falls inside the neutral zone and votes for nobody; the two judgeable years are
+   both positive (2024 +0.292R, 2025 +0.150R → 2/2).
+4. No single year > ~40% of total edge — **FAIL**: 2024 carries ~69% of total R
+   (110×0.292=32.1R vs total ~46.3R).
+5. Regime slice reported — **reported/not-run in part**: bear n=18 is below the slice
+   adequacy floor (30) → reported not-run; bull +0.145R (n=234). 92.9% of events fire in
+   bull regime — bull concentration flagged as required.
+6. Cost sensitivity — **PASS/robust**: 2×-cost arm positive (0.1434R).
+
+Rubric mapping (no override): PROCEED needs all bars — bar 4 fails, and the 2026 neutral
+year plus the not-run bear slice leave stability/regime only partially resolved on this
+window. STOP conditions not met (raw edge positive, expectancy well-powered positive).
+**PARK** — the drift's fade from 2024→2026 (0.292 → 0.150 → 0.023R) is exactly what the
+next year of post-wall data will adjudicate.
+
 ## 2026-07-12 — Charter amendment: OOS wall re-ratified to 2024-01-01 (user)
 
 The OOS wall moves from 2025-07-01 to **2024-01-01, immutable** — IS = history through

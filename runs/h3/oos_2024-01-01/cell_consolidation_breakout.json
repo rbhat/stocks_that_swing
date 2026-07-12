@@ -1,0 +1,150 @@
+{
+  "bars": [
+    {
+      "detail": "h=15 mean_return=0.0034937857111620976 n=36",
+      "name": "layer_a_positive_h15",
+      "status": "PASS"
+    },
+    {
+      "detail": "n=35 (floor 100; below floor is PARK-on-adequacy, not STOP)",
+      "name": "layer_b_oos_n_ge_100",
+      "status": "FAIL"
+    },
+    {
+      "detail": "base-cost expectancy_r=-0.11166347927934904",
+      "name": "layer_b_oos_expectancy_positive",
+      "status": "FAIL"
+    },
+    {
+      "detail": "2x-cost expectancy_r=-0.1440736238712449",
+      "name": "cost_2x_survives",
+      "status": "N/A"
+    }
+  ],
+  "caveat": "2025+ OOS is partially consumed for these entries (parent swing studies under time-cap exits); verdicts must state this.",
+  "cell": "consolidation_breakout",
+  "config_name": "consolidation_breakout",
+  "detector_params": {
+    "breakout_vol_ratio": 1.5,
+    "lookback": 20,
+    "max_range_pct": 0.1,
+    "quiet_vol_ratio": 0.8,
+    "quiet_window": 10,
+    "swing_window": 60
+  },
+  "generated_at": "2026-07-12T19:13:07.233521+00:00",
+  "layer_a": {
+    "by_horizon": {
+      "5": {
+        "mean_return": -0.004799513913900754,
+        "median_return": 0.0015083738121343115,
+        "n": 36
+      },
+      "10": {
+        "mean_return": -0.0020775504748979717,
+        "median_return": -0.0009438855171262639,
+        "n": 36
+      },
+      "15": {
+        "mean_return": 0.0034937857111620976,
+        "median_return": 0.0048828667134250825,
+        "n": 36
+      }
+    },
+    "n_events": 36
+  },
+  "layer_b": {
+    "cost_arms": {
+      "2x": {
+        "expectancy_r": -0.1440736238712449,
+        "expectancy_r_lower90": -0.3525412916284265,
+        "n": 35
+      },
+      "base": {
+        "expectancy_r": -0.11166347927934904,
+        "expectancy_r_lower90": -0.3201546459286373,
+        "n": 35
+      }
+    },
+    "gross": {
+      "expectancy_r": -0.07925333468745314,
+      "expectancy_r_lower90": -0.2877810224603981,
+      "n": 35
+    }
+  },
+  "n_events_oos": 35,
+  "oos_end": "2026-07-11",
+  "oos_start": "2024-01-01",
+  "slices": {
+    "dollar_volume_tercile": {
+      "high": {
+        "expectancy_r": 0.29116820812300315,
+        "expectancy_r_lower90": -0.06488557579619197,
+        "n": 11
+      },
+      "low": {
+        "expectancy_r": -0.08965534146081315,
+        "expectancy_r_lower90": -0.46184527822462323,
+        "n": 12
+      },
+      "mid": {
+        "expectancy_r": -0.408404408823678,
+        "expectancy_r_lower90": -0.7443630183551793,
+        "n": 12
+      }
+    },
+    "era": {
+      "post-2015": {
+        "expectancy_r": -0.07925333468745314,
+        "expectancy_r_lower90": -0.2877810224603981,
+        "n": 35
+      }
+    },
+    "exit_reason": {
+      "stop": {
+        "expectancy_r": -1.0,
+        "expectancy_r_lower90": -1.0,
+        "n": 13
+      },
+      "stop_gap": {
+        "expectancy_r": -1.034467585359645,
+        "expectancy_r_lower90": -1.0565044941097075,
+        "n": 4
+      },
+      "target": {
+        "expectancy_r": 1.0050656997520069,
+        "expectancy_r_lower90": 0.9985734989498343,
+        "n": 14
+      },
+      "time": {
+        "expectancy_r": 0.07327095771240631,
+        "expectancy_r_lower90": -0.11958167997800963,
+        "n": 4
+      }
+    },
+    "regime": {
+      "bull": {
+        "expectancy_r": -0.07925333468745314,
+        "expectancy_r_lower90": -0.2877810224603981,
+        "n": 35
+      }
+    },
+    "year": {
+      "2024": {
+        "expectancy_r": -0.13943115424311278,
+        "expectancy_r_lower90": -0.3981408066619303,
+        "n": 22
+      },
+      "2025": {
+        "expectancy_r": 0.325459641608624,
+        "expectancy_r_lower90": -0.5390312817057634,
+        "n": 3
+      },
+      "2026": {
+        "expectancy_r": -0.06827602455382506,
+        "expectancy_r_lower90": -0.48192845291677533,
+        "n": 10
+      }
+    }
+  }
+}

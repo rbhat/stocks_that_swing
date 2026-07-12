@@ -1,0 +1,122 @@
+{
+  "bars": [
+    {
+      "detail": "h=15 mean_return=0.012814125689433745 n=3324",
+      "name": "layer_a_positive_h15",
+      "status": "PASS"
+    },
+    {
+      "detail": "n=3207 (floor 100; below floor is PARK-on-adequacy, not STOP)",
+      "name": "layer_b_oos_n_ge_100",
+      "status": "PASS"
+    },
+    {
+      "detail": "base-cost expectancy_r=0.11340342305370862",
+      "name": "layer_b_oos_expectancy_positive",
+      "status": "PASS"
+    },
+    {
+      "detail": "2x-cost expectancy_r=0.08727275715838335",
+      "name": "cost_2x_survives",
+      "status": "PASS"
+    }
+  ],
+  "generated_at": "2026-07-12T19:12:51.906675+00:00",
+  "layer_a": {
+    "by_horizon": {
+      "5": {
+        "mean_return": 0.0044972776271019945,
+        "median_return": 0.004843550614204162,
+        "n": 3356
+      },
+      "10": {
+        "mean_return": 0.00809952443860742,
+        "median_return": 0.005375524527728159,
+        "n": 3344
+      },
+      "15": {
+        "mean_return": 0.012814125689433745,
+        "median_return": 0.006797338207612524,
+        "n": 3324
+      }
+    },
+    "n_events": 3363
+  },
+  "layer_b": {
+    "cost_arms": {
+      "2x": {
+        "expectancy_r": 0.08727275715838335,
+        "expectancy_r_lower90": 0.06470615233879512,
+        "n": 3207
+      },
+      "base": {
+        "expectancy_r": 0.11340342305370862,
+        "expectancy_r_lower90": 0.09083710442128534,
+        "n": 3207
+      }
+    },
+    "gross": {
+      "expectancy_r": 0.13953408894903394,
+      "expectancy_r_lower90": 0.11696586441883329,
+      "n": 3207
+    }
+  },
+  "n_events_oos": 3207,
+  "oos_end": "2026-07-11",
+  "oos_start": "2024-01-01",
+  "slices": {
+    "dollar_volume_tercile": {
+      "high": {
+        "expectancy_r": 0.10439978308420465,
+        "expectancy_r_lower90": 0.06649693138690703,
+        "n": 1068
+      },
+      "low": {
+        "expectancy_r": 0.19358427273279152,
+        "expectancy_r_lower90": 0.15285112908407944,
+        "n": 1070
+      },
+      "mid": {
+        "expectancy_r": 0.12053478306972333,
+        "expectancy_r_lower90": 0.08201724402614678,
+        "n": 1069
+      }
+    },
+    "era": {
+      "post-2015": {
+        "expectancy_r": 0.13953408894903394,
+        "expectancy_r_lower90": 0.11696586441883329,
+        "n": 3207
+      }
+    },
+    "regime": {
+      "bear": {
+        "expectancy_r": 0.264007944259314,
+        "expectancy_r_lower90": 0.16843522060555366,
+        "n": 144
+      },
+      "bull": {
+        "expectancy_r": 0.13368223287176315,
+        "expectancy_r_lower90": 0.11048989696736207,
+        "n": 3063
+      }
+    },
+    "year": {
+      "2024": {
+        "expectancy_r": 0.18839117590144722,
+        "expectancy_r_lower90": 0.1558178644382445,
+        "n": 1517
+      },
+      "2025": {
+        "expectancy_r": 0.11120621758437976,
+        "expectancy_r_lower90": 0.07120622033618268,
+        "n": 1080
+      },
+      "2026": {
+        "expectancy_r": 0.06818638430479702,
+        "expectancy_r_lower90": 0.018432457243610353,
+        "n": 610
+      }
+    }
+  }
+}

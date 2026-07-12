@@ -1,0 +1,145 @@
+{
+  "bars": [
+    {
+      "detail": "h=15 mean_return=0.031246025887787635 n=250",
+      "name": "layer_a_positive_h15",
+      "status": "PASS"
+    },
+    {
+      "detail": "n=252 (floor 100; below floor is PARK-on-adequacy, not STOP)",
+      "name": "layer_b_oos_n_ge_100",
+      "status": "PASS"
+    },
+    {
+      "detail": "base-cost expectancy_r=0.1636897908749218",
+      "name": "layer_b_oos_expectancy_positive",
+      "status": "PASS"
+    },
+    {
+      "detail": "2x-cost expectancy_r=0.14340452694056963",
+      "name": "cost_2x_survives",
+      "status": "PASS"
+    }
+  ],
+  "cell": "top_decile_day2_open",
+  "entry_mode": "day2_open",
+  "generated_at": "2026-07-12T19:13:37.012578+00:00",
+  "judged": true,
+  "layer_a": {
+    "by_horizon": {
+      "5": {
+        "mean_return": 0.01240870475866906,
+        "median_return": 0.00707453817382675,
+        "n": 252
+      },
+      "10": {
+        "mean_return": 0.020254333890956388,
+        "median_return": 0.016676353559320733,
+        "n": 250
+      },
+      "15": {
+        "mean_return": 0.031246025887787635,
+        "median_return": 0.02037888242672914,
+        "n": 250
+      }
+    }
+  },
+  "layer_b": {
+    "cost_arms": {
+      "2x": {
+        "expectancy_r": 0.14340452694056963,
+        "expectancy_r_lower90": 0.06704435983362012,
+        "n": 252
+      },
+      "base": {
+        "expectancy_r": 0.1636897908749218,
+        "expectancy_r_lower90": 0.08733422754447548,
+        "n": 252
+      }
+    },
+    "gross": {
+      "expectancy_r": 0.1839750548092739,
+      "expectancy_r_lower90": 0.10762155177081634,
+      "n": 252
+    }
+  },
+  "n_candidate_events": 252,
+  "n_events_oos": 252,
+  "oos_end": "2026-07-11",
+  "oos_start": "2024-01-01",
+  "slices": {
+    "dollar_volume_tercile": {
+      "high": {
+        "expectancy_r": 0.1341853176875817,
+        "expectancy_r_lower90": -0.006933271045539119,
+        "n": 83
+      },
+      "low": {
+        "expectancy_r": 0.1651764481168729,
+        "expectancy_r_lower90": 0.03555551877220928,
+        "n": 85
+      },
+      "mid": {
+        "expectancy_r": 0.252194456594447,
+        "expectancy_r_lower90": 0.12532538776159338,
+        "n": 84
+      }
+    },
+    "exit_reason": {
+      "censored": {
+        "expectancy_r": -0.30603998168978735,
+        "expectancy_r_lower90": null,
+        "n": 1
+      },
+      "stop": {
+        "expectancy_r": -1.0,
+        "expectancy_r_lower90": -1.0,
+        "n": 69
+      },
+      "stop_gap": {
+        "expectancy_r": -1.40304260034003,
+        "expectancy_r_lower90": -1.7613428139254481,
+        "n": 8
+      },
+      "target": {
+        "expectancy_r": 1.0395908021117848,
+        "expectancy_r_lower90": 1.0216334881059916,
+        "n": 122
+      },
+      "time": {
+        "expectancy_r": 0.0011926295905637522,
+        "expectancy_r_lower90": -0.0737424939898601,
+        "n": 52
+      }
+    },
+    "regime": {
+      "bear": {
+        "expectancy_r": 0.6897043709625071,
+        "expectancy_r_lower90": 0.5330553391736326,
+        "n": 18
+      },
+      "bull": {
+        "expectancy_r": 0.1450727997205637,
+        "expectancy_r_lower90": 0.06459766337931856,
+        "n": 234
+      }
+    },
+    "year": {
+      "2024": {
+        "expectancy_r": 0.2916069402162536,
+        "expectancy_r_lower90": 0.1730324717502179,
+        "n": 110
+      },
+      "2025": {
+        "expectancy_r": 0.1499028631743649,
+        "expectancy_r_lower90": 0.023783962086961458,
+        "n": 87
+      },
+      "2026": {
+        "expectancy_r": 0.022607296217806903,
+        "expectancy_r_lower90": -0.13793899028671724,
+        "n": 55
+      }
+    }
+  }
+}

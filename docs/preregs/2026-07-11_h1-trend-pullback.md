@@ -164,7 +164,7 @@ bar above, regardless of slice floors.)
 
 ## Sign-off
 
-- [ ] Independent review completed (required before a PROCEED verdict is acted on, or before
+- [x] Independent review completed (required before a PROCEED verdict is acted on, or before
       any risk-rule or method change).
-- Reviewer:
-- Date:
+- Reviewer: Opus subagent (independent audit of verdict record vs. artifacts; SIGN OFF), claims verified by main session
+- Date: 2026-07-12

@@ -1,0 +1,157 @@
+{
+  "bars": [
+    {
+      "detail": "h=15 mean_return=0.01380727948711976 n=8308",
+      "name": "layer_a_positive_h15",
+      "status": "PASS"
+    },
+    {
+      "detail": "n=8065 (floor 100; below floor is PARK-on-adequacy, not STOP)",
+      "name": "layer_b_oos_n_ge_100",
+      "status": "PASS"
+    },
+    {
+      "detail": "base-cost expectancy_r=0.09569571757247589",
+      "name": "layer_b_oos_expectancy_positive",
+      "status": "PASS"
+    },
+    {
+      "detail": "2x-cost expectancy_r=0.07235688962526365",
+      "name": "cost_2x_survives",
+      "status": "PASS"
+    }
+  ],
+  "caveat": "2025+ OOS is partially consumed for these entries (parent swing studies under time-cap exits); verdicts must state this.",
+  "cell": "sweep_reclaim",
+  "config_name": "sweep_reclaim",
+  "detector_params": {
+    "fib_retrace": 0.618,
+    "pierce_window": 3,
+    "swing_window": 60
+  },
+  "generated_at": "2026-07-12T19:13:16.303109+00:00",
+  "layer_a": {
+    "by_horizon": {
+      "5": {
+        "mean_return": 0.005442772882012323,
+        "median_return": 0.004451159476789979,
+        "n": 8432
+      },
+      "10": {
+        "mean_return": 0.009464233365931479,
+        "median_return": 0.008234125805763104,
+        "n": 8370
+      },
+      "15": {
+        "mean_return": 0.01380727948711976,
+        "median_return": 0.010481823295934278,
+        "n": 8308
+      }
+    },
+    "n_events": 8491
+  },
+  "layer_b": {
+    "cost_arms": {
+      "2x": {
+        "expectancy_r": 0.07235688962526365,
+        "expectancy_r_lower90": 0.05869454054852767,
+        "n": 8065
+      },
+      "base": {
+        "expectancy_r": 0.09569571757247589,
+        "expectancy_r_lower90": 0.08203589128368499,
+        "n": 8065
+      }
+    },
+    "gross": {
+      "expectancy_r": 0.11903454551968813,
+      "expectancy_r_lower90": 0.10537629825552673,
+      "n": 8065
+    }
+  },
+  "n_events_oos": 8065,
+  "oos_end": "2026-07-11",
+  "oos_start": "2024-01-01",
+  "slices": {
+    "dollar_volume_tercile": {
+      "high": {
+        "expectancy_r": 0.08188154387792204,
+        "expectancy_r_lower90": 0.05856678617473001,
+        "n": 2688
+      },
+      "low": {
+        "expectancy_r": 0.16562073804896335,
+        "expectancy_r_lower90": 0.1415969718871003,
+        "n": 2689
+      },
+      "mid": {
+        "expectancy_r": 0.10958402345936304,
+        "expectancy_r_lower90": 0.08599614027062495,
+        "n": 2688
+      }
+    },
+    "era": {
+      "post-2015": {
+        "expectancy_r": 0.11903454551968813,
+        "expectancy_r_lower90": 0.10537629825552673,
+        "n": 8065
+      }
+    },
+    "exit_reason": {
+      "censored": {
+        "expectancy_r": -0.07128570572724263,
+        "expectancy_r_lower90": -0.11268461515125389,
+        "n": 96
+      },
+      "stop": {
+        "expectancy_r": -1.0,
+        "expectancy_r_lower90": -1.0,
+        "n": 2357
+      },
+      "stop_gap": {
+        "expectancy_r": -1.3309423034803227,
+        "expectancy_r_lower90": -1.3699024076682083,
+        "n": 375
+      },
+      "target": {
+        "expectancy_r": 1.045654301512236,
+        "expectancy_r_lower90": 1.041902351721755,
+        "n": 3573
+      },
+      "time": {
+        "expectancy_r": 0.05218604679567403,
+        "expectancy_r_lower90": 0.038419503329852035,
+        "n": 1664
+      }
+    },
+    "regime": {
+      "bear": {
+        "expectancy_r": 0.2636223101020094,
+        "expectancy_r_lower90": 0.22542584215183586,
+        "n": 954
+      },
+      "bull": {
+        "expectancy_r": 0.09963689013907577,
+        "expectancy_r_lower90": 0.08504261278992534,
+        "n": 7111
+      }
+    },
+    "year": {
+      "2024": {
+        "expectancy_r": 0.1858650756373764,
+        "expectancy_r_lower90": 0.16193154730449638,
+        "n": 2626
+      },
+      "2025": {
+        "expectancy_r": 0.10931123643791885,
+        "expectancy_r_lower90": 0.08851983806373964,
+        "n": 3555
+      },
+      "2026": {
+        "expectancy_r": 0.044230613299221226,
+        "expectancy_r_lower90": 0.016719552320164918,
+        "n": 1884
+      }
+    }
+  }
+}
