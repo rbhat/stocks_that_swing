@@ -48,7 +48,7 @@ def cost_r(entry: float, stop: float, bps_per_side: float, per_order: float) -> 
     return (bps_cost + order_cost_per_share) / stop_distance
 
 
-def _simulate_event(df: pd.DataFrame, sig_iloc: int, atr_series: pd.Series, p: dict) -> dict | None:
+def _simulate_event(symbol: str, df: pd.DataFrame, sig_iloc: int, atr_series: pd.Series, p: dict) -> dict | None:
     idx = df.index
     entry_iloc = sig_iloc + 1
     if entry_iloc >= len(idx):
@@ -63,7 +63,7 @@ def _simulate_event(df: pd.DataFrame, sig_iloc: int, atr_series: pd.Series, p: d
     target = risk.atr_target(entry, float(atr_value), p["atr_target_multiple"])
     try:
         pos = risk.Position(
-            symbol="H1", entry=entry, shares=1, stop=stop, target=target,
+            symbol=symbol, entry=entry, shares=1, stop=stop, target=target,
             opened=idx[entry_iloc].date(), config="trend_pullback",
         )
     except (ValueError, risk.RuleViolation):
@@ -125,7 +125,7 @@ def collect_events(
             sig_iloc = iloc_of.get(ev.date)
             if sig_iloc is None:
                 continue
-            sim = _simulate_event(df, sig_iloc, atr_series, p)
+            sim = _simulate_event(symbol, df, sig_iloc, atr_series, p)
             if sim is None:
                 continue
             if cal.catalyst_within(symbol, sim["entry_date"], 2, "block_entry") is not None:
