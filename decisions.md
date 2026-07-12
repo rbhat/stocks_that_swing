@@ -4,6 +4,33 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-12 — Phase-4 combined book (H1+H2): PARK (rubric-mapped, user-recorded)
+
+Per locked prereg `docs/preregs/2026-07-12_h4-portfolio-combined.md` and
+`runs/h4/combined/report.json` (5f0aa4d): the three machine bars pass — net return +9.5%
+(base arm), max drawdown 18.1% (≤25%), average deployed 74.3% (≥20%) — but the analyst-
+judged year-stability bar **fails**: 2024 negative (−0.073R, n=262), 2025 neutral
+(−0.048R inside the ±0.05R band, n=247), 2026 positive (+0.085R, n=146) → 1/3 judgeable
+years positive, below the 60% bar. Rubric: stability failure with positive net → **PARK**.
+User recorded PARK on 2026-07-12. Not an override.
+
+The prereg's named slot-dilution read fires: H2 got 73 of 655 combined trades (vs 199
+solo) and its in-combination expectancy inverted to −0.075R (vs +0.134R solo); H1 took
+582 trades at −0.023R. (The report.json lacks the prereg-mandated per-family attribution
+slice — a runner gap, logged in the prereg's deviations log; the numbers above were
+recomputed deterministically from the locked config, replication verified against the
+report's n_trades=655 and net_return=+9.5472% exactly.) Book expectancy −0.028R,
+bootstrap p_negative 77.3%; 2,669 candidates slot-skipped. High-fire-rate H1 crowds H2
+out of its own edge — the failure mode the combined prereg existed to catch.
+
+Consequence: **H2 solo remains the Phase-5 forward-paper candidate** (its PROCEED is
+untouched). No combined book goes forward in this expression; any revisit requires a
+fresh prereg with a different expression (ranked selection / throttle — the Phase-4b H1
+re-expression study is the prerequisite). Independent review of Phase-4 verdicts:
+NOT YET DONE.
+
+---
+
 ## 2026-07-12 — Phase-4 H1 portfolio expression: PROCEED (USER OVERRIDE of rubric STOP)
 
 Per locked prereg `docs/preregs/2026-07-12_h4-portfolio-h1.md` and `runs/h4/h1/report.json`

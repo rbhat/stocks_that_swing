@@ -88,6 +88,15 @@ net → PARK. Runner reports bars only; the user records the verdict.
 
 (append-only; none at lock)
 
+- 2026-07-12 (post-run): `report.json` omits the prereg-mandated per-family attribution
+  slice (runner gap — `build_report` never grouped trades by family). Attribution was
+  recomputed deterministically from the locked config (`.scratch/combined_attrib.py`),
+  replication verified against the report exactly (n_trades=655, net_return=+9.5472%):
+  H2 73 trades at −0.075R, H1 582 at −0.023R. Recorded in decisions.md.
+- 2026-07-12 (post-verdict): rubric mapped the run to PARK (machine bars pass, year-
+  stability bar fails 1/3, slot-dilution read fires); user recorded PARK in decisions.md.
+  Rubric unchanged. Independent review NOT YET DONE.
+
 ## Sign-off
 
 - [ ] Independent review completed before any PROCEED is acted on.
