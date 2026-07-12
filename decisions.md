@@ -4,6 +4,22 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-12 — Phase 4 charter numbers ratified; Phase-4 plan adopted
+
+User ratified the two numbers VISION.md's "drawdown inside the charter cap" line left
+unset, blind to any Phase-4 result (no portfolio backtest has ever run in this repo):
+
+1. **Max drawdown cap: 25%** peak-to-trough on net portfolio equity. User chose 25% over
+   the recommended 20% (and 15%) — tolerates 2022-style tapes at the cost of a weaker gate.
+2. **Exposure floor: ≥ 20% average deployed** over the OOS window (recommended option).
+
+VISION.md amended in place. Phase-4 structure decided: **per-family books first, then a
+combined book** (user choice, recommended for clean attribution). Implementation plan at
+`docs/superpowers/plans/2026-07-12-phase4-portfolio.md`; family preregs must be locked and
+committed before any Phase-4 run, combined prereg locked blind to combined results.
+
+---
+
 ## 2026-07-12 — Independent review of the three PROCEED verdicts: SIGN OFF
 
 Independent review (Opus subagent) audited the verdict record against the run artifacts

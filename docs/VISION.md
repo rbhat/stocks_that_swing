@@ -21,7 +21,10 @@ instead of a few large ones.
   the arbiter, and here it arrives in months, not years.
 - Median hold ≤ 15 sessions; every trade carries its setup, trigger, stop, target, and time
   stop at entry — nothing is a black box.
-- Drawdown inside the charter cap; friction share of gross P&L tracked on every report.
+- Drawdown inside the charter cap — **25% max peak-to-trough on net portfolio equity**
+  (ratified 2026-07-12); friction share of gross P&L tracked on every report. A portfolio
+  backtest only counts as a real read at **≥ 20% average deployed** over its window
+  (ratified 2026-07-12) — a book that sits in cash proves nothing.
 
 **The honest kill criterion:** if no hypothesis family survives its pre-registered Phase-3
 bars (HYPOTHESES.md) after H1–H3 and one exploratory round, the project records a well-earned
