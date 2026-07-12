@@ -1,0 +1,15 @@
+.venv/
+.scratch/*
+!.scratch/.keep
+cache/
+.env
+secrets/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+trades.jsonl
+universe_changes.log
+*.log
