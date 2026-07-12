@@ -48,7 +48,21 @@ def cost_r(entry: float, stop: float, bps_per_side: float, per_order: float) -> 
     return (bps_cost + order_cost_per_share) / stop_distance
 
 
-def _simulate_event(symbol: str, df: pd.DataFrame, sig_iloc: int, atr_series: pd.Series, p: dict) -> dict | None:
+def entry_geometry(df: pd.DataFrame, sig_iloc: int, atr_series: pd.Series, p: dict) -> dict | None:
+    """Entry/stop/target geometry for one event fired at `sig_iloc`, shared by
+    every per-event walk in this family of study modules (h1_events,
+    h3_events) and by the Phase-4 candidate adapters (`sts.study.h4_candidates`)
+    -- extracted here so entry/stop/target is derived exactly once rather than
+    duplicated per caller. Entry = next bar's open (no-lookahead convention
+    shared with `sts.eventsim`); stop/target are ATR(`atr_window`)-anchored at
+    the SIGNAL bar. Returns None if the event is unusable: no next bar,
+    non-finite/non-positive entry, or ATR not yet warm.
+
+    Returns `{"entry_iloc", "entry", "entry_date", "stop", "target"}`. Does
+    NOT validate the stop/target pair against `risk.Position`'s invariants --
+    callers still construct a `Position` (or, for h4, defer that to
+    `sts.portfolio`) and handle `risk.RuleViolation` themselves.
+    """
     idx = df.index
     entry_iloc = sig_iloc + 1
     if entry_iloc >= len(idx):
@@ -61,6 +75,21 @@ def _simulate_event(symbol: str, df: pd.DataFrame, sig_iloc: int, atr_series: pd
         return None
     stop = risk.atr_stop(entry, float(atr_value), p["atr_stop_multiple"])
     target = risk.atr_target(entry, float(atr_value), p["atr_target_multiple"])
+    return {
+        "entry_iloc": entry_iloc,
+        "entry": entry,
+        "entry_date": idx[entry_iloc].date(),
+        "stop": stop,
+        "target": target,
+    }
+
+
+def _simulate_event(symbol: str, df: pd.DataFrame, sig_iloc: int, atr_series: pd.Series, p: dict) -> dict | None:
+    geo = entry_geometry(df, sig_iloc, atr_series, p)
+    if geo is None:
+        return None
+    idx = df.index
+    entry_iloc, entry, stop, target = geo["entry_iloc"], geo["entry"], geo["stop"], geo["target"]
     try:
         pos = risk.Position(
             symbol=symbol, entry=entry, shares=1, stop=stop, target=target,

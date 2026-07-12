@@ -12,13 +12,12 @@ from __future__ import annotations
 
 import datetime as dt
 
-import numpy as np
 import pandas as pd
 
 from sts import risk
 from sts.catalyst import CatalystCalendar
 from sts.signals import resolve_detector
-from sts.study.h1_events import _PARAM_DEFAULTS, cost_r
+from sts.study.h1_events import _PARAM_DEFAULTS, cost_r, entry_geometry
 
 
 def _simulate_event(
@@ -26,18 +25,11 @@ def _simulate_event(
 ) -> dict | None:
     """Same walk as h1_events._simulate_event, with the event's own config
     name recorded on the Position instead of a hardcoded one."""
+    geo = entry_geometry(df, sig_iloc, atr_series, p)
+    if geo is None:
+        return None
     idx = df.index
-    entry_iloc = sig_iloc + 1
-    if entry_iloc >= len(idx):
-        return None
-    entry = float(df["open"].iloc[entry_iloc])
-    if not np.isfinite(entry) or entry <= 0:
-        return None
-    atr_value = atr_series.iloc[sig_iloc]
-    if not np.isfinite(atr_value):
-        return None
-    stop = risk.atr_stop(entry, float(atr_value), p["atr_stop_multiple"])
-    target = risk.atr_target(entry, float(atr_value), p["atr_target_multiple"])
+    entry_iloc, entry, stop, target = geo["entry_iloc"], geo["entry"], geo["stop"], geo["target"]
     try:
         pos = risk.Position(
             symbol=symbol, entry=entry, shares=1, stop=stop, target=target,
