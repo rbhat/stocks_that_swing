@@ -75,9 +75,10 @@ def _build_candidates(
     oos_end: dt.date,
     catalyst: CatalystCalendar,
     overrides: dict[str, dict] | None = None,
+    members: tuple[str, ...] = SUB_FAMILIES,
 ) -> list[dict]:
     """`family` in {"h1","h3","h2"} -> that family's candidates alone.
-    `family == "combined"` -> the concatenation of all three (family never
+    `family == "combined"` -> the concatenation of `members` (family never
     enters the entry-priority tiebreak -- `simulate_portfolio` sorts
     candidates by (signal_date, symbol) regardless of family). `overrides`
     maps a sub-family name to a risk-params dict that replaces its LOCKED
@@ -88,7 +89,7 @@ def _build_candidates(
         return candidates_for(family, prices, oos_start, oos_end, catalyst, overrides.get(family))
     if family == "combined":
         out: list[dict] = []
-        for sub in SUB_FAMILIES:
+        for sub in members:
             out.extend(
                 candidates_for(sub, prices, oos_start, oos_end, catalyst, overrides.get(sub))
             )
@@ -120,10 +121,13 @@ def build_report(
     oos_start: dt.date,
     oos_end: dt.date,
     catalyst: CatalystCalendar,
+    members: tuple[str, ...] = SUB_FAMILIES,
 ) -> dict:
     cost_arm_results = {}
     for arm_name, (bps, fee) in COST_ARMS.items():
-        candidates = _build_candidates(family, prices, oos_start, oos_end, catalyst)
+        candidates = _build_candidates(
+            family, prices, oos_start, oos_end, catalyst, members=members
+        )
         cost_arm_results[arm_name] = simulate_portfolio(
             prices, candidates, oos_start, oos_end, bps_per_side=bps, per_order=fee
         )
@@ -159,11 +163,12 @@ def build_report(
 
     jitter_table = []
     if family == "combined":
-        for sub in SUB_FAMILIES:
+        for sub in members:
             grid = jitter_grid(FAMILY_PARAMS[sub]["risk_params"], JITTER_SPECS[sub])
             for variant in grid:
                 cands = _build_candidates(
-                    family, prices, oos_start, oos_end, catalyst, overrides={sub: variant}
+                    family, prices, oos_start, oos_end, catalyst,
+                    overrides={sub: variant}, members=members,
                 )
                 res = simulate_portfolio(prices, cands, oos_start, oos_end)
                 jitter_table.append(
@@ -200,6 +205,7 @@ def build_report(
 
     return {
         "family": family,
+        "members": list(members) if family == "combined" else None,
         "oos_start": oos_start.isoformat(),
         "oos_end": oos_end.isoformat(),
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
@@ -212,9 +218,19 @@ def build_report(
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--family", required=True, choices=FAMILIES)
+    parser.add_argument(
+        "--combine",
+        default="h1,h2",
+        help="comma list of sub-families for --family combined (default h1,h2 "
+        "per Phase-4 verdicts, decisions.md 2026-07-12: H3 is PARKED)",
+    )
     parser.add_argument("--oos-start", default=DEFAULT_OOS_START.isoformat())
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
+    members = tuple(f.strip() for f in args.combine.split(",") if f.strip())
+    unknown = [f for f in members if f not in SUB_FAMILIES]
+    if unknown:
+        parser.error(f"--combine has unknown families {unknown}")
 
     oos_start = dt.date.fromisoformat(args.oos_start)
     oos_end = calendar.last_completed_session() + dt.timedelta(days=1)
@@ -240,7 +256,7 @@ def main() -> None:
 
     t0 = time.monotonic()
     cal = CatalystCalendar.load()
-    report = build_report(args.family, prices, oos_start, oos_end, cal)
+    report = build_report(args.family, prices, oos_start, oos_end, cal, members=members)
     elapsed = time.monotonic() - t0
     print(f"{args.family}: {report['n_trades_base_arm']} base-arm trades in {elapsed:.0f}s", file=sys.stderr)
 
