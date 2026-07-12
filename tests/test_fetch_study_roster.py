@@ -30,3 +30,21 @@ def test_write_frame_uses_study_store(tmp_path, monkeypatch):
     assert "AAPL" in store.symbols()
     df = store.load("AAPL")
     assert df is not None and len(df) > 0
+
+
+def test_fresh_scratch_symbols_uses_last_completed_session(tmp_path, monkeypatch):
+    monkeypatch.setattr(fsr, "STUDY_FRAMES_DIR", tmp_path)
+    store = StudyStore(root=tmp_path)
+    monkeypatch.setattr(fsr, "_store", lambda: store)
+
+    # last completed session in the frame's timezone-naive index terms
+    stale = _ohlcv(n=320, start="2020-01-02")  # ends ~2021
+    store.write("STALE", stale)
+
+    import sts.calendar as calendar
+    today_bar = _ohlcv(n=1, start=calendar.last_completed_session().isoformat())
+    store.write("FRESH", today_bar)
+
+    fresh = fsr._fresh_scratch_symbols()
+    assert "FRESH" in fresh
+    assert "STALE" not in fresh

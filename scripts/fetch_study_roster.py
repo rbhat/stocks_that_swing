@@ -28,7 +28,7 @@ pooled with the gated cache/ohlcv symbols in a single study without mixing bases
 
 IDEMPOTENT / RESUMABLE / RATE-LIMITED (long-running-script hard rule):
   - Skips any symbol already available fresh: in cache/ohlcv/ (the store, always), OR a
-    study frame whose last bar is in year >= --min-end-year.
+    study frame whose last bar is within STALENESS_SESSIONS of the last completed session.
   - Fetches all missing must-haves, then only enough NEW names to bring the total roster
     (gated + fresh study frames) up to --target-total; a re-run after success is a no-op.
   - A killed run leaves whole, valid parquets (atomic temp + os.replace); the next run
@@ -47,6 +47,7 @@ OOS slice and the sparse cells need bodies.
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 import os
 import random
@@ -61,6 +62,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+from sts import calendar  # noqa: E402
 from sts.data.fetch import FetchError, fetch_daily  # noqa: E402
 from sts.data.study_store import StudyStore  # noqa: E402
 
@@ -98,16 +100,21 @@ def _seed_symbols() -> list[str]:
     return list(yaml.safe_load(UNIVERSE.read_text()).get("seeds", []))
 
 
-def _fresh_scratch_symbols(min_end_year: int) -> set[str]:
-    """Study frames whose last bar is in year >= min_end_year (index-only read)."""
+STALENESS_SESSIONS = 5  # a frame up to 5 sessions behind "today" still counts as fresh
+                         # (this script isn't run daily; a week-old frame is fine for a
+                         # research roster, unlike the trade-facing PriceStore)
+
+
+def _fresh_scratch_symbols() -> set[str]:
+    """Study frames whose last bar is within STALENESS_SESSIONS of the last completed
+    session — replaces the old fixed-year check, which called a frame ending 2024-01-02
+    'fresh' even two years later."""
+    cutoff = calendar.last_completed_session() - dt.timedelta(days=STALENESS_SESSIONS * 2)
     fresh: set[str] = set()
-    for p in STUDY_FRAMES_DIR.glob("*.parquet"):
-        try:
-            idx = pd.read_parquet(p, columns=[]).index
-            if len(idx) and pd.DatetimeIndex(idx).max().year >= min_end_year:
-                fresh.add(p.stem)
-        except Exception:
-            continue  # unreadable -> treat as not-fresh, it will be re-fetched
+    for sym in _store().symbols():
+        last = _store().last_date(sym)
+        if last is not None and last >= cutoff:
+            fresh.add(sym)
     return fresh
 
 
@@ -157,8 +164,6 @@ def main() -> None:
                     help="desired TOTAL roster size (gated + fresh study frames); default 250")
     ap.add_argument("--sleep", type=float, default=2.0,
                     help="base seconds between symbols (+/-25%% jitter); default 2.0")
-    ap.add_argument("--min-end-year", type=int, default=2024,
-                    help="a study frame is 'fresh' if its last bar year >= this; default 2024")
     ap.add_argument("--refresh", action="store_true",
                     help="re-fetch every target even if a fresh study frame exists")
     ap.add_argument("--retry-failed", action="store_true",
@@ -185,7 +190,7 @@ def main() -> None:
     seeds = _seed_symbols()
 
     store = _store_symbols()
-    fresh_scratch = set() if args.refresh else _fresh_scratch_symbols(args.min_end_year)
+    fresh_scratch = set() if args.refresh else _fresh_scratch_symbols()
     have = store | fresh_scratch  # symbols already covered fresh
     failures = _load_failures()
     skip_failed = failures if not args.retry_failed else set()
@@ -266,7 +271,7 @@ def main() -> None:
             time.sleep(args.sleep * random.uniform(0.75, 1.25))
 
     total_now = len(have) + fetched
-    missing_seeds = [s for s in seeds if s not in have and s not in _fresh_scratch_symbols(args.min_end_year)]
+    missing_seeds = [s for s in seeds if s not in have and s not in _fresh_scratch_symbols()]
     print(f"\ndone: fetched {fetched} new ({attempts} attempted), roster now {total_now} symbols.")
     if missing_seeds:
         print(f"  *** WARNING: seeds still missing: {missing_seeds} (fetch failed — --retry-failed) ***")
