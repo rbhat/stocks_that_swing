@@ -62,6 +62,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from sts.data.fetch import FetchError, fetch_daily  # noqa: E402
+from sts.data.study_store import StudyStore  # noqa: E402
 
 STUDY_FRAMES_DIR = ROOT / "cache" / "study_frames"
 STORE_DIR = ROOT / "cache" / "ohlcv"
@@ -69,6 +70,20 @@ CONSTITUENTS = ROOT / "cache" / "scan" / "constituents.json"
 UNIVERSE = ROOT / "universe.yaml"
 FAILURES_SIDECAR = STUDY_FRAMES_DIR / ".fetch_failures.json"
 OHLC = ["open", "high", "low", "close"]
+
+_STORE: StudyStore | None = None
+
+
+def _store() -> StudyStore:
+    global _STORE
+    if _STORE is None:
+        _STORE = StudyStore(root=STUDY_FRAMES_DIR)
+    return _STORE
+
+
+def _write_frame(symbol: str, df: pd.DataFrame) -> None:
+    """Clean, then route through StudyStore.write (quality gate + truncate + atomic+fsync)."""
+    _store().write(symbol, _clean(df))
 
 # Regime/market anchors the study loaders expect present (regime_by_year reads SPY).
 ANCHORS = ["SPY", "QQQ"]
@@ -109,12 +124,6 @@ def _save_failures(failures: set[str]) -> None:
     tmp = FAILURES_SIDECAR.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(sorted(failures)))
     os.replace(tmp, FAILURES_SIDECAR)
-
-
-def _atomic_write_parquet(df: pd.DataFrame, path: Path) -> None:
-    tmp = path.with_suffix(f".parquet.tmp.{os.getpid()}")  # not matched by glob('*.parquet')
-    df.to_parquet(tmp)
-    os.replace(tmp, path)
 
 
 def _clean(df: pd.DataFrame) -> pd.DataFrame:
@@ -233,7 +242,7 @@ def main() -> None:
                 failures.add(sym)
                 _save_failures(failures)
             else:
-                _atomic_write_parquet(df, STUDY_FRAMES_DIR / f"{sym}.parquet")
+                _write_frame(sym, df)
                 fetched += 1
                 y0, y1 = df.index.min().year, df.index.max().year
                 elapsed = time.time() - t0
@@ -247,7 +256,7 @@ def main() -> None:
                 if sym in failures:
                     failures.discard(sym)
                     _save_failures(failures)
-        except (FetchError, Exception) as e:  # noqa: BLE001 — any fetch error -> record & continue
+        except (FetchError, ValueError, Exception) as e:  # noqa: BLE001 — fetch or quality-gate failure -> record & continue
             print(f"  [{attempts}] {sym:<6} ({tag}) FAILED: {type(e).__name__}: {str(e)[:70]} — skipped")
             failures.add(sym)
             _save_failures(failures)
