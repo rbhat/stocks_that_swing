@@ -4,6 +4,30 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-11 — Phase 1 gate: reproducible 250-name study roster — gate PASSED
+
+Closed `codex_review.md` #3. `scripts/fetch_study_roster.py` writes now route through
+`sts.data.study_store.StudyStore.write` (validate + truncate-incomplete + atomic+fsync) instead
+of a raw parquet write path; freshness is session-based
+(`sts.calendar.last_completed_session()` minus a 5-session staleness allowance) instead of a
+fixed `--min-end-year` check.
+
+**Gate: PASSED.** Roster reached 250 symbols (12 gated-store seeds/anchors + 238 fill names).
+Run 1 fetched 1 new symbol (GPC) to close the gap; 2 fill candidates were rejected (FDXF too
+short, FISV had a missing session) and recorded to the dead-symbol sidecar. Run 2 confirmed a
+true no-op: "target already met and all must-haves present — nothing to fetch." `configs/
+study_roster.yaml` and `configs/study_roster_manifest.json` from both runs are identical apart
+from `as_of`/`generated_at` timestamps. Full suite: 184 passed.
+
+**Committed reproducibility contract:** `configs/study_roster.yaml` (exact 250-symbol
+membership, source, eligibility window, seeds/anchors, rationale) and `configs/
+study_roster_manifest.json` (per-symbol first/last session, adjustment basis, fetch timestamp,
+file sha256) are tracked in git — the study population is now reconstructable from the commit
+alone, without re-deriving it from the gitignored parquet cache. `tests/
+test_fetch_study_roster.py` added (script previously had no tests).
+
+---
+
 ## 2026-07-11 — Phase 2: Swing risk engine + study harness — gate PASSED
 
 Built `src/sts/risk.py` (swing-native risk engine), rewrote `src/sts/eventsim.py` (two-layer

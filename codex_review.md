@@ -39,23 +39,15 @@ cannot yet produce the net, auditable evidence required by its own charter.
      API cannot produce the required regime/liquidity slices or independently reproduce a
      verdict.
 
-3. **◐ PARTIAL — Close Phase 1 with a reproducible roster and real quality gate.** *(Sidecar
-   `set.discard` bug at line 243 is fixed; the rest — StudyStore.write routing, session-based
-   freshness, study_roster.yaml + manifest, reach 250, script tests — is DEFERRED.)* The current cache has
-   249 unique symbols / 2,037,117 rows, not 250; all frames end 2026-07-09 although the last
-   completed session is 2026-07-10, and `fetch_study_roster.py --dry-run` plans one fetch rather
-   than a no-op. The exact membership and constituent snapshot are gitignored, so the study
-   population cannot be reconstructed from the commit. The fetch script also bypasses
-   `StudyStore.write`, full validation, incomplete-bar truncation, and fsync despite the hard
-   rules in `VISION.md:85`; its `failures.discard(sym) and _save_failures(...)` expression at
-   line 243 never saves a successful retry because `set.discard` returns `None`.
-
-   Commit a `study_roster.yaml` with exact symbols, source/as-of date, anchors, eligibility
-   window, and membership rationale; write a data manifest with first/last session, adjustment
-   basis, fetch timestamp, and file hash. Route downloads through `StudyStore.write`, make
-   freshness session-based rather than “last year >= 2024,” fix the sidecar bug, reach 250, and
-   record a Phase-1 gate entry only after the second run is a true no-op. Add tests for the
-   script; it currently has none.
+3. **✅ RESOLVED — Close Phase 1 with a reproducible roster and real quality gate.** Fetch
+   writes now route through `StudyStore.write` (validate + truncate-incomplete + atomic+fsync);
+   freshness is session-based (`sts.calendar.last_completed_session()` minus a 5-session
+   allowance) instead of a fixed calendar year; the sidecar `set.discard` bug was already fixed.
+   The roster reached 250 symbols, a second run confirmed true no-op idempotence, and
+   `configs/study_roster.yaml` (exact membership, source, eligibility, seeds/anchors, rationale)
+   plus `configs/study_roster_manifest.json` (per-symbol first/last session, adjustment basis,
+   fetch timestamp, file sha256) are committed to git as the reproducibility contract. See
+   `decisions.md` 2026-07-11 entry. Script now has tests (`tests/test_fetch_study_roster.py`).
 
 4. **⏸ DEFERRED — Calibrate the statistical null on real market data.** The synthetic zero-drift negative
    control is a useful arithmetic test, but a positive raw return is expected from random

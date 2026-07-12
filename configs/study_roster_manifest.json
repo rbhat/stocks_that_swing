@@ -1,0 +1,1506 @@
+{
+  "adjustment_basis": "split+dividend adjusted total return (auto_adjust=True)",
+  "generated_at": "2026-07-12T03:52:26.419964+00:00",
+  "symbols": {
+    "A": {
+      "file_sha256": "d2abc19d981a00505c5dff88250e03e859ac3d0a6b09e5f67f5a2136ae76bdf8",
+      "first_session": "1999-11-18",
+      "last_session": "2026-07-09",
+      "n_bars": 6698
+    },
+    "AAPL": {
+      "file_sha256": "63455ca4728103bf4c045a8fcf0b21667a87461a6fd47740dd6cbb7ac87cb2ae",
+      "first_session": "1980-12-12",
+      "last_session": "2026-07-09",
+      "n_bars": 11484
+    },
+    "ABBV": {
+      "file_sha256": "0f2b737cbd6926a4bc5ceca98c38defdae74a9d6bbdbf4c9d364b04ceaf7369f",
+      "first_session": "2013-01-02",
+      "last_session": "2026-07-09",
+      "n_bars": 3399
+    },
+    "ABNB": {
+      "file_sha256": "4c2b8fd55447393e4e5b3519da3f22f77e19ca19378cf3f9832d0cdef6eaeb4a",
+      "first_session": "2020-12-10",
+      "last_session": "2026-07-09",
+      "n_bars": 1399
+    },
+    "ABT": {
+      "file_sha256": "92cef8f50630575e6baac0de55152109d1cfd407bdbd92782c83f67daedfb9eb",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "ACGL": {
+      "file_sha256": "fadee31826a5a3aee175e05311a1c4e1145e155ee3b92e549f77ec4d7c6bf165",
+      "first_session": "1995-09-14",
+      "last_session": "2026-07-09",
+      "n_bars": 7754
+    },
+    "ACN": {
+      "file_sha256": "410c78277d249f1b67aa41d6393ef4f7b3fa1ca5fb25545adc4c1262f0e9333e",
+      "first_session": "2001-07-19",
+      "last_session": "2026-07-09",
+      "n_bars": 6279
+    },
+    "ADBE": {
+      "file_sha256": "3be3283d3adc907c2637622eeff661fcc49306ad6a4185c9ad127dca8b675bed",
+      "first_session": "1986-08-13",
+      "last_session": "2026-07-09",
+      "n_bars": 10052
+    },
+    "ADI": {
+      "file_sha256": "e239b11de63ce2ecceda4e40897c663becb76d0aad8a71e6ba858d3aed3358d4",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "ADM": {
+      "file_sha256": "ea9949679a159d0c1655621c0ace95887a462b5b68cbee6b1e5038014e5119f2",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "ADP": {
+      "file_sha256": "198d43737179112f11f1c5d3e6e9ca3aa21e3b2c6f94e7c541504c70f30933ab",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "ADSK": {
+      "file_sha256": "6480f77b66007cc20063500faf43708ff6d7458d843cea18e88f10dff7362268",
+      "first_session": "1985-06-28",
+      "last_session": "2026-07-09",
+      "n_bars": 10335
+    },
+    "AEE": {
+      "file_sha256": "a980cd1da01a3a77c4dfef14132b775b90501785a93ad0ebe3553180a8a2b573",
+      "first_session": "1998-01-02",
+      "last_session": "2026-07-09",
+      "n_bars": 7172
+    },
+    "AEP": {
+      "file_sha256": "83ba3148f78f85e4c2cb416abcf11e9918672dfe14434866ca6e825de70ec4e3",
+      "first_session": "1970-01-02",
+      "last_session": "2026-07-09",
+      "n_bars": 14250
+    },
+    "AES": {
+      "file_sha256": "1e01466cb487a2227dcccc4d991a0edd3622d020e6b4e71ebaf80889779b0399",
+      "first_session": "1991-06-26",
+      "last_session": "2026-07-09",
+      "n_bars": 8821
+    },
+    "AFL": {
+      "file_sha256": "aa959f294805d7b29823d1a76e4d835f7b095b30e52a82513849c3a02011efd1",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "AIG": {
+      "file_sha256": "f6074800847879cfd8bbec9b2a997cc94cdd92d336be11ec8e3483063bbdf458",
+      "first_session": "1973-01-02",
+      "last_session": "2026-07-09",
+      "n_bars": 13492
+    },
+    "AIZ": {
+      "file_sha256": "9e9243cf937f17c7e75e62ee0ed1da9af44b3c258a42889f2363f19e4b87f0b2",
+      "first_session": "2004-02-05",
+      "last_session": "2026-07-09",
+      "n_bars": 5641
+    },
+    "AJG": {
+      "file_sha256": "929e03b198d8f680227ab1a4d1058529e4a6ee5aa4db1e0e420916a721ba8fc0",
+      "first_session": "1984-06-20",
+      "last_session": "2026-07-09",
+      "n_bars": 10594
+    },
+    "AKAM": {
+      "file_sha256": "cc0434842c5cb33f20e115df3c8e23aa6755614bcfbe4024c9b28aa875b828da",
+      "first_session": "1999-10-29",
+      "last_session": "2026-07-09",
+      "n_bars": 6712
+    },
+    "ALAB": {
+      "file_sha256": "0c96419594e92ac0d90413298069ff545d3fdd3cf782b9b524d2711e26aa4e11",
+      "first_session": "2024-03-20",
+      "last_session": "2026-07-09",
+      "n_bars": 577
+    },
+    "ALB": {
+      "file_sha256": "662e048de715270e8367c79f468242850d20269bfe470191dea6fd2b790ccafc",
+      "first_session": "1994-02-22",
+      "last_session": "2026-07-09",
+      "n_bars": 8148
+    },
+    "ALGN": {
+      "file_sha256": "bdaa043802da329b3c90cacb24e153f4b25bf4159282e1a61871bf2801bf9c7b",
+      "first_session": "2001-01-30",
+      "last_session": "2026-07-09",
+      "n_bars": 6397
+    },
+    "ALL": {
+      "file_sha256": "626af0192e36618e97ab3d18b196da670751de5b1ef6faf56eb8a14aa9d3f1d7",
+      "first_session": "1993-06-03",
+      "last_session": "2026-07-09",
+      "n_bars": 8331
+    },
+    "ALLE": {
+      "file_sha256": "975335218e6971367195a31c3bd20128cd62a21998883142defef9d9f2ec6ed1",
+      "first_session": "2013-11-18",
+      "last_session": "2026-07-09",
+      "n_bars": 3177
+    },
+    "ALNY": {
+      "file_sha256": "e22a849739c035745d589f2507cb286ca6b9e819c315d498fd8aee0448bc94b0",
+      "first_session": "2004-06-01",
+      "last_session": "2026-07-09",
+      "n_bars": 5561
+    },
+    "AMAT": {
+      "file_sha256": "d9a3e1020e9b733580f561b081a46420559867a69a17c77884bdcf4a9e21dc1a",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "AMCR": {
+      "file_sha256": "9bea8a0d99d3426969cee67ee568d6ac65fe827bda4176e6cd8ab290a9e8b9e2",
+      "first_session": "2012-05-15",
+      "last_session": "2026-07-09",
+      "n_bars": 3557
+    },
+    "AMD": {
+      "file_sha256": "9e64f0560ae2816f1ffe1d1baf808ea9fffdd5c7a60038b7d0707c97a50a095a",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "AME": {
+      "file_sha256": "f890103adb9192025824f0ae40cb1754e1031bd7f1891a39605ff57c9b305fed",
+      "first_session": "1984-07-19",
+      "last_session": "2026-07-09",
+      "n_bars": 10574
+    },
+    "AMGN": {
+      "file_sha256": "322b00ff4da0bf2c5fabee4e6c286db3bc19df7efc87552381f529d72855c5d4",
+      "first_session": "1983-06-17",
+      "last_session": "2026-07-09",
+      "n_bars": 10849
+    },
+    "AMP": {
+      "file_sha256": "0fdff458dd7e00fb3f2198fc9df163fc9013df1cc70cec36c1fc071b68a0fc30",
+      "first_session": "2005-09-15",
+      "last_session": "2026-07-09",
+      "n_bars": 5235
+    },
+    "AMT": {
+      "file_sha256": "13b3a9409c9cb7c39f3a6eeb5bb2c82a0e1034d24ae891386333a16544faf9db",
+      "first_session": "1998-02-27",
+      "last_session": "2026-07-09",
+      "n_bars": 7134
+    },
+    "AMZN": {
+      "file_sha256": "bdaed409cc1f1ffe44fad2acd4600f37deb54eef663da36f698bbcc9ad3e627d",
+      "first_session": "1997-05-15",
+      "last_session": "2026-07-09",
+      "n_bars": 7332
+    },
+    "ANET": {
+      "file_sha256": "1f38e41c918fb94489f4f5d21b1ccf3f9a53681044c3cfb36fa084b206be8f37",
+      "first_session": "2014-06-06",
+      "last_session": "2026-07-09",
+      "n_bars": 3040
+    },
+    "AON": {
+      "file_sha256": "00a9592450f5d6cac50c3ce5c1a3a0dfe68d14d8e09da8a3531655c2e0b06a58",
+      "first_session": "1980-06-02",
+      "last_session": "2026-07-09",
+      "n_bars": 11619
+    },
+    "AOS": {
+      "file_sha256": "7c0b2d662d19d0824323dff02cbcee85db04e0531b4b748b206596ba9c00d087",
+      "first_session": "1983-09-30",
+      "last_session": "2026-07-09",
+      "n_bars": 10776
+    },
+    "APA": {
+      "file_sha256": "3bea7ba35270e066065440a277beccea507094551dfd1e7f9ce4036a61e89a8e",
+      "first_session": "1979-05-15",
+      "last_session": "2026-07-09",
+      "n_bars": 11884
+    },
+    "APD": {
+      "file_sha256": "9d3485ea66306345982cf705e926818921eac41237ba568b1a6925b89e2753bf",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "APH": {
+      "file_sha256": "a5642cd18323386911ded68ed5fbf3d4690bdaf0b8dd352742712c0459af3146",
+      "first_session": "1991-11-08",
+      "last_session": "2026-07-09",
+      "n_bars": 8726
+    },
+    "APO": {
+      "file_sha256": "e33b2497257915ccbc3064d4d34036f9f9fe860080ddc43e557900bee107a7d5",
+      "first_session": "2011-03-30",
+      "last_session": "2026-07-09",
+      "n_bars": 3841
+    },
+    "APP": {
+      "file_sha256": "24e49deea495b67201385dffa5c2ef32d1cd5bb1b7553f0a3254dbada32e3fc8",
+      "first_session": "2021-04-15",
+      "last_session": "2026-07-09",
+      "n_bars": 1314
+    },
+    "APTV": {
+      "file_sha256": "d0ae7bebeea451bd6f43e985305f083619f5450aeabe6e1ca6088759d1ac75ac",
+      "first_session": "2011-11-17",
+      "last_session": "2026-07-09",
+      "n_bars": 3679
+    },
+    "ARE": {
+      "file_sha256": "62cc81568b8859e880e65f7a54388d6e055e32f5ef67a26a05579ce08c9218fa",
+      "first_session": "1997-05-28",
+      "last_session": "2026-07-09",
+      "n_bars": 7324
+    },
+    "ARES": {
+      "file_sha256": "bc2afeebbb73d884162b69661c72d8d83a0d23bd3c25b2abb640cd6a17b35175",
+      "first_session": "2014-05-02",
+      "last_session": "2026-07-09",
+      "n_bars": 3064
+    },
+    "ARM": {
+      "file_sha256": "0422c68492911ec3982c1193e7c4ad1ce5f8f7ab321a9f969b9b67bc49ad6590",
+      "first_session": "2023-09-14",
+      "last_session": "2026-07-09",
+      "n_bars": 706
+    },
+    "ASML": {
+      "file_sha256": "858bd78ccf28bce18add07d6033de9323dbf26d5a34bf03d42fccc22ac47eb23",
+      "first_session": "1995-03-15",
+      "last_session": "2026-07-09",
+      "n_bars": 7881
+    },
+    "ATO": {
+      "file_sha256": "4b80205a4bf294c341f10722961d1213e5025d7115ad9eb00adc6ad10687089e",
+      "first_session": "1983-12-28",
+      "last_session": "2026-07-09",
+      "n_bars": 10715
+    },
+    "AVB": {
+      "file_sha256": "9c6e1847c34e768d3f995cea5c85b934dd553748cc1ed7ccbff12999d0e6b273",
+      "first_session": "1994-03-11",
+      "last_session": "2026-07-09",
+      "n_bars": 8135
+    },
+    "AVGO": {
+      "file_sha256": "ac65377a4a12d239fe116ac35db7bb2a266aa37fb22eb47fc035ad6790887fe9",
+      "first_session": "2009-08-06",
+      "last_session": "2026-07-09",
+      "n_bars": 4256
+    },
+    "AVY": {
+      "file_sha256": "03724b4a8b7dd5099e351d7297b6fe6d69077d46bd270bdd97b47b99e957ae97",
+      "first_session": "1973-02-21",
+      "last_session": "2026-07-09",
+      "n_bars": 13458
+    },
+    "AWK": {
+      "file_sha256": "d9baf267496de5716a944e130e30f53841039cbc78c6d737f1f1b46fe528bef9",
+      "first_session": "2008-04-23",
+      "last_session": "2026-07-09",
+      "n_bars": 4581
+    },
+    "AXON": {
+      "file_sha256": "4579ea258c6e206804eddef98fbf080453ce3646e9ee2057583c0ee803020a6d",
+      "first_session": "2001-06-19",
+      "last_session": "2026-07-09",
+      "n_bars": 6300
+    },
+    "AXP": {
+      "file_sha256": "61d0c6ac42cbf92f3bda28a9a0d2dcaae92e4ba3866b6262a84a1084f083661e",
+      "first_session": "1972-06-01",
+      "last_session": "2026-07-09",
+      "n_bars": 13638
+    },
+    "AZO": {
+      "file_sha256": "059dea1314c8fe86fcf8970a024bea382e78890f2f7cd7deb401614c1a87546b",
+      "first_session": "1991-04-02",
+      "last_session": "2026-07-09",
+      "n_bars": 8881
+    },
+    "BA": {
+      "file_sha256": "8aee326b3dc9c1370704ba80d611c9140fcc3aaf637209bfd2f451a3841912e1",
+      "first_session": "1970-01-02",
+      "last_session": "2026-07-09",
+      "n_bars": 14250
+    },
+    "BAC": {
+      "file_sha256": "d2f7ebcb89907047bff2df889de0078cfe8d0dd01b064a6dc97c07f597564e4f",
+      "first_session": "1973-02-21",
+      "last_session": "2026-07-09",
+      "n_bars": 13458
+    },
+    "BALL": {
+      "file_sha256": "6c9b815bbd8d4a12a0637d7a479ec19e49c6d4e4dfeb9273d63d364ad04a4260",
+      "first_session": "1973-02-21",
+      "last_session": "2026-07-09",
+      "n_bars": 13458
+    },
+    "BAX": {
+      "file_sha256": "a85d40ff35428b674d3ee4392240f63d502fd9f2b29d8bedf3049fd847b9e04e",
+      "first_session": "1981-10-27",
+      "last_session": "2026-07-09",
+      "n_bars": 11264
+    },
+    "BBY": {
+      "file_sha256": "82e5254d37f5d5d1c59f7e0f3d07503cedda7b32f360507fd3184561a3866933",
+      "first_session": "1985-04-18",
+      "last_session": "2026-07-09",
+      "n_bars": 10385
+    },
+    "BDX": {
+      "file_sha256": "a16a2cee13a2e0291c2d1799aa9d7c24aa3d2bef0bb62dd8cefb23f9a22ff306",
+      "first_session": "1973-02-21",
+      "last_session": "2026-07-09",
+      "n_bars": 13458
+    },
+    "BEN": {
+      "file_sha256": "217f7fb44afc9626cb0ef97b294e136d11cfa3c8a8b8eb9897f96c36ca36374d",
+      "first_session": "1983-09-23",
+      "last_session": "2026-07-09",
+      "n_bars": 10781
+    },
+    "BF-B": {
+      "file_sha256": "94b800e09bdc15029a9537993114eff2720ca88729efd8a028562439c77cc6c6",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "BG": {
+      "file_sha256": "8a6f7e41f2b150aeed3a91a60d9ba99c7d175ee2aff0d7d8b214df732b69339a",
+      "first_session": "2001-08-02",
+      "last_session": "2026-07-09",
+      "n_bars": 6269
+    },
+    "BIIB": {
+      "file_sha256": "3390d09fbb31858f3138ebce258b2b1443188f5d41f7c880d63f2b39aa397169",
+      "first_session": "1991-09-17",
+      "last_session": "2026-07-09",
+      "n_bars": 8764
+    },
+    "BKNG": {
+      "file_sha256": "a9c8d511192e6e5809518cc579712a6c7fa9db6d6b0fa298ff5ed3b6668345ee",
+      "first_session": "1999-03-31",
+      "last_session": "2026-07-09",
+      "n_bars": 6860
+    },
+    "BKR": {
+      "file_sha256": "2b09db2ddd97c71b053c6406725a4f537054d5030e9251a83310f5a4926bc58d",
+      "first_session": "1987-04-06",
+      "last_session": "2026-07-09",
+      "n_bars": 9889
+    },
+    "BLDR": {
+      "file_sha256": "1bc90475189acd277ade7ff0b9ebb44594d01ccecad36bb4f50bcff03f5dbb1e",
+      "first_session": "2005-06-28",
+      "last_session": "2026-07-09",
+      "n_bars": 5290
+    },
+    "BLK": {
+      "file_sha256": "ae45a07f09cd7ea86a5ee8c42ebc1ed7dfaf318d25bfc8aab078c176525f974c",
+      "first_session": "1999-10-01",
+      "last_session": "2026-07-09",
+      "n_bars": 6732
+    },
+    "BMY": {
+      "file_sha256": "b4ce77db331d74ca1a0bbca4258017ee86d5326e1e96cf2e0e75f1290d504df0",
+      "first_session": "1972-06-01",
+      "last_session": "2026-07-09",
+      "n_bars": 13638
+    },
+    "BNY": {
+      "file_sha256": "bde0c6f4fd9cad6470367700fe79b0dae504637d539383561706bb474aacb378",
+      "first_session": "1973-05-03",
+      "last_session": "2026-07-09",
+      "n_bars": 13408
+    },
+    "BR": {
+      "file_sha256": "351fc608d36100db17daeba80aed4549d23207f5c20d228e5a3eaadc779a161e",
+      "first_session": "2007-03-22",
+      "last_session": "2026-07-09",
+      "n_bars": 4855
+    },
+    "BRK-B": {
+      "file_sha256": "3a00be2ef5dfbb7f3515b3ce8a1dddb5e0338658905c1124de8d01f3af7ef033",
+      "first_session": "1996-05-09",
+      "last_session": "2026-07-09",
+      "n_bars": 7589
+    },
+    "BRO": {
+      "file_sha256": "f39c71d6a0665bacbb47feea3759d28d228f55400c1086332ed288ee08bcee91",
+      "first_session": "1981-02-11",
+      "last_session": "2026-07-09",
+      "n_bars": 11443
+    },
+    "BSX": {
+      "file_sha256": "be9795f89c2c80b28b3d39f702cef8ad662e1cfe23c677488b491b3b31c41332",
+      "first_session": "1992-05-19",
+      "last_session": "2026-07-09",
+      "n_bars": 8594
+    },
+    "BX": {
+      "file_sha256": "a271b37801b2a7bb63676441bad22a3d29b54cd6d7819c49b0d0f738a30a088f",
+      "first_session": "2007-06-22",
+      "last_session": "2026-07-09",
+      "n_bars": 4791
+    },
+    "BXP": {
+      "file_sha256": "c7b8239f4363e1bab0c684007fedb43d1f9ea0ba9baf98da902071503e2639b5",
+      "first_session": "1997-06-18",
+      "last_session": "2026-07-09",
+      "n_bars": 7309
+    },
+    "C": {
+      "file_sha256": "8792a28de2540133deb0cbebf156ea4d325894e803aac0037aad07bb59eccb91",
+      "first_session": "1977-01-03",
+      "last_session": "2026-07-09",
+      "n_bars": 12481
+    },
+    "CAH": {
+      "file_sha256": "f6cc8d10eb36e1f929b514c978be15761497c762732ada8728d5555b2913ba30",
+      "first_session": "1983-08-04",
+      "last_session": "2026-07-09",
+      "n_bars": 10816
+    },
+    "CARR": {
+      "file_sha256": "e381254d349266844a6e49eadc90bbd2cdb17bb521da5f49acc4563e2d208dbc",
+      "first_session": "2020-03-19",
+      "last_session": "2026-07-09",
+      "n_bars": 1584
+    },
+    "CASY": {
+      "file_sha256": "5cc6c2c14076737595a3e1c8b844ad13b9db3170959b0b33fc95e6b8f40608ea",
+      "first_session": "1983-10-20",
+      "last_session": "2026-07-09",
+      "n_bars": 10762
+    },
+    "CAT": {
+      "file_sha256": "2d2b87897a1dbd199e17410f3cc9694e0b5dfb7319e117a6a680999b92448b16",
+      "first_session": "1970-01-02",
+      "last_session": "2026-07-09",
+      "n_bars": 14250
+    },
+    "CB": {
+      "file_sha256": "9cf5db4bfeadb6aa68326e20e84c0c0f6da277d393e1f5623de73e6d531ff38a",
+      "first_session": "1993-03-25",
+      "last_session": "2026-07-09",
+      "n_bars": 8379
+    },
+    "CBOE": {
+      "file_sha256": "55bd9f62a1c7e75f6a459f89599f1cd5a9d929f9d8dfe4fce7a1754dfc957156",
+      "first_session": "2010-06-15",
+      "last_session": "2026-07-09",
+      "n_bars": 4041
+    },
+    "CBRE": {
+      "file_sha256": "61aed863ba461cf5cd70d1d67ddcc46fe93ede01bbb881af9cfc5c9f81f34769",
+      "first_session": "2004-06-10",
+      "last_session": "2026-07-09",
+      "n_bars": 5554
+    },
+    "CCEP": {
+      "file_sha256": "a49b2057f72a7f9274c1b1951f9757d265ff2301785422e3013b206469999e6e",
+      "first_session": "1986-11-24",
+      "last_session": "2026-07-09",
+      "n_bars": 9980
+    },
+    "CCI": {
+      "file_sha256": "91e195f49ca50b31d6332c113bc78c3d6fb72a812d8129efbeb2cce1efeb4cf1",
+      "first_session": "1998-08-18",
+      "last_session": "2026-07-09",
+      "n_bars": 7015
+    },
+    "CCL": {
+      "file_sha256": "95624a833307feec11ded7544e02aa03aa423cce7c3834db256113599248fc79",
+      "first_session": "1987-07-24",
+      "last_session": "2026-07-09",
+      "n_bars": 9813
+    },
+    "CDNS": {
+      "file_sha256": "41c481dedc1c22330c0dd652ac60c2cdc8c7031cd92a5beb7bbef3fbccdd068c",
+      "first_session": "1987-06-10",
+      "last_session": "2026-07-09",
+      "n_bars": 9844
+    },
+    "CDW": {
+      "file_sha256": "0a8a7b958e3ee6712b82f381aa872f18f9d0c80f45e2fd3dc4a2a14c2ce95043",
+      "first_session": "2013-06-27",
+      "last_session": "2026-07-09",
+      "n_bars": 3277
+    },
+    "CEG": {
+      "file_sha256": "27eac0fe422e4f20ec9c3f05835b10ce8e8323d220692e921da9b40c412ae149",
+      "first_session": "2022-01-19",
+      "last_session": "2026-07-09",
+      "n_bars": 1121
+    },
+    "CF": {
+      "file_sha256": "16332b26e3b9944858ea86c5a81b535ada688cdbfc10ccda43e06375cbcf3a0d",
+      "first_session": "2005-08-11",
+      "last_session": "2026-07-09",
+      "n_bars": 5259
+    },
+    "CFG": {
+      "file_sha256": "0b7b78e744412f49791befab62356deb328bccf192854c4ce08669ab7f21f179",
+      "first_session": "2014-09-24",
+      "last_session": "2026-07-09",
+      "n_bars": 2964
+    },
+    "CHD": {
+      "file_sha256": "9a99a55c814389605dd0608c2a69569e9992bdc609c75b90b5550b145447b094",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "CHRW": {
+      "file_sha256": "e409a48d3d9da0af1e350a8346b6cd73b80b7675de1145835151eb33a01257dd",
+      "first_session": "1997-10-16",
+      "last_session": "2026-07-09",
+      "n_bars": 7225
+    },
+    "CHTR": {
+      "file_sha256": "203c3a891920d034d63950b104c138335bb23a9e16fad476f8a5d7964b7ff09b",
+      "first_session": "2010-01-05",
+      "last_session": "2026-07-09",
+      "n_bars": 4152
+    },
+    "CI": {
+      "file_sha256": "4aad2d78df529a11495385e326aa638be8bba6fbe37979863a74f3ee64dda726",
+      "first_session": "1982-03-31",
+      "last_session": "2026-07-09",
+      "n_bars": 11157
+    },
+    "CIEN": {
+      "file_sha256": "1813580738030c77b5b3b7f871d94f14aab9a9ffae04061c9040daf149b39c13",
+      "first_session": "1997-02-07",
+      "last_session": "2026-07-09",
+      "n_bars": 7399
+    },
+    "CINF": {
+      "file_sha256": "d7cd780479d2baf79ac813065a35b6a9d0415c984b2d7b8faa9a064c60ebec1f",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "CL": {
+      "file_sha256": "79a3c894c4983b565bc058542e1acd2f619d678a11c83312170f916701f58518",
+      "first_session": "1973-05-02",
+      "last_session": "2026-07-09",
+      "n_bars": 13409
+    },
+    "CLX": {
+      "file_sha256": "babb6d603547686f1a4c2b0b44f67a937b7416607dea33848d4f241b0d0f5777",
+      "first_session": "1973-02-21",
+      "last_session": "2026-07-09",
+      "n_bars": 13458
+    },
+    "CMCSA": {
+      "file_sha256": "4f272aebca4bd6ffd8ae885e92a603f09c2f281013335d461e507fbf8143f5ee",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "CME": {
+      "file_sha256": "6012996b15680726b01fc4e8fd0ce47c0979a3debeace3dfb074e97a807d9a64",
+      "first_session": "2002-12-06",
+      "last_session": "2026-07-09",
+      "n_bars": 5933
+    },
+    "CMG": {
+      "file_sha256": "c380a43dcdacb56c93a75c97357a52c7cbcdcc878c2cbe68cd15027c5f4b46ab",
+      "first_session": "2006-01-26",
+      "last_session": "2026-07-09",
+      "n_bars": 5144
+    },
+    "CMI": {
+      "file_sha256": "bc6e6af5645a800eecac0bd4a135cf5f6b554993891f8976398187eecbdf9226",
+      "first_session": "1973-02-21",
+      "last_session": "2026-07-09",
+      "n_bars": 13458
+    },
+    "CMS": {
+      "file_sha256": "74562f3cf10848fd17f122f5911cc98552da5b38c604b346f839a573fc8fc464",
+      "first_session": "1973-02-21",
+      "last_session": "2026-07-09",
+      "n_bars": 13458
+    },
+    "CNC": {
+      "file_sha256": "38deefc1c44cc109856be12bf0818075fed3223ef5c6bb33f24c9c6bee55468d",
+      "first_session": "2001-12-13",
+      "last_session": "2026-07-09",
+      "n_bars": 6180
+    },
+    "CNP": {
+      "file_sha256": "35fd95140d8f72caaff0d98d2a05ade29c8d63feb8d1c8215b19e866b2a30c0b",
+      "first_session": "1970-01-02",
+      "last_session": "2026-07-09",
+      "n_bars": 14250
+    },
+    "COF": {
+      "file_sha256": "36c79eb9bde5420bd9394870dc724b21858ab3a3ba5dc4c09555c607cfd64714",
+      "first_session": "1994-11-16",
+      "last_session": "2026-07-09",
+      "n_bars": 7962
+    },
+    "COHR": {
+      "file_sha256": "bf4bfeb6a5aed402606ecb646b9a5353f05d0ebb56c07acf426e9e4b365c8942",
+      "first_session": "1987-10-02",
+      "last_session": "2026-07-09",
+      "n_bars": 9764
+    },
+    "COIN": {
+      "file_sha256": "843a24142694fe601d69c84e2840dd4af7afacfe7f11926bfc7e8a52d0ae97bf",
+      "first_session": "2021-04-14",
+      "last_session": "2026-07-09",
+      "n_bars": 1315
+    },
+    "COO": {
+      "file_sha256": "e12eeb329c15910ccc9b59ad656ce75a448c7db7bf08e59bbeae7cbba248ae53",
+      "first_session": "1983-01-21",
+      "last_session": "2026-07-09",
+      "n_bars": 10951
+    },
+    "COP": {
+      "file_sha256": "768d568af889b73430555aea8a291eafc8eb2cf0263fa577d8fea2f2679c8384",
+      "first_session": "1981-12-31",
+      "last_session": "2026-07-09",
+      "n_bars": 11219
+    },
+    "COR": {
+      "file_sha256": "6838819f0adfd0f5b0f5d3960557e0835e02fa08662350ef7f28b1bf9d471cd0",
+      "first_session": "1995-04-04",
+      "last_session": "2026-07-09",
+      "n_bars": 7867
+    },
+    "COST": {
+      "file_sha256": "18c7afbb9cbff4ee93c229504d897b144599c9f57926d73fc16fc2c7ee64a3b6",
+      "first_session": "1986-07-09",
+      "last_session": "2026-07-09",
+      "n_bars": 10077
+    },
+    "CPAY": {
+      "file_sha256": "94f203da3349a70a1cddf9d5b38fbf67c211540b0b5cf897fb8948f193c5dd7b",
+      "first_session": "2010-12-15",
+      "last_session": "2026-07-09",
+      "n_bars": 3913
+    },
+    "CPRT": {
+      "file_sha256": "8f9db1ec030492166a7b40ad06b9226a7add129ffc7e6d37974a08ec6ca6abe0",
+      "first_session": "1994-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 8131
+    },
+    "CPT": {
+      "file_sha256": "786ba92e1b7cd55afbb7d74ba942b37511b1c52a29a18ce12b75de30f58c0f8b",
+      "first_session": "1993-07-22",
+      "last_session": "2026-07-09",
+      "n_bars": 8297
+    },
+    "CRH": {
+      "file_sha256": "5076c350dfd74512849bff7826300bef426b71022602931d01f7d7668f2fa694",
+      "first_session": "1989-07-13",
+      "last_session": "2026-07-09",
+      "n_bars": 9315
+    },
+    "CRL": {
+      "file_sha256": "ff16c34e0c2900a7c896f545d21b8aa58e1a1c26cb2ca7f80f6a779594c18a1c",
+      "first_session": "2000-06-23",
+      "last_session": "2026-07-09",
+      "n_bars": 6548
+    },
+    "CRM": {
+      "file_sha256": "b548480a59914473286dd1ccd91592ec10a5163a037bfd0928fb216b3f1e4892",
+      "first_session": "2004-06-23",
+      "last_session": "2026-07-09",
+      "n_bars": 5546
+    },
+    "CRWD": {
+      "file_sha256": "8bb1e82e1061161205fedafa4e3d0c579b32b39d97344f5bf501ce33d4dbae94",
+      "first_session": "2019-06-12",
+      "last_session": "2026-07-09",
+      "n_bars": 1778
+    },
+    "CRWV": {
+      "file_sha256": "3fb38f7db609e2219beaeca016df48023184c42374cb1ca450a593fd0928b1e8",
+      "first_session": "2025-03-28",
+      "last_session": "2026-07-09",
+      "n_bars": 321
+    },
+    "CSCO": {
+      "file_sha256": "dba74781b323d34fc29cfc5c9196970d6d0db8a0cdfd83611769c6ec1cfa3630",
+      "first_session": "1990-02-16",
+      "last_session": "2026-07-09",
+      "n_bars": 9163
+    },
+    "CSGP": {
+      "file_sha256": "b543764438d67f7916040980aa7d104aa84899c65988ec12fd45ce5cece54225",
+      "first_session": "1998-07-01",
+      "last_session": "2026-07-09",
+      "n_bars": 7048
+    },
+    "CSX": {
+      "file_sha256": "308f285771abe4fa001094a9e59eeec4ad773fe5f09d2c8481e695ffcc5f4211",
+      "first_session": "1980-11-03",
+      "last_session": "2026-07-09",
+      "n_bars": 11511
+    },
+    "CTAS": {
+      "file_sha256": "3e6205d11d5233275b55322a67a1accb114612a217ba2dccf8effd8a4238dcfb",
+      "first_session": "1983-08-19",
+      "last_session": "2026-07-09",
+      "n_bars": 10805
+    },
+    "CTSH": {
+      "file_sha256": "cefec25efbe1dcc28566379f6998fa84acc8c194da354dd50f13a884819c9de6",
+      "first_session": "1998-06-19",
+      "last_session": "2026-07-09",
+      "n_bars": 7056
+    },
+    "CTVA": {
+      "file_sha256": "edd50fe743100cc85cf7cf2fc5bc170b3c561d68cc09c7f4833f64ae71a6d27f",
+      "first_session": "2019-05-24",
+      "last_session": "2026-07-09",
+      "n_bars": 1790
+    },
+    "CVNA": {
+      "file_sha256": "2ec00135d966a708a02ae37227d93ca20d2b3352d3ee23ba089f9f32c6f6c945",
+      "first_session": "2017-04-28",
+      "last_session": "2026-07-09",
+      "n_bars": 2311
+    },
+    "CVS": {
+      "file_sha256": "3ca0bed56dc4054bcd272eda2bf1eb3b4ab239f07710ec6201ad1e8ba519f119",
+      "first_session": "1973-02-21",
+      "last_session": "2026-07-09",
+      "n_bars": 13458
+    },
+    "CVX": {
+      "file_sha256": "0ab45b5f8e8ab6b6eaad6164e3b971633b5b92127aea55516a7086f5b9a0d32e",
+      "first_session": "1970-01-02",
+      "last_session": "2026-07-09",
+      "n_bars": 14250
+    },
+    "D": {
+      "file_sha256": "a5e78ad43a65b7cbf03cc6cd7daaa0e4fc74f0bf4c0fec29ba6c35191b69ff57",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "DAL": {
+      "file_sha256": "cbe7bdb2178ec20a0074879119d4da33b1632680b6d904ccda7a0426c420dbc6",
+      "first_session": "2007-05-03",
+      "last_session": "2026-07-09",
+      "n_bars": 4826
+    },
+    "DASH": {
+      "file_sha256": "7bf7fae59ea74c31dea74fb817c46457514fa24b26ce58a40e4c1debf0b11ec8",
+      "first_session": "2020-12-09",
+      "last_session": "2026-07-09",
+      "n_bars": 1400
+    },
+    "DD": {
+      "file_sha256": "864e2e3fb4f59c1faf671791ba3e47582faa0337a93896beb5fed38fe0e61cb9",
+      "first_session": "1972-06-01",
+      "last_session": "2026-07-09",
+      "n_bars": 13638
+    },
+    "DDOG": {
+      "file_sha256": "e1c314254bd8f27b57b8456039d2e6c97338d77e06ff097e51da81a67d602d81",
+      "first_session": "2019-09-19",
+      "last_session": "2026-07-09",
+      "n_bars": 1709
+    },
+    "DE": {
+      "file_sha256": "50609661a8b20798b64e0f6587976871e9e72afd473cdd9a5adbb482fdaaac88",
+      "first_session": "1972-06-01",
+      "last_session": "2026-07-09",
+      "n_bars": 13638
+    },
+    "DECK": {
+      "file_sha256": "b4753fed228af08cc731fdaa56c987ac010a4eb7e642d22c03847d5abbdef867",
+      "first_session": "1993-10-15",
+      "last_session": "2026-07-09",
+      "n_bars": 8237
+    },
+    "DELL": {
+      "file_sha256": "dd6f3df69d0a0f851c2dd7a626ca0d5e42345c07b4905e4da1da41dd3aa0e7c9",
+      "first_session": "2016-08-17",
+      "last_session": "2026-07-09",
+      "n_bars": 2486
+    },
+    "DG": {
+      "file_sha256": "852640d4879c849c337435e0cd9c2fa48516b73bf55f23b97fd6dd71a6da763c",
+      "first_session": "2009-11-13",
+      "last_session": "2026-07-09",
+      "n_bars": 4186
+    },
+    "DGX": {
+      "file_sha256": "8700d0d19f8b88a8710814ea0a30df20342bb7a858e861489261d5507668a8db",
+      "first_session": "1996-12-17",
+      "last_session": "2026-07-09",
+      "n_bars": 7435
+    },
+    "DHI": {
+      "file_sha256": "3aa0aac9f3fa869df07959cae9ca74f93d1e19bfc55343f1bdb58493a1b7e7b4",
+      "first_session": "1992-06-05",
+      "last_session": "2026-07-09",
+      "n_bars": 8582
+    },
+    "DHR": {
+      "file_sha256": "dd1eda6dc3de4de0e03eee49303e5488a3b3d67dcffc11f391bf1d20b8b50b83",
+      "first_session": "1978-12-29",
+      "last_session": "2026-07-09",
+      "n_bars": 11978
+    },
+    "DIS": {
+      "file_sha256": "58fd0b16cce656bda61e5fa24214cf01c134a56851ed2d545e3ef98e16a21bca",
+      "first_session": "1970-01-02",
+      "last_session": "2026-07-09",
+      "n_bars": 14250
+    },
+    "DLR": {
+      "file_sha256": "49a3a3b839b66c011c39df896796349d3eefb7a36b9d9f6eb183e45292a79d37",
+      "first_session": "2004-10-29",
+      "last_session": "2026-07-09",
+      "n_bars": 5456
+    },
+    "DLTR": {
+      "file_sha256": "9e65c7de71da283dff5eb0f95fe0d57b36ee9032ea49046fb058629208c6d93f",
+      "first_session": "1995-03-07",
+      "last_session": "2026-07-09",
+      "n_bars": 7887
+    },
+    "DOC": {
+      "file_sha256": "e093f161272a0ee94c0e6413f5bddea37b0d364a6e413d886e3ce837e7e1f8f1",
+      "first_session": "1985-05-23",
+      "last_session": "2026-07-09",
+      "n_bars": 10360
+    },
+    "DOV": {
+      "file_sha256": "c2d813b75cc517e75dbe7dffda55ec6fff6e04b79bcf2585ada49f947b4a7b0e",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "DOW": {
+      "file_sha256": "56086a99ec6865ac22f0947e9a63b4b12c5e1babf2e969563464f871dc22eee7",
+      "first_session": "2019-03-20",
+      "last_session": "2026-07-09",
+      "n_bars": 1836
+    },
+    "DPZ": {
+      "file_sha256": "c3b8cc5ba50f299d17f0e7d7f87b4ff7bf9002373bd4920360d1d487b2e2e92c",
+      "first_session": "2004-07-13",
+      "last_session": "2026-07-09",
+      "n_bars": 5533
+    },
+    "DRI": {
+      "file_sha256": "5a53f1cabb578d6693e106d9f0a3cf69d5b2f8445db83debf8beaa44066c5ca4",
+      "first_session": "1995-05-09",
+      "last_session": "2026-07-09",
+      "n_bars": 7843
+    },
+    "DTE": {
+      "file_sha256": "84149c9437d5e28732b60db11a84ab7aba50f337f7e1622bea55bfcc278e3f2d",
+      "first_session": "1970-01-02",
+      "last_session": "2026-07-09",
+      "n_bars": 14250
+    },
+    "DUK": {
+      "file_sha256": "23bac6999e017391c051d6c3443f756b5fd1cd46fb021d2b30c751584190fa89",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "DVA": {
+      "file_sha256": "ffd7868659c0058664857cf3357bc105d704c7e5ac884b2588230597850a5c5c",
+      "first_session": "1995-10-31",
+      "last_session": "2026-07-09",
+      "n_bars": 7721
+    },
+    "DVN": {
+      "file_sha256": "6c8ee38c5de4d0f2721949b7af4ccb08826ba2bcb5d8dd71ff9679b2daab1078",
+      "first_session": "1985-07-22",
+      "last_session": "2026-07-09",
+      "n_bars": 10320
+    },
+    "DXCM": {
+      "file_sha256": "d8001d97fd03a28a62432aaf12835b201c3030ff129dd3b7cbbbfc96aae1fba4",
+      "first_session": "2005-04-14",
+      "last_session": "2026-07-09",
+      "n_bars": 5342
+    },
+    "EA": {
+      "file_sha256": "d7d1b479eb9a56268b4e803bafef62fd915e08994b8d532e40bf827381f714d2",
+      "first_session": "1989-09-20",
+      "last_session": "2026-07-09",
+      "n_bars": 9267
+    },
+    "EBAY": {
+      "file_sha256": "1a8be20d6dae74b88850daa9a801e3c25b13d53806cbcb9d289ba15cd2af8d70",
+      "first_session": "1998-09-24",
+      "last_session": "2026-07-09",
+      "n_bars": 6989
+    },
+    "ECHO": {
+      "file_sha256": "6e720f53f6be5cf1b5ab3ebc28a7225f79f6ec64a8375e7034263a34193dad8b",
+      "first_session": "2008-01-02",
+      "last_session": "2026-07-09",
+      "n_bars": 4658
+    },
+    "ECL": {
+      "file_sha256": "d553e7b9099cdcb87e6287af535ad36efb2bed41af9467b7215ecac1ca2f0922",
+      "first_session": "1973-02-21",
+      "last_session": "2026-07-09",
+      "n_bars": 13458
+    },
+    "ED": {
+      "file_sha256": "f076cb6645898229207443c0e6b6aa63974219d0312ae5aa4b6cacb043e1c401",
+      "first_session": "1970-01-02",
+      "last_session": "2026-07-09",
+      "n_bars": 14250
+    },
+    "EFX": {
+      "file_sha256": "52fcdf97360e62ad60b84d3beed139bf3842728902f62c4e73e9606df1330e1d",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "EG": {
+      "file_sha256": "8022c1cc095819746724a2ad6a6ed5e5a43b488840cb194e57fdcbe6f3b183a9",
+      "first_session": "1995-10-03",
+      "last_session": "2026-07-09",
+      "n_bars": 7741
+    },
+    "EIX": {
+      "file_sha256": "eb7773a62ba7280301e67d9096561321d1e7cc3d53d4585eb06dde6edb31e325",
+      "first_session": "1973-05-03",
+      "last_session": "2026-07-09",
+      "n_bars": 13408
+    },
+    "EL": {
+      "file_sha256": "edf00767aca774de2a1f257d2d84fdbaa5f7f33e7e5aeca398751bf4f36b3d2c",
+      "first_session": "1995-11-17",
+      "last_session": "2026-07-09",
+      "n_bars": 7708
+    },
+    "ELV": {
+      "file_sha256": "93bbf220c4a0de5d156e706e7b6f7fdd0094a61ceeed26383ba48364be65ab56",
+      "first_session": "2001-10-30",
+      "last_session": "2026-07-09",
+      "n_bars": 6211
+    },
+    "EME": {
+      "file_sha256": "da126f6f4f679c8f06ad5121bee6311dcb364d38a7959de8084b26bb0ed0498f",
+      "first_session": "1995-01-10",
+      "last_session": "2026-07-09",
+      "n_bars": 7926
+    },
+    "EMR": {
+      "file_sha256": "ab865d2dc85ae6eab3881177ed2b5b1b2b02fbb413fdf214153b371a0cbd2120",
+      "first_session": "1972-06-01",
+      "last_session": "2026-07-09",
+      "n_bars": 13638
+    },
+    "EOG": {
+      "file_sha256": "aac617f0f9f67f90a9cbc7aa191e9b1a6f2c35622c2ada1ba566ebc2979e77bc",
+      "first_session": "1989-10-04",
+      "last_session": "2026-07-09",
+      "n_bars": 9257
+    },
+    "EQIX": {
+      "file_sha256": "de57cd9c218a6a7c0fa1914deef99b05af5285584f58d751de5af2b9b2807609",
+      "first_session": "2000-08-11",
+      "last_session": "2026-07-09",
+      "n_bars": 6514
+    },
+    "EQR": {
+      "file_sha256": "aeb44eaa2cad2ebb59a2bf46631cd229d54cb3dc2e3be089b046e350e7bd8413",
+      "first_session": "1993-08-12",
+      "last_session": "2026-07-09",
+      "n_bars": 8282
+    },
+    "EQT": {
+      "file_sha256": "8d5acce6f6232efab6d890d9d14e375832b0c0952d77bb57d48d309e54f196bb",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "ERIE": {
+      "file_sha256": "ca705a412d86f7df5cf0ba342d674200292af44d36c38955621f0628c1b73c2c",
+      "first_session": "1995-10-02",
+      "last_session": "2026-07-09",
+      "n_bars": 7742
+    },
+    "ES": {
+      "file_sha256": "6a58951a4676d541f5ea2a5aa6363a497458a995849ac42f733487e81a6f5581",
+      "first_session": "1973-02-21",
+      "last_session": "2026-07-09",
+      "n_bars": 13458
+    },
+    "ESS": {
+      "file_sha256": "54267c009e63168b99b921d4d72bc85e9344749a14d30e710031b79d28009789",
+      "first_session": "1994-06-07",
+      "last_session": "2026-07-09",
+      "n_bars": 8076
+    },
+    "ETN": {
+      "file_sha256": "2d45ecf6652f9a12fd615fcfd6cc75abff480307d9ff91e58f69d07bf4ef3e2a",
+      "first_session": "1972-06-01",
+      "last_session": "2026-07-09",
+      "n_bars": 13638
+    },
+    "ETR": {
+      "file_sha256": "f40b502e0b18335e2da35a91f4673ea47a36a18bd74f9f88217b719ab7dddf4a",
+      "first_session": "1972-06-01",
+      "last_session": "2026-07-09",
+      "n_bars": 13638
+    },
+    "EVRG": {
+      "file_sha256": "32e4d7e2730d57e9bf52618e4130b82ff7c92820ab81d1d440359df1d9615e2b",
+      "first_session": "1973-02-21",
+      "last_session": "2026-07-09",
+      "n_bars": 13458
+    },
+    "EW": {
+      "file_sha256": "18cae882c615efc544e42ee90f924780a8852d9f9d985a98cb536357bc8b674e",
+      "first_session": "2000-03-27",
+      "last_session": "2026-07-09",
+      "n_bars": 6610
+    },
+    "EXC": {
+      "file_sha256": "c2e07cac8ac7fe94aa5504da4988990c8b85cefa5371908f3b9ec64fb5945883",
+      "first_session": "1973-05-02",
+      "last_session": "2026-07-09",
+      "n_bars": 13409
+    },
+    "EXE": {
+      "file_sha256": "3ad07f65601269915b8da7475f5bb42c828a6c9a8c330f9db5358f419c7e6043",
+      "first_session": "2021-02-10",
+      "last_session": "2026-07-09",
+      "n_bars": 1358
+    },
+    "EXPD": {
+      "file_sha256": "7170ed3793b152d5f2fe137727e01d9057b86351e5145ee07a1d9ef01e7aca1c",
+      "first_session": "1984-09-26",
+      "last_session": "2026-07-09",
+      "n_bars": 10526
+    },
+    "EXPE": {
+      "file_sha256": "5381591ddea61ef94a37b01f91b0cadef604faba2a2cc0fa7cfa2b15a154c581",
+      "first_session": "2005-07-21",
+      "last_session": "2026-07-09",
+      "n_bars": 5274
+    },
+    "EXR": {
+      "file_sha256": "61794274db4a028c2c34c40df5256bae5a7c0005e73174896292e573f8066ab1",
+      "first_session": "2004-08-16",
+      "last_session": "2026-07-09",
+      "n_bars": 5509
+    },
+    "F": {
+      "file_sha256": "0477e5e65ca69a123aff5adedddb0a6625fb8e11c369b2ca3581957e9e80724d",
+      "first_session": "1972-06-01",
+      "last_session": "2026-07-09",
+      "n_bars": 13638
+    },
+    "FANG": {
+      "file_sha256": "119f92df2a194448a731e738efbce509b450be9f3b1d8359ca2cc0791d44a3df",
+      "first_session": "2012-10-12",
+      "last_session": "2026-07-09",
+      "n_bars": 3452
+    },
+    "FAST": {
+      "file_sha256": "1c3400ec0a22f706cb66f91592ddf5e07a7eda99f4715cd37d3decb19790b762",
+      "first_session": "1987-08-20",
+      "last_session": "2026-07-09",
+      "n_bars": 9794
+    },
+    "FCX": {
+      "file_sha256": "12aeed0edaa443fad71292e8ed4bd283d42fed042d6c72da896836f0775e99fa",
+      "first_session": "1995-07-10",
+      "last_session": "2026-07-09",
+      "n_bars": 7801
+    },
+    "FDS": {
+      "file_sha256": "e054bf6230baf3b0360915651c6db511f8d64d546f1bebb9566a2940672a1339",
+      "first_session": "1996-06-28",
+      "last_session": "2026-07-09",
+      "n_bars": 7554
+    },
+    "FDX": {
+      "file_sha256": "709b025f720391c51bedc0c8ae07ecb4d6468c65675bbe3d95c00d440b990539",
+      "first_session": "1978-04-12",
+      "last_session": "2026-07-09",
+      "n_bars": 12160
+    },
+    "FE": {
+      "file_sha256": "c52182e5fad5c86df5a296a0b84fb8c0c94fe1f84328b23e69a9a6d4b70603c6",
+      "first_session": "1997-11-10",
+      "last_session": "2026-07-09",
+      "n_bars": 7208
+    },
+    "FER": {
+      "file_sha256": "509a763f9609e76e331a626f122bb0132b076113f8c48520fbe0954ce71dc78b",
+      "first_session": "2012-08-13",
+      "last_session": "2026-07-09",
+      "n_bars": 3495
+    },
+    "FFIV": {
+      "file_sha256": "676017f880ecf5bd66442c757fd2a4b0c33ae38a84b7e9450595fd63197765fe",
+      "first_session": "1999-06-04",
+      "last_session": "2026-07-09",
+      "n_bars": 6815
+    },
+    "FICO": {
+      "file_sha256": "bfaf6ed0043f45d63fb5bef8fc089fb43d894c38880103c7fad5fd421d1129b8",
+      "first_session": "1987-07-22",
+      "last_session": "2026-07-09",
+      "n_bars": 9815
+    },
+    "FIS": {
+      "file_sha256": "db21faebe2783459b4e870c2273df8fb17d7a073ec59c08679807545e421a167",
+      "first_session": "2001-06-20",
+      "last_session": "2026-07-09",
+      "n_bars": 6299
+    },
+    "FITB": {
+      "file_sha256": "079f15e48988f04a3747a4006fe6198347b146bc1eea28d90c282317a7126efa",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "FIX": {
+      "file_sha256": "1dce21131cb33769f00490dd20353899f965d41581a1f6784d1fe5926bf8a86c",
+      "first_session": "1997-06-27",
+      "last_session": "2026-07-09",
+      "n_bars": 7302
+    },
+    "FLEX": {
+      "file_sha256": "38057a5b36dcf3b6be535800a32ef9a0ae5f3ae687a09d14130c347f0108cb6c",
+      "first_session": "1994-03-18",
+      "last_session": "2026-07-09",
+      "n_bars": 8130
+    },
+    "FOX": {
+      "file_sha256": "37c7ff4060cd2340828a0a43a0a9178cad0e6b2a3c661ec09746f985e60263d3",
+      "first_session": "2019-03-13",
+      "last_session": "2026-07-09",
+      "n_bars": 1841
+    },
+    "FOXA": {
+      "file_sha256": "b90eda3d088422530a1eac14c6288e64268fdbe0b4e9659c0e563eeb175ae7fb",
+      "first_session": "2019-03-12",
+      "last_session": "2026-07-09",
+      "n_bars": 1842
+    },
+    "FRT": {
+      "file_sha256": "c9bd728c91c686596c2ea4a182e5408287ad336c75861bfd93739b8fea8796fb",
+      "first_session": "1973-05-03",
+      "last_session": "2026-07-09",
+      "n_bars": 13408
+    },
+    "FSLR": {
+      "file_sha256": "b79183fb284d75b0c6b0f23ed96b7b7bdefbc18082e06d253c42731d5aca136f",
+      "first_session": "2006-11-17",
+      "last_session": "2026-07-09",
+      "n_bars": 4938
+    },
+    "FTNT": {
+      "file_sha256": "9d8e16c928c7650bef816295923581963eac80d731b21995d074b8cef6c9e0bf",
+      "first_session": "2009-11-18",
+      "last_session": "2026-07-09",
+      "n_bars": 4183
+    },
+    "FTV": {
+      "file_sha256": "a22a0fe845036fed1abfbcb393b0fb08a597fdd636529e8c8ffd42d83c6e85e0",
+      "first_session": "2016-07-05",
+      "last_session": "2026-07-09",
+      "n_bars": 2517
+    },
+    "GD": {
+      "file_sha256": "ab2fc443f67698e20b80c556e747f068b8f132f3d898deaaa0c6db954d6ab9ae",
+      "first_session": "1970-01-02",
+      "last_session": "2026-07-09",
+      "n_bars": 14250
+    },
+    "GDDY": {
+      "file_sha256": "15d3b57d3d83dd571124b1c13227c31dcfd175f2ca8334e9269811e53ed8b484",
+      "first_session": "2015-03-31",
+      "last_session": "2026-07-09",
+      "n_bars": 2835
+    },
+    "GE": {
+      "file_sha256": "a5c7e5626b7cc3f082102f0acca6a25f055d55321046215c2f39b92365fe3467",
+      "first_session": "1970-01-02",
+      "last_session": "2026-07-09",
+      "n_bars": 14250
+    },
+    "GEHC": {
+      "file_sha256": "8b2009103830071bc27b3efded0196811981d7f841451546ac6741a3baad6740",
+      "first_session": "2022-12-15",
+      "last_session": "2026-07-09",
+      "n_bars": 892
+    },
+    "GEN": {
+      "file_sha256": "e723473caa234eb938b4557ce2adc37dbf086667a67060aa4ef187e556e4a3f9",
+      "first_session": "1989-06-23",
+      "last_session": "2026-07-09",
+      "n_bars": 9328
+    },
+    "GEV": {
+      "file_sha256": "38b31b9402839b540167074d0e85c89cace52b30bd2dc258a6b09025d458e0e8",
+      "first_session": "2024-03-27",
+      "last_session": "2026-07-09",
+      "n_bars": 572
+    },
+    "GILD": {
+      "file_sha256": "e5817b717aa03723888a70c05eca02fcaa71493487c507b4dc9149c68c76f05e",
+      "first_session": "1992-01-22",
+      "last_session": "2026-07-09",
+      "n_bars": 8676
+    },
+    "GIS": {
+      "file_sha256": "a91dad5a2a016c09b6cc053e06e158a4c4f1893c1fc7417f07ced1279bc0f755",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "GL": {
+      "file_sha256": "adb6f5ff9b6348d208386e4370d2b24a7c9eb5f45bb4afcb7df521f3eb63c266",
+      "first_session": "1980-10-01",
+      "last_session": "2026-07-09",
+      "n_bars": 11534
+    },
+    "GLW": {
+      "file_sha256": "386cb144afdb5128c92b5b3883700c60268327727f05f2b89de5fb7c85bdf4af",
+      "first_session": "1981-12-31",
+      "last_session": "2026-07-09",
+      "n_bars": 11219
+    },
+    "GM": {
+      "file_sha256": "e4907a44b49477b7a80b48fb7a22de55ee80b68b588310141b7043d3f87c5238",
+      "first_session": "2010-11-18",
+      "last_session": "2026-07-09",
+      "n_bars": 3931
+    },
+    "GNRC": {
+      "file_sha256": "08c1f6b296836b41595bd016b57165951a3824299099f8deb3372dc3c8757837",
+      "first_session": "2010-02-11",
+      "last_session": "2026-07-09",
+      "n_bars": 4126
+    },
+    "GOOG": {
+      "file_sha256": "3e6941d2c94256be8e2a05dbc133b26e8dcebea2cf82ddca72b38b06137f8a32",
+      "first_session": "2004-08-19",
+      "last_session": "2026-07-09",
+      "n_bars": 5506
+    },
+    "GOOGL": {
+      "file_sha256": "1a523fa38d409d99eef3dffd149df6b99236078d08f0e316e79e68079cad9e88",
+      "first_session": "2004-08-19",
+      "last_session": "2026-07-09",
+      "n_bars": 5506
+    },
+    "GPC": {
+      "file_sha256": "41f84b07fc1d26b8dd028cac2abe8dca5bfd8454f83a9f7b2feace4371e9a13b",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-10",
+      "n_bars": 11673
+    },
+    "HCA": {
+      "file_sha256": "5611a97320badf10a888091780854e02067200dd7ffc122060c8299904e60092",
+      "first_session": "2011-03-10",
+      "last_session": "2026-07-09",
+      "n_bars": 3855
+    },
+    "HST": {
+      "file_sha256": "049510a5a767314c7163337b48d891a94e2ff95c3c3f1f44bf246a1dc82b2f4f",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "IEX": {
+      "file_sha256": "36c2a7f66edda9b8c298be654bce29767e26ff4838023d260a2aa040d6e88018",
+      "first_session": "1989-06-02",
+      "last_session": "2026-07-09",
+      "n_bars": 9343
+    },
+    "INTC": {
+      "file_sha256": "b1a039b777a8895b69f5debf2f0dae91cbaacc85690cc40b925840e7f6b476e5",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "IR": {
+      "file_sha256": "275715336c38892aa9abe43756926eaff7d76c7c798264d448d4e2cffa5a2b7b",
+      "first_session": "2017-05-12",
+      "last_session": "2026-07-09",
+      "n_bars": 2301
+    },
+    "MELI": {
+      "file_sha256": "30f940aa72dca033d53e7072e5f5fc7a5dfde342ad8109aca8ca6e0271319a23",
+      "first_session": "2007-08-10",
+      "last_session": "2026-07-09",
+      "n_bars": 4757
+    },
+    "NEM": {
+      "file_sha256": "b22abfd45346600458df316bd40e2b90c60e58f0f0ab27259028315b76db564c",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "NRG": {
+      "file_sha256": "26c23d4a3598fd477542604a67c9ebd5c5878b34defc5c4980ba549e184e1314",
+      "first_session": "2003-12-02",
+      "last_session": "2026-07-09",
+      "n_bars": 5685
+    },
+    "NVDA": {
+      "file_sha256": "5a8ddd90d8fb659a0043b760ffeeb184c9cd5119e98510893a7f8d124630ee82",
+      "first_session": "1999-01-22",
+      "last_session": "2026-07-09",
+      "n_bars": 6907
+    },
+    "PAYX": {
+      "file_sha256": "6b1d0731d0eaf94bd398f126eb997e60f9b3177eecb570297726bb3e45b06fad",
+      "first_session": "1983-08-26",
+      "last_session": "2026-07-09",
+      "n_bars": 10800
+    },
+    "PH": {
+      "file_sha256": "5a6b5c1419019ad3437b60e01b1796a8b9b99b505ff336f5be7a5f895dceab83",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "PRU": {
+      "file_sha256": "542b8d3b70da9a8eb872076e69709eed10fe6dc9d47121a4da401ce381e4a6a2",
+      "first_session": "2001-12-13",
+      "last_session": "2026-07-09",
+      "n_bars": 6180
+    },
+    "PSA": {
+      "file_sha256": "41afc9b3e64e9eb7cc1ff886da8bbac8a2e7ca033fc9bcf111663b5c8d527c41",
+      "first_session": "1980-11-18",
+      "last_session": "2026-07-09",
+      "n_bars": 11501
+    },
+    "QQQ": {
+      "file_sha256": "9b49e1f0522026c39dcb3f70f835b00a526b2e8f2dee58868ac937ddd6adcd57",
+      "first_session": "1999-03-10",
+      "last_session": "2026-07-09",
+      "n_bars": 6875
+    },
+    "REGN": {
+      "file_sha256": "dd412ef47f2b6fb96a5a151fdac5a972898ed6dbafb4cc2c22c2114d45db74f1",
+      "first_session": "1991-04-02",
+      "last_session": "2026-07-09",
+      "n_bars": 8881
+    },
+    "RL": {
+      "file_sha256": "29028782329959132a197c5010984daeed9f2941dedada397dd40b262bf0f576",
+      "first_session": "1997-06-12",
+      "last_session": "2026-07-09",
+      "n_bars": 7313
+    },
+    "ROP": {
+      "file_sha256": "30067234bcad522a05224e1a3aea7a87366abf8203df244f67ee6ca9bdc4cbe9",
+      "first_session": "1992-02-13",
+      "last_session": "2026-07-09",
+      "n_bars": 8660
+    },
+    "ROST": {
+      "file_sha256": "6c4a92f8be8aeddb8dd7bf4d955b4f9b394103a4628de8a8e699889f28a2bb0a",
+      "first_session": "1985-08-08",
+      "last_session": "2026-07-09",
+      "n_bars": 10307
+    },
+    "SNOW": {
+      "file_sha256": "bed76b73a32e6b05238f86d4b495f357fc87761a8b0b1553f6eb42d727724d75",
+      "first_session": "2020-09-16",
+      "last_session": "2026-07-09",
+      "n_bars": 1459
+    },
+    "SPY": {
+      "file_sha256": "321a634c62ff7753dc6cea240c23da24a4799f8e4ef331be1a1b8a5c140859af",
+      "first_session": "1993-01-29",
+      "last_session": "2026-07-09",
+      "n_bars": 8417
+    },
+    "STX": {
+      "file_sha256": "328b3b275a5655c685b082bea66eaf9fae6fd566e159ca0175ff05de73419aaa",
+      "first_session": "2002-12-11",
+      "last_session": "2026-07-09",
+      "n_bars": 5930
+    },
+    "TE": {
+      "file_sha256": "638a6594de1a1c0aafd8a9b3c68250154fae62580c186dd6e22bef8b8078df71",
+      "first_session": "2020-01-10",
+      "last_session": "2026-07-09",
+      "n_bars": 1631
+    },
+    "TSLA": {
+      "file_sha256": "92ac6f81a4702d8b2d250c0c47634424af940d907a96435b360aa33d49a12724",
+      "first_session": "2010-06-29",
+      "last_session": "2026-07-09",
+      "n_bars": 4031
+    },
+    "U": {
+      "file_sha256": "f600f7e5109e466cb73a70d5013b169dd980a3a369c6e520e936ab0590ea353a",
+      "first_session": "2020-09-18",
+      "last_session": "2026-07-09",
+      "n_bars": 1457
+    },
+    "UDR": {
+      "file_sha256": "75ae980d124cf8c3f2f088d5b9401f24980831340e6be834618d991b7afdc5be",
+      "first_session": "1980-03-17",
+      "last_session": "2026-07-09",
+      "n_bars": 11672
+    },
+    "VEEV": {
+      "file_sha256": "fb49e15fac70fa00d784a804531916aa719c0fe364e631782c4d8e8ca4865374",
+      "first_session": "2013-10-16",
+      "last_session": "2026-07-09",
+      "n_bars": 3200
+    },
+    "WBD": {
+      "file_sha256": "c2bdc8c8b0943af606182572e984a66daa4dc5cc190d0ee24faba7792105bcff",
+      "first_session": "2005-07-08",
+      "last_session": "2026-07-09",
+      "n_bars": 5283
+    },
+    "WMT": {
+      "file_sha256": "0171e73aa76584aff0f41808224a886ebf133653e7ce407ddd12cd0ec3ce0d84",
+      "first_session": "1972-08-25",
+      "last_session": "2026-07-09",
+      "n_bars": 13578
+    },
+    "WYNN": {
+      "file_sha256": "9f92daf818fd5ccdf6b02f40f1ef38a73b7d912a8e6cfd8cf4b50cd462e4e6ca",
+      "first_session": "2002-10-25",
+      "last_session": "2026-07-09",
+      "n_bars": 5962
+    },
+    "XLF": {
+      "file_sha256": "090e15a563778b23871c1863fbf8f6958a9788777bc07c701f4aa13ae95f9f79",
+      "first_session": "1998-12-22",
+      "last_session": "2026-07-09",
+      "n_bars": 6927
+    }
+  }
+}
