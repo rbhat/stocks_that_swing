@@ -497,7 +497,7 @@ def test_detect_all_combines_and_validates_config_names():
 def test_registry_has_all_detector_families():
     assert set(DETECTORS) == {
         "consolidation_breakout", "vol_squeeze", "markov_state", "sweep_reclaim",
-        "deep_pullback",
+        "deep_pullback", "trend_pullback",
     }
 
 

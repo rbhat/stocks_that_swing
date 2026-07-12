@@ -29,6 +29,7 @@ from sts.signals.deep_pullback import detect as detect_deep_pullback
 from sts.signals.markov import detect as detect_markov
 from sts.signals.squeeze import detect as detect_squeeze
 from sts.signals.sweep_reclaim import detect as detect_sweep_reclaim
+from sts.signals.trend_pullback import detect as detect_trend_pullback
 
 DETECTORS: dict[str, callable] = {
     "consolidation_breakout": detect_breakout,
@@ -36,6 +37,7 @@ DETECTORS: dict[str, callable] = {
     "markov_state": detect_markov,
     "sweep_reclaim": detect_sweep_reclaim,
     "deep_pullback": detect_deep_pullback,
+    "trend_pullback": detect_trend_pullback,
 }
 
 _VERSION_SUFFIX = re.compile(r"_v\d+$")
