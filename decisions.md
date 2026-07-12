@@ -4,6 +4,28 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-12 — Phase-4 H2 portfolio expression: PROCEED (rubric-mapped, user-recorded)
+
+Per the locked prereg `docs/preregs/2026-07-12_h4-portfolio-h2.md` and run artifact
+`runs/h4/h2/report.json` (commit e63ef74): all four locked bars pass — net return +20.1%
+(base arm), max drawdown 9.4% (≤25%), average deployed 26.0% (≥20%), year stability 2/3
+judgeable years positive outside the ±0.05R band (2024 +0.287R n=84, 2025 +0.077R n=72,
+2026 −0.070R n=43). 199 closed OOS trades (≥40 floor), expectancy +0.134R net, bootstrap
+lower90 +0.049, p_negative 2.4%. Survives 2× costs (+17.2%, all bars still pass) and all
+four jitter arms positive (+13.2% to +21.2%). Rubric maps this to **PROCEED** — not an
+override; user recorded the verdict 2026-07-12.
+
+Adverse facts, stated plainly: SPY buy-and-hold +63.8% over the same window (reference
+only per prereg, never a bar); 2026 YTD expectancy is negative beyond the neutral band;
+average deployment sits 6 points above the adequacy floor; window remains ~2.5yr and
+bull-tape-weighted.
+
+**Independent review: NOT YET DONE** — required before anything acts on this PROCEED
+(prereg sign-off clause). H1 and H3 Phase-4 verdicts: pending user judgment (both failed
+the net-return bar; rubric maps to STOP for the portfolio expression).
+
+---
+
 ## 2026-07-12 — Phase 4 charter numbers ratified; Phase-4 plan adopted
 
 User ratified the two numbers VISION.md's "drawdown inside the charter cap" line left
