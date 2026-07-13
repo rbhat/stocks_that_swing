@@ -25,8 +25,9 @@ SEQUENCE:
      --max-wait-min (default 20, polled every 60s, injectable sleep for
      tests). No fill after the deadline -> log + leave the candidate
      unfilled (fillable again on a later run today).
-  4. On fill: re-anchor sl/tp1 off the fill price, re-check
-     BookState.can_enter + re-size against CURRENT book state, append
+  4. On fill: re-anchor sl/tp1 off the fill price, re-size FIRST against
+     CURRENT book state (size() owns the 80% deploy cap), then re-check
+     BookState.can_enter (dup_symbol/slot) on the resized notional, append
      either a `skip` signal (blocked/size_zero) or an `open` ledger row.
      Discord confirmation per fill.
 
@@ -43,6 +44,7 @@ import sys
 import time
 import traceback
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
@@ -58,6 +60,8 @@ from sts.forward.broker import StubPaperBroker, cost_side  # noqa: E402
 from sts.forward.ledger import SOURCES, Ledger, LedgerPaths  # noqa: E402
 
 logger = logging.getLogger("forward_fill")
+
+_ET = ZoneInfo("America/New_York")
 
 POLL_INTERVAL_SEC = 60
 DEFAULT_MAX_WAIT_MIN = 20
@@ -168,12 +172,20 @@ def _process_candidate(
     state = BookState.from_ledger(ledger, book, marks=marks)
     shared_blocked = _shared_blocked(ledger, book, family)
 
-    reason = state.can_enter(symbol, fill_price * queued_qty, shared_blocked)
-    qty = None
-    if reason is None:
-        qty = min(queued_qty, state.size(fill_price, sl))
-        if qty <= 0:
-            reason = "size_zero"
+    # Size-then-check (matching generate_signals' convention): size FIRST at
+    # the actual fill price so can_enter sees the RESIZED notional, not the
+    # stale queued qty — a book that drew down since queueing gets sized down
+    # by risk.position_size rather than spuriously rejected. size() owns the
+    # 80% deploy cap (no room at all -> qty 0 -> "size_zero"), so a
+    # deploy_cap reason from can_enter is ignored here.
+    fresh = state.size(fill_price, sl)
+    qty = min(queued_qty, fresh)
+    if qty <= 0:
+        reason = "size_zero"
+    else:
+        reason = state.can_enter(symbol, fill_price * qty, shared_blocked)
+        if reason == "deploy_cap":
+            reason = None
 
     if reason is not None:
         ledger.append_signal(
@@ -191,6 +203,11 @@ def _process_candidate(
         return "skipped"
 
     entry_fee = cost_side(fill_price, qty)
+    # Pin the timestamp's DATE to the asof session: pipeline._entry_session
+    # derives the entry session from this timestamp's date, and a fill
+    # recorded after 8pm ET would otherwise land on the next UTC day.
+    fill_ts = dt.datetime.fromisoformat(fill["timestamp"])
+    pinned_ts = dt.datetime.combine(asof, fill_ts.timetz()).isoformat()
     row = {
         "entry_id": eid,
         "family": family,
@@ -198,7 +215,7 @@ def _process_candidate(
         "book": book,
         "ticker": symbol,
         "signal_date": cand["signal_date"],
-        "timestamp": fill["timestamp"],
+        "timestamp": pinned_ts,
         "qty": qty,
         "entry_ref": fill_price,
         "entry_fill": fill_price,
@@ -248,7 +265,8 @@ def run(argv: list[str]) -> int:
 
     try:
         env.load()
-        asof = dt.date.fromisoformat(args.asof) if args.asof else dt.date.today()
+        asof = (dt.date.fromisoformat(args.asof) if args.asof
+                else dt.datetime.now(_ET).date())
 
         if not calendar.is_session(asof):
             print(f"forward_fill: {asof} is not a trading session — nothing to do")

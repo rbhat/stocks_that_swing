@@ -197,6 +197,92 @@ def test_fill_skips_when_book_blocked(tmp_path, monkeypatch, ledger):
     assert skips[0]["reason"] == "dup_symbol"
 
 
+def test_fill_resizes_down_to_current_book_size(tmp_path, monkeypatch, ledger):
+    """Queued qty exceeds what the book can size at fill price -> fills at
+    the smaller freshly-computed size, not the stale queued qty."""
+    signal_date = dt.date(2024, 1, 2)
+    entry_session = _entry_session_for(signal_date)
+    cand = candidate_signal(entry_session, signal_date, qty=500)  # deliberately oversized
+    ledger.append_signal(cand)
+
+    store = FakeStore({"AAA": bar_frame(entry_session, 101.0)})
+    monkeypatch.setattr(forward_fill, "StudyStore", lambda: store)
+
+    argv = ["--asof", entry_session.isoformat(), "--ledger-root", str(tmp_path / "ledger"), "--no-discord"]
+    assert forward_fill.run(argv) == 0
+
+    ledger2 = Ledger(LedgerPaths(root=tmp_path / "ledger"))
+    row = ledger2.state()[cand["entry_id"]]
+    assert row["status"] == "open"
+    sl = risk.atr_stop(101.0, cand["atr_sig"], 2.0)
+    from sts.forward.book import BookState
+    expected = BookState(book="shared", equity=100_000.0, cash=100_000.0,
+                         open_rows=[]).size(101.0, sl)
+    assert 0 < expected < 500
+    assert row["qty"] == expected
+
+
+def test_fill_size_zero_skip_when_book_fully_deployed(tmp_path, monkeypatch, ledger):
+    signal_date = dt.date(2024, 1, 2)
+    entry_session = _entry_session_for(signal_date)
+    cand = candidate_signal(entry_session, signal_date, symbol="BBB")
+    ledger.append_signal(cand)
+
+    # One giant open position consumes the entire 80% deploy budget.
+    big = {
+        "entry_id": entry_id("shared", "h2", "ZZZ", signal_date - dt.timedelta(days=1)),
+        "family": "h2",
+        "source": "local-shared",
+        "book": "shared",
+        "ticker": "ZZZ",
+        "signal_date": signal_date - dt.timedelta(days=1),
+        "timestamp": dt.datetime.combine(signal_date, dt.time(13, 30), tzinfo=dt.UTC),
+        "qty": 1,
+        "entry_ref": 80_000.0,
+        "entry_fill": 80_000.0,
+        "entry_price_range": [79_999.0, 80_001.0],
+        "stop_initial": 75_000.0,
+        "sl": 75_000.0,
+        "tp1": 90_000.0,
+        "tp2": None,
+        "status": "open",
+        "usd_deployed": 80_000.0,
+        "exit_price": None,
+        "exit_timestamp": None,
+        "exit_reason": None,
+        "fees_total": 5.0,
+        "pnl_usd": None,
+        "r_net": None,
+    }
+    ledger.append_row(big)
+
+    store = FakeStore({"BBB": bar_frame(entry_session, 101.0)})
+    monkeypatch.setattr(forward_fill, "StudyStore", lambda: store)
+
+    argv = ["--asof", entry_session.isoformat(), "--ledger-root", str(tmp_path / "ledger"), "--no-discord"]
+    assert forward_fill.run(argv) == 0
+
+    ledger2 = Ledger(LedgerPaths(root=tmp_path / "ledger"))
+    assert cand["entry_id"] not in ledger2.state()
+    skips = [r for r in ledger2.signals() if r.get("kind") == "skip" and r["entry_id"] == cand["entry_id"]]
+    assert len(skips) == 1
+    assert skips[0]["reason"] == "size_zero"
+
+
+def test_fill_timestamp_date_pinned_to_asof_session(tmp_path, monkeypatch, ledger):
+    signal_date = dt.date(2024, 1, 2)
+    cand, entry_session, argv = _setup(monkeypatch, ledger, tmp_path, signal_date, open_price=101.0)
+
+    rc = forward_fill.run(argv)
+    assert rc == 0
+
+    ledger2 = Ledger(LedgerPaths(root=tmp_path / "ledger"))
+    row = ledger2.state()[cand["entry_id"]]
+    ts = dt.datetime.fromisoformat(row["timestamp"])
+    # pipeline._entry_session derives the entry session from this date.
+    assert ts.date() == entry_session
+
+
 def test_fill_refuses_on_non_session(tmp_path, monkeypatch, ledger):
     non_session = dt.date(2024, 1, 6)  # Saturday
     argv = ["--asof", non_session.isoformat(), "--ledger-root", str(tmp_path / "ledger"), "--no-discord"]

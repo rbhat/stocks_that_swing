@@ -135,7 +135,8 @@ def run(argv: list[str]) -> int:
 
     try:
         env.load()
-        today = dt.date.fromisoformat(args.asof) if args.asof else dt.date.today()
+        today = (dt.date.fromisoformat(args.asof) if args.asof
+                 else _now_utc().astimezone(_ET).date())
         now_utc = _now_utc()
 
         ledger = Ledger(LedgerPaths(root=Path(args.ledger_root)))
