@@ -1,0 +1,54 @@
+# Used on the GCP VM (deploy.sh ships it to ~/sts/docker-compose.yml).
+# All services are one-shot: `docker compose run --rm <svc>` from cron —
+# never `up`. No `restart:` anywhere.
+#
+# User: services run as STS_UID:STS_GID (exported by deploy.sh from the
+# VM user's id) so bind mounts keep host ownership and chmod-600 secrets
+# stay readable (parent-repo pattern).
+#
+# NOTE: docker creates a directory for a bind-mounted host path that does
+# not exist. deploy.sh mkdir/touches every path below before first run.
+
+services:
+  eod:
+    image: ${STS_IMAGE:-sts:latest}
+    command: ["python", "scripts/forward_eod.py"]
+    user: "${STS_UID:-1000}:${STS_GID:-1000}"
+    env_file: .env
+    environment:
+      - RCLONE_CONFIG=/app/secrets/rclone.conf
+    volumes: &state_volumes
+      - ./ledger:/app/ledger
+      - ./cache:/app/cache
+      - ./logs:/app/logs
+      - ./runs:/app/runs
+      - ./.env:/app/.env:ro
+      - ./secrets:/app/secrets:ro
+      - ./docs:/app/docs:ro
+
+  fill:
+    image: ${STS_IMAGE:-sts:latest}
+    command: ["python", "scripts/forward_fill.py"]
+    user: "${STS_UID:-1000}:${STS_GID:-1000}"
+    env_file: .env
+    environment:
+      - RCLONE_CONFIG=/app/secrets/rclone.conf
+    volumes: *state_volumes
+
+  monitor:
+    image: ${STS_IMAGE:-sts:latest}
+    command: ["python", "scripts/forward_monitor.py"]
+    user: "${STS_UID:-1000}:${STS_GID:-1000}"
+    env_file: .env
+    environment:
+      - RCLONE_CONFIG=/app/secrets/rclone.conf
+    volumes: *state_volumes
+
+  sync:
+    image: ${STS_IMAGE:-sts:latest}
+    command: ["python", "scripts/forward_sync.py"]
+    user: "${STS_UID:-1000}:${STS_GID:-1000}"
+    env_file: .env
+    environment:
+      - RCLONE_CONFIG=/app/secrets/rclone.conf
+    volumes: *state_volumes
