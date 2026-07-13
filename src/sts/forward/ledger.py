@@ -66,6 +66,11 @@ _CLOSED_NON_NULL = frozenset({"exit_price", "exit_reason", "exit_timestamp"})
 _VALID_FAMILIES = frozenset({"h1", "h2"})
 _VALID_STATUSES = frozenset({"open", "closed"})
 
+_VALID_SIGNAL_KINDS = frozenset({"candidate", "skip", "missed_session", "upkeep_done"})
+_VALID_SKIP_REASONS = frozenset(
+    {"slot", "throttle", "embargo", "dup_symbol", "deploy_cap", "size_zero"}
+)
+
 
 def entry_id(book: str, family: str, symbol: str, signal_date: dt.date) -> str:
     """Deterministic id: `book:family:symbol:signal_date` — job re-runs
@@ -138,11 +143,24 @@ class Ledger:
     def append_row(self, row: dict) -> None:
         _validate_row(row)
         eid = row["entry_id"]
+        book = eid.split(":", 1)[0]
+        if book not in BOOKS:
+            raise ValueError(f"entry_id has invalid book prefix: {book!r}")
+        if "book" in row and row["book"] is not None and row["book"] != book:
+            raise ValueError(
+                f"row['book'] {row['book']!r} conflicts with entry_id book {book!r}"
+            )
+        if row["source"] != SOURCES[book]:
+            raise ValueError(
+                f"row['source'] {row['source']!r} does not match "
+                f"SOURCES[{book!r}] = {SOURCES[book]!r}"
+            )
         prev_seq = max(
             (r["seq"] for r in self._all_rows() if r["entry_id"] == eid),
             default=0,
         )
         stamped = dict(row)
+        stamped["book"] = book  # derived from entry_id — single source of truth
         stamped["schema_version"] = SCHEMA_VERSION
         stamped["seq"] = prev_seq + 1
         stamped["updated_at"] = dt.datetime.now(dt.UTC).isoformat()
@@ -163,7 +181,7 @@ class Ledger:
     def open_rows(self, book: str | None = None) -> list[dict]:
         rows = [r for r in self.state().values() if r["status"] == "open"]
         if book is not None:
-            rows = [r for r in rows if r["entry_id"].split(":", 1)[0] == book]
+            rows = [r for r in rows if r["book"] == book]
         return rows
 
     def held_symbols(self, book: str) -> set[str]:
@@ -180,6 +198,11 @@ class Ledger:
         return [r for r in self._equity.read() if r["book"] == book]
 
     def append_signal(self, rec: dict) -> None:
+        kind = rec.get("kind")
+        if kind not in _VALID_SIGNAL_KINDS:
+            raise ValueError(f"invalid signal kind: {kind!r}")
+        if kind == "skip" and rec.get("reason") not in _VALID_SKIP_REASONS:
+            raise ValueError(f"invalid skip reason: {rec.get('reason')!r}")
         key = (str(rec["signal_date"]), rec["book"], rec.get("entry_id"))
         for r in self._signals.read():
             if (str(r["signal_date"]), r["book"], r.get("entry_id")) == key:

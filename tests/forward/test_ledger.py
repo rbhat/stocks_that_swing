@@ -173,6 +173,53 @@ def test_signals_filters_by_date(ledger):
     assert len(ledger.signals()) == 2
 
 
+def test_book_stamped_from_entry_id(ledger):
+    row = make_open_row()
+    del row["book"]
+    ledger.append_row(row)
+    assert ledger.open_rows()[0]["book"] == "shared"
+
+
+def test_conflicting_book_raises(ledger):
+    with pytest.raises(ValueError, match="conflicts"):
+        ledger.append_row(make_open_row(book="h1solo"))
+
+
+def test_invalid_book_prefix_raises(ledger):
+    with pytest.raises(ValueError, match="book prefix"):
+        ledger.append_row(make_open_row(entry_id="bogus:h1:NVDA:2026-07-10", book=None))
+
+
+def test_source_must_match_book(ledger):
+    with pytest.raises(ValueError, match="source"):
+        ledger.append_row(make_open_row(source="local-h1solo"))
+
+
+def test_invalid_family_raises(ledger):
+    with pytest.raises(ValueError, match="family"):
+        ledger.append_row(make_open_row(family="h9"))
+
+
+def test_invalid_status_raises(ledger):
+    with pytest.raises(ValueError, match="status"):
+        ledger.append_row(make_open_row(status="pending"))
+
+
+def test_signal_invalid_kind_raises(ledger):
+    with pytest.raises(ValueError, match="kind"):
+        ledger.append_signal({"signal_date": dt.date(2026, 7, 10), "book": "shared",
+                               "entry_id": "x", "kind": "bogus"})
+
+
+def test_signal_skip_requires_valid_reason(ledger):
+    with pytest.raises(ValueError, match="skip reason"):
+        ledger.append_signal({"signal_date": dt.date(2026, 7, 10), "book": "shared",
+                               "entry_id": "x", "kind": "skip", "reason": "vibes"})
+    ledger.append_signal({"signal_date": dt.date(2026, 7, 10), "book": "shared",
+                           "entry_id": "x", "kind": "skip", "reason": "throttle"})
+    assert len(ledger.signals()) == 1
+
+
 def test_processed_upkeep_dates(ledger):
     ledger.append_signal({"signal_date": dt.date(2026, 7, 10), "book": "shared",
                            "entry_id": None, "kind": "upkeep_done", "date": dt.date(2026, 7, 10)})
