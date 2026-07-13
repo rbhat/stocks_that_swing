@@ -18,4 +18,7 @@ forward-fill:
 forward-monitor:
 	$(PY) scripts/forward_monitor.py
 
-.PHONY: setup test fetch-roster forward-eod forward-fill forward-monitor
+forward-sync:
+	$(PY) scripts/forward_sync.py
+
+.PHONY: setup test fetch-roster forward-eod forward-fill forward-monitor forward-sync
