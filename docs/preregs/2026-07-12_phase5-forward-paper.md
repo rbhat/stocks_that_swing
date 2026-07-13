@@ -1,7 +1,9 @@
 # Prereg: Phase-5 — Forward Paper (H2 solo + H1-4b, shared book)
 
 **Date drafted:** 2026-07-12
-**Status:** DRAFT — pending user ratification of the starred (★) decision points, then LOCKED
+**Status:** LOCKED (user ratified all ★ items 2026-07-12: 6-month judged window with
+one-quarter floor, book bars incl. execution fidelity, per-family ±0.05R drop rule;
+plus: H1-solo companion book, per-family ledgers, tp1=locked target / tp2 reserved)
 **Families:** H2 (PROCEED, e63ef74 record) and H1 in the Phase-4b ranked+throttled
 expression (PROCEED, d43c560 record). Both PROCEEDs carry the forward-paper-is-the-clean-
 arbiter caveat; this study IS that arbiter. No signal or expression parameter moves.
@@ -34,6 +36,35 @@ combined H1+H2 backtest book is PARKED precisely because H1's fire rate diluted 
 3. All results are logged **per-family as well as book-level** so each family's paper read
    is separable — the per-family attribution gap logged against the Phase-4 combined run
    must not recur here.
+
+**H1-solo companion book (user-decided 2026-07-12):** a second, independent virtual book,
+**$100,000 seed**, running the 4b H1 expression alone — exactly as validated (rank key,
+throttle 4/5, 8 slots, 80% deployed, no H2 interaction, no cross-family symbol blocking).
+Descriptive, no bar attaches; its 6-month result is stated in the verdict either way. It
+exists because the shared book's H2-priority rule is a new expression that distorts H1's
+solo read; this book preserves the validated one. Same signal pipeline, separate ledger
+rows (`source: local-h1solo`).
+
+## Forward ledger (locked schema)
+
+**Two ledgers, one per family** (`ledger/h1.jsonl`, `ledger/h2.jsonl`, append-only
+journal). Shared-book and H1-solo rows live in their family's ledger, distinguished by
+`source`. One row per position lifecycle, updated by status transitions; a daily
+book-level snapshot table (`ledger/equity.jsonl`: date, book, equity, cash, $ deployed,
+open_count) carries the equity/deployed series — never per-row.
+
+Row fields: `entry_id` (deterministic: `book:family:symbol:signal_date` — job re-runs
+cannot double-book), `schema_version`, `family`, `source` (local-shared, local-h1solo,
+remote1, ...), `ticker`, `signal_date`, `timestamp` (entry fill), `qty`,
+`entry_ref` (modeled next-open), `entry_fill` (actual; stub: session open), `entry_price_range`
+(alert-time acceptable band), `stop_initial` (immutable R denominator), `sl` (live stop),
+`tp1` (= the locked 2R ATR target; full-size exit), `tp2` (reserved, null — partial/scaled
+exits were never backtested and are out of scope this phase), `status` (open/closed),
+`usd_deployed` (at fill), `exit_price`, `exit_timestamp`, `exit_reason` (stop / stop_gap /
+target / time / censored — backtest taxonomy verbatim), `fees_total`, `pnl_usd`, `r_net`.
+Slippage for the execution-fidelity bar = `entry_fill` vs `entry_ref`, computed from the
+row, and skipped/blocked candidates (slot, throttle, embargo, dup-symbol) go to the signal
+journal with reasons — never silently dropped.
 
 ## Execution mechanics (user-directed, feasibility-checked)
 
@@ -111,6 +142,6 @@ anything acts on a PROCEED.
 
 ## Sign-off
 
-- [ ] User ratifies ★ items and locks this prereg (status → LOCKED) before the first
-      paper signal is generated.
+- [x] User ratified ★ items and locked this prereg 2026-07-12, before the first paper
+      signal was generated.
 - [ ] Independent review completed before any PROCEED is acted on.
