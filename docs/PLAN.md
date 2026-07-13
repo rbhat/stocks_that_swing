@@ -130,8 +130,8 @@ parent in days precisely because it built them well. Deliberately last.
 **Remote deploy:** GCP always-free `e2-micro` VM (Debian 12 + Docker, IAP-tunneled SSH,
 no public IP), same pattern as the parent's `stm-daily` instance — `deploy/provision.sh`
 (idempotent create + Docker install) and `deploy/deploy.sh` (scp `.env`/secrets/configs,
-build+push image, install cron entries idempotently). Cron runs the daily pipeline on a
-weekday schedule via `docker compose run --rm daily`, logging to the VM. Ported directly
+build+push image, install cron entries idempotently). Cron runs the jobs on a
+weekday schedule via `docker compose run --rm eod|fill|monitor`, logging to the VM. Ported directly
 from the parent, adapted for this repo's config/secrets layout. Shipped 2026-07 — see
 docs/FORWARD_OPS.md "Remote deployment".
 
