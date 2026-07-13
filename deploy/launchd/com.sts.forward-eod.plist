@@ -9,7 +9,7 @@
     <array>
         <string>/bin/zsh</string>
         <string>-lc</string>
-        <string>cd __REPO__ &amp;&amp; make forward-eod</string>
+        <string>cd "__REPO__" &amp;&amp; make forward-eod</string>
     </array>
 
     <key>StartCalendarInterval</key>

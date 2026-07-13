@@ -11,8 +11,14 @@ day-2 operational reference — see `docs/PLAN.md` (Phase-5 section) and
 |------------------|--------------------|-------------------------------|--------------------|
 | `forward-eod`    | 17:30              | `scripts/forward_eod.py`      | `make forward-eod` |
 | `forward-fill`   | 06:31              | `scripts/forward_fill.py`     | `make forward-fill`|
-| `forward-monitor`| hourly 07:00–17:00 | `scripts/forward_monitor.py`  | `make forward-monitor` |
+| `forward-monitor`| 05:35 (pre-market), hourly 06:35–12:35 (RTH), 13:35 (post-market) | `scripts/forward_monitor.py`  | `make forward-monitor` |
 | `forward-sync`   | run as step 6 of `forward-eod` (not scheduled standalone) | `scripts/forward_sync.py` | `make forward-sync` |
+
+The monitor fires once pre-market (05:35 PT, before the 06:30 open), hourly
+during regular trading hours (06:35–12:35 PT), and once post-market
+(13:35 PT, after the 13:00 close), per prereg. Which alert types fire at
+each check is governed by the monitor script's `_is_rth` gate, not by the
+schedule — the schedule just guarantees the required check cadence.
 
 launchd has no native timezone concept — `StartCalendarInterval` fires
 against the machine's **local** clock. The plists in `deploy/launchd/` were
