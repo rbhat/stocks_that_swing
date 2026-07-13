@@ -16,6 +16,13 @@ remote reconciliation need — the backtest folder is a write-mostly archive.
 Every failure (rclone or safety-check) is alerted via Discord and swallowed:
 `run_daily_sync` never raises, so a sync outage never fails the EOD job that
 calls it.
+
+KNOWN LIMITATION (TOCTOU): between the download (step 1) and the upload
+(step 5) another writer could append to the remote copy; that append would
+be clobbered by our upload, which is a superset only of what we downloaded.
+This is inherent to file-level sync. The deployment assumption is a single
+writer per book — one machine runs the forward jobs for a given ledger root
+— so no concurrent remote appends occur in practice.
 """
 
 from __future__ import annotations
@@ -38,7 +45,11 @@ FORWARD_FOLDER_ID = "1DIk5ZC-pHq5BGShgjXIqZ_O1nZ636gi5"
 BACKTEST_FOLDER_ID = "1i11V4ooDMRQbbVSkwzwbFr7lKlOoNcEQ"
 
 RCLONE_BIN = "rclone"
-_RCLONE_FILE_NOT_FOUND_EXIT = 3
+# rclone exit codes meaning "the requested remote object does not exist":
+# 3 = directory not found, 4 = file not found. Only these mean fresh start;
+# any other non-zero exit is a real failure and must fail CLOSED (raise),
+# never be misread as an empty remote.
+_RCLONE_NOT_FOUND_EXITS = frozenset({3, 4})
 
 
 def _remote() -> str:
@@ -118,23 +129,35 @@ _LEDGER_FILES: tuple[tuple[str, Callable[[dict], Any]], ...] = (
 )
 
 
-def _download_remote(filename: str, tmp_dir: Path, dry_run: bool) -> list[str]:
+def _download_remote(filename: str, tmp_dir: Path) -> list[str]:
+    """Download the remote copy into tmp_dir. Downloads are non-destructive
+    and therefore run even under --dry-run (the merge/safety check must see
+    real remote content). Fails CLOSED: only a not-found exit (3/4) means
+    fresh start; any other non-zero exit raises SyncError so a transient
+    rclone failure can never be misread as an empty remote."""
     dest = tmp_dir / f"{filename}.remote"
-    result = _rc(["copyto", f"{_remote()}:{filename}", str(dest)], FORWARD_FOLDER_ID, dry_run=dry_run)
-    if result.returncode == _RCLONE_FILE_NOT_FOUND_EXIT or not dest.exists():
+    result = _rc(["copyto", f"{_remote()}:{filename}", str(dest)], FORWARD_FOLDER_ID)
+    if result.returncode in _RCLONE_NOT_FOUND_EXITS:
         logger.info("sync: remote %s not found — treating as empty (fresh start)", filename)
         return []
     if result.returncode != 0:
         raise SyncError(
             f"rclone copyto for {filename} failed (exit {result.returncode}): {result.stderr}"
         )
+    if not dest.exists():
+        # exit 0 but nothing written (e.g. zero-byte remote quirk) — safe
+        # to treat as empty only because rclone itself reported success.
+        return []
     return _read_lines(dest)
 
 
 def _sync_one_file(filename: str, key_fn: Callable[[dict], Any], paths: LedgerPaths,
                     tmp_dir: Path, dry_run: bool) -> str:
     local_path = paths.root / filename
-    remote_lines = _download_remote(filename, tmp_dir, dry_run)
+    # Download is non-destructive (into tmp) and runs even under dry_run so
+    # the merge + safety check below validate against REAL remote content;
+    # only the local write and upload are skipped in dry-run mode.
+    remote_lines = _download_remote(filename, tmp_dir)
     local_lines = _read_lines(local_path)
 
     merged = merge_lines(remote_lines, local_lines, key_fn)

@@ -1,5 +1,6 @@
 import json
 import subprocess
+from pathlib import Path
 
 import pytest
 
@@ -47,7 +48,7 @@ def test_sync_one_file_raises_syncerror_when_remote_line_would_be_lost(tmp_path,
 
     remote_line = _line(entry_id="a", seq=1, updated_at="2026-01-01T00:00:00")
 
-    def fake_download(filename, tmp_dir, dry_run):
+    def fake_download(filename, tmp_dir):
         return [remote_line]
 
     # Force a pathological key_fn that collapses every record to the same
@@ -65,7 +66,7 @@ def test_sync_ledgers_alerts_and_records_error_on_safety_violation(tmp_path, mon
     paths = LedgerPaths(root=tmp_path / "ledger")
     paths.root.mkdir(parents=True)
 
-    monkeypatch.setattr(sync, "_download_remote", lambda filename, tmp_dir, dry_run: [_line(entry_id="a", seq=1)])
+    monkeypatch.setattr(sync, "_download_remote", lambda filename, tmp_dir: [_line(entry_id="a", seq=1)])
     monkeypatch.setattr(sync, "merge_lines", lambda a, b, key_fn: [])
 
     alerted = []
@@ -85,8 +86,47 @@ def test_download_remote_missing_file_treated_as_empty(tmp_path, monkeypatch):
         return subprocess.CompletedProcess(args, returncode=3, stdout="", stderr="directory not found")
 
     monkeypatch.setattr(sync, "_rc", fake_rc)
-    lines = sync._download_remote("h1.jsonl", tmp_path, dry_run=False)
+    lines = sync._download_remote("h1.jsonl", tmp_path)
     assert lines == []
+
+
+def test_download_remote_file_not_found_exit4_treated_as_empty(tmp_path, monkeypatch):
+    def fake_rc(args, folder_id, dry_run=False):
+        return subprocess.CompletedProcess(args, returncode=4, stdout="", stderr="object not found")
+
+    monkeypatch.setattr(sync, "_rc", fake_rc)
+    assert sync._download_remote("h1.jsonl", tmp_path) == []
+
+
+def test_download_remote_real_failure_raises_syncerror(tmp_path, monkeypatch):
+    """A non-not-found non-zero exit (network/auth/retry-exhausted) with an
+    absent dest must fail CLOSED, never be misread as an empty remote."""
+    def fake_rc(args, folder_id, dry_run=False):
+        return subprocess.CompletedProcess(args, returncode=1, stdout="", stderr="network error")
+
+    monkeypatch.setattr(sync, "_rc", fake_rc)
+    with pytest.raises(sync.SyncError):
+        sync._download_remote("h1.jsonl", tmp_path)
+
+
+def test_sync_one_file_no_upload_on_download_failure(tmp_path, monkeypatch):
+    """rclone failure during download → SyncError propagates from
+    _sync_one_file and no upload rclone call is ever issued."""
+    paths = LedgerPaths(root=tmp_path / "ledger")
+    paths.root.mkdir(parents=True)
+    (paths.root / "h1.jsonl").write_text(_line(entry_id="a", seq=1) + "\n")
+
+    calls = []
+
+    def fake_rc(args, folder_id, dry_run=False):
+        calls.append(args)
+        return subprocess.CompletedProcess(args, returncode=7, stdout="", stderr="retry exhausted")
+
+    monkeypatch.setattr(sync, "_rc", fake_rc)
+    with pytest.raises(sync.SyncError):
+        sync._sync_one_file("h1.jsonl", sync._family_key, paths, tmp_path, dry_run=False)
+    # only the download attempt happened; no upload copyto with local source
+    assert len(calls) == 1
 
 
 def test_sync_one_file_fresh_start_writes_local_and_uploads(tmp_path, monkeypatch):
@@ -95,7 +135,7 @@ def test_sync_one_file_fresh_start_writes_local_and_uploads(tmp_path, monkeypatc
     local_line = _line(entry_id="a", seq=1)
     (paths.root / "h1.jsonl").write_text(local_line + "\n")
 
-    monkeypatch.setattr(sync, "_download_remote", lambda filename, tmp_dir, dry_run: [])
+    monkeypatch.setattr(sync, "_download_remote", lambda filename, tmp_dir: [])
 
     calls = []
 
@@ -109,6 +149,47 @@ def test_sync_one_file_fresh_start_writes_local_and_uploads(tmp_path, monkeypatc
     assert outcome == "synced"
     assert calls[0][0] == "copyto"
     assert json.loads((paths.root / "h1.jsonl").read_text().strip()) == json.loads(local_line)
+
+
+def test_sync_one_file_dry_run_downloads_and_merges_but_skips_write_and_upload(tmp_path, monkeypatch):
+    """Dry run must exercise the REAL download + merge + superset check;
+    only the local write and upload are skipped."""
+    paths = LedgerPaths(root=tmp_path / "ledger")
+    paths.root.mkdir(parents=True)
+    local_line = _line(entry_id="local", seq=1)
+    (paths.root / "h1.jsonl").write_text(local_line + "\n")
+    remote_line = _line(entry_id="remote", seq=1)
+
+    calls = []
+
+    def fake_rc(args, folder_id, dry_run=False):
+        calls.append((args, dry_run))
+        if args[0] == "copyto" and args[1].endswith(":h1.jsonl"):
+            # simulate a real download writing the dest file
+            Path(args[2]).write_text(remote_line + "\n")
+        return subprocess.CompletedProcess(args, returncode=0, stdout="", stderr="")
+
+    monkeypatch.setattr(sync, "_rc", fake_rc)
+
+    merged_seen = {}
+    real_merge = sync.merge_lines
+
+    def spy_merge(a, b, key_fn):
+        merged_seen["remote"], merged_seen["local"] = list(a), list(b)
+        return real_merge(a, b, key_fn)
+
+    monkeypatch.setattr(sync, "merge_lines", spy_merge)
+
+    outcome = sync._sync_one_file("h1.jsonl", sync._family_key, paths, tmp_path, dry_run=True)
+    assert outcome == "dry-run"
+    # real remote content reached the merge
+    assert merged_seen["remote"] == [remote_line]
+    assert merged_seen["local"] == [local_line]
+    # exactly one rclone call (the download), no upload, no --dry-run on it
+    assert len(calls) == 1
+    assert calls[0][1] is False
+    # local file untouched
+    assert (paths.root / "h1.jsonl").read_text() == local_line + "\n"
 
 
 # ---------------------------------------------------------------------------

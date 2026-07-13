@@ -25,7 +25,6 @@ def run(argv: list[str]) -> int:
     parser.add_argument("--dry-run", action="store_true", help="pass --dry-run to rclone, skip local writes/uploads")
     parser.add_argument("--ledger-root", default="ledger")
     parser.add_argument("--no-backtest", action="store_true", help="skip backtest artifact push")
-    parser.add_argument("--no-discord", action="store_true", help="reserved for parity with other scripts; sync alerts always fire on failure")
     args = parser.parse_args(argv)
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
