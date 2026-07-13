@@ -140,6 +140,17 @@ reports bars only; the verdict is recorded by the user in decisions.md.
 
 (append-only; none at lock)
 
+- 2026-07-12 (post-run, clarification): the locked selection-quality helper
+  (`.scratch/diag_h1_h3.py` `event_r_net`, reused verbatim per this prereg) charges a
+  flat $2 of order fees against a 1-share position, which swamps the per-event R level
+  (report.json shows −0.400 all / −0.402 taken). The prereg-cited Phase-4 baseline
+  (+0.113 all / +0.044 taken) evidently used bps-only costing. A fee-free companion
+  recompute (`.scratch/h4b_selq_feefree.py`, replication-checked against the run:
+  n_trades=450, net_return=+38.6581%) gives **all +0.117R / taken +0.125R** — level now
+  comparable to the cited baseline. The judged read (the taken-vs-all gap) is unaffected:
+  ≈0 gap under both cost treatments, vs −0.069R adverse gap in Phase 4. No report.json
+  edit; recorded here.
+
 ## Sign-off
 
 - [ ] Independent review completed before any PROCEED is acted on.

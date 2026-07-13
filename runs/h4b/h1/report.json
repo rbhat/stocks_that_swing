@@ -1,0 +1,236 @@
+{
+  "bars": [
+    {
+      "detail": "net_return=0.3865807533540041",
+      "name": "net_return_positive_base_arm",
+      "status": "PASS"
+    },
+    {
+      "detail": "max_drawdown=0.09136503716788559",
+      "name": "max_drawdown_le_25pct",
+      "status": "PASS"
+    },
+    {
+      "detail": "avg_deployed=0.6024968646322085",
+      "name": "avg_deployed_ge_20pct",
+      "status": "PASS"
+    }
+  ],
+  "family": "h1",
+  "generated_at": "2026-07-13T03:41:44.814167+00:00",
+  "n_trades_base_arm": 450,
+  "oos_end": "2026-07-11",
+  "oos_start": "2024-01-01",
+  "slices": {
+    "bootstrap_expectancy": {
+      "lower90": 0.04626751050105263,
+      "mean": 0.10591547160419153,
+      "p_negative": 0.009
+    },
+    "by_year": {
+      "2024": {
+        "expectancy_r_net": 0.021148736982242917,
+        "n": 176,
+        "net_return": 0.0372169527586517
+      },
+      "2025": {
+        "expectancy_r_net": 0.15373875743683946,
+        "n": 173,
+        "net_return": 0.19406994115155593
+      },
+      "2026": {
+        "expectancy_r_net": 0.1717126680835466,
+        "n": 101,
+        "net_return": 0.1552938594437952
+      }
+    },
+    "cost_arms": {
+      "2x": {
+        "avg_deployed": 0.6016576368537171,
+        "by_year": {
+          "2024": {
+            "expectancy_r_net": -0.03261464127902183,
+            "n": 176,
+            "net_return": -0.009815475615718938
+          },
+          "2025": {
+            "expectancy_r_net": 0.07493285063530793,
+            "n": 174,
+            "net_return": 0.12638845814690955
+          },
+          "2026": {
+            "expectancy_r_net": 0.12914986099108128,
+            "n": 102,
+            "net_return": 0.12448148765970356
+          }
+        },
+        "expectancy_r_net": 0.04529076320027882,
+        "friction_share": 0.051896194777834845,
+        "max_drawdown": 0.10226841446525077,
+        "n_dup_symbol": 105,
+        "n_invalid": 0,
+        "n_slot_skipped": 215,
+        "n_throttle_skipped": 2435,
+        "n_trades": 452,
+        "net_return": 0.24105447019089407
+      },
+      "base": {
+        "avg_deployed": 0.6024968646322085,
+        "by_year": {
+          "2024": {
+            "expectancy_r_net": 0.021148736982242917,
+            "n": 176,
+            "net_return": 0.0372169527586517
+          },
+          "2025": {
+            "expectancy_r_net": 0.15373875743683946,
+            "n": 173,
+            "net_return": 0.19406994115155593
+          },
+          "2026": {
+            "expectancy_r_net": 0.1717126680835466,
+            "n": 101,
+            "net_return": 0.1552938594437952
+          }
+        },
+        "expectancy_r_net": 0.10591547160419153,
+        "friction_share": 0.02541827450326233,
+        "max_drawdown": 0.09136503716788559,
+        "n_dup_symbol": 105,
+        "n_invalid": 0,
+        "n_slot_skipped": 220,
+        "n_throttle_skipped": 2432,
+        "n_trades": 450,
+        "net_return": 0.3865807533540041
+      }
+    },
+    "exit_reason_mix": {
+      "censored": 8,
+      "stop": 129,
+      "stop_gap": 23,
+      "target": 212,
+      "time": 78
+    },
+    "friction_share": 0.02541827450326233,
+    "jitter": [
+      {
+        "expectancy_r_net": 0.08551247240857862,
+        "jittered": "risk_param",
+        "net_return": 0.22329743428177753,
+        "param": "atr_stop_multiple",
+        "value": 1.5
+      },
+      {
+        "expectancy_r_net": 0.05052032699866106,
+        "jittered": "risk_param",
+        "net_return": 0.2628388764590077,
+        "param": "atr_stop_multiple",
+        "value": 2.5
+      },
+      {
+        "expectancy_r_net": 0.0841654545701025,
+        "jittered": "risk_param",
+        "net_return": 0.3199137918176147,
+        "param": "atr_target_multiple",
+        "value": 1.5
+      },
+      {
+        "expectancy_r_net": 0.0811535371426409,
+        "jittered": "risk_param",
+        "net_return": 0.36452499415877476,
+        "param": "atr_target_multiple",
+        "value": 2.5
+      },
+      {
+        "expectancy_r_net": 0.11826846850858395,
+        "jittered": "throttle",
+        "net_return": 0.3011400675013245,
+        "param": "max_new_entries_per_window",
+        "value": [
+          3,
+          5
+        ]
+      },
+      {
+        "expectancy_r_net": 0.06363669117661695,
+        "jittered": "throttle",
+        "net_return": 0.42083448851506544,
+        "param": "max_new_entries_per_window",
+        "value": [
+          5,
+          5
+        ]
+      }
+    ],
+    "ranking_only_arm": {
+      "avg_deployed": 0.7349237484697139,
+      "by_year": {
+        "2024": {
+          "expectancy_r_net": -0.0182287626954713,
+          "n": 264,
+          "net_return": 0.08414782136207768
+        },
+        "2025": {
+          "expectancy_r_net": 0.11013304752099984,
+          "n": 240,
+          "net_return": 0.24599666291961242
+        },
+        "2026": {
+          "expectancy_r_net": 0.12310989355328356,
+          "n": 146,
+          "net_return": 0.244667046290634
+        }
+      },
+      "expectancy_r_net": 0.06091320386494606,
+      "friction_share": 0.025416615496944888,
+      "max_drawdown": 0.10472233579805701,
+      "n_dup_symbol": 157,
+      "n_invalid": 0,
+      "n_slot_skipped": 2400,
+      "n_throttle_skipped": 0,
+      "n_trades": 650,
+      "net_return": 0.5748115305723235
+    },
+    "seed_slice": {
+      "non_seed": {
+        "mean_r_net": 0.12236178426927562,
+        "n": 366
+      },
+      "seed": {
+        "mean_r_net": 0.03425653784918227,
+        "n": 84
+      }
+    },
+    "selection_quality": {
+      "all_candidates": {
+        "mean_r_net": -0.4001975142132556,
+        "n": 3207
+      },
+      "taken_subset": {
+        "mean_r_net": -0.40215250570540884,
+        "n": 507
+      }
+    },
+    "slot_pressure": {
+      "n_dup_symbol": 105,
+      "n_slot_skipped": 220,
+      "n_throttle_skipped": 2432
+    },
+    "spy_reference": {
+      "n_sessions": 631,
+      "net_return": 0.6383935092249302
+    },
+    "year_stability": {
+      "n_negative": 0,
+      "n_neutral": 1,
+      "n_positive": 2,
+      "worst_year": "2024",
+      "years": {
+        "2024": "neutral",
+        "2025": "positive",
+        "2026": "positive"
+      }
+    }
+  },
+  "study": "h4b-h1-ranked-expression"
+}
