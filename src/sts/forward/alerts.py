@@ -38,7 +38,11 @@ def send(text: str, webhook: str | None = None) -> bool:
     req = urllib.request.Request(
         url,
         data=payload,
-        headers={"Content-Type": "application/json"},
+        headers={
+            "Content-Type": "application/json",
+            # Discord/Cloudflare rejects urllib's default Python-urllib UA with 403
+            "User-Agent": "sts-forward-alerts/1.0",
+        },
         method="POST",
     )
 
