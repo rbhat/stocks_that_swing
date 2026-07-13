@@ -124,8 +124,28 @@ parent's forward-engine pattern. Runs locally on a laptop cron; no VM. Review ca
 
 ## Phase 6 — Ops (only after Phase-5 survival)
 
-Alerts (trade events only), minimal dashboard, VM/cron, Drive sync — all portable from the
+Alerts (trade events only), minimal dashboard, VM/cron — all portable from the
 parent in days precisely because it built them well. Deliberately last.
+
+**Remote deploy:** GCP always-free `e2-micro` VM (Debian 12 + Docker, IAP-tunneled SSH,
+no public IP), same pattern as the parent's `stm-daily` instance — `deploy/provision.sh`
+(idempotent create + Docker install) and `deploy/deploy.sh` (scp `.env`/secrets/configs,
+build+push image, install cron entries idempotently). Cron runs the daily pipeline on a
+weekday schedule via `docker compose run --rm daily`, logging to the VM. Ported directly
+from the parent, adapted for this repo's config/secrets layout. Shipped 2026-07 — see
+docs/FORWARD_OPS.md "Remote deployment".
+
+**Discord webhook message format** (trade-event alerts only):
+
+```
+{ticker} Entry @{price_low}-{price_high}, TP1: @{tp1}, TP2: @{tp2}, SL: {sl}. Config: {config_name}. Alerted at {timestamp PT}.
+```
+
+- `{price_low}-{price_high}`: entry price range, same precision as the config's price series.
+- `TP1`/`TP2`: numeric targets, `@`-prefixed.
+- `SL`: stop-loss level, no `@` prefix.
+- `{config_name}`: the surviving Phase-4 config identifier (family + variant).
+- `{timestamp PT}`: alert fire time in US Pacific, e.g. `2026-07-12 09:31 AM PT`.
 
 ---
 

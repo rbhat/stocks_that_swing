@@ -38,6 +38,48 @@ The script substitutes `__REPO__` in each plist with `git rev-parse
 `launchctl bootout` failure, e.g. "not currently loaded," is ignored before
 `bootstrap`).
 
+## Remote deployment (GCP VM — the production writer)
+
+The pipeline runs unattended on `sts-forward` (e2-micro, Debian 12 + Docker,
+project `stocks-that-move`, zone `us-central1-a`, IAP-tunneled SSH). The VM's
+timezone is `America/Los_Angeles`, so its cron matches the PT schedule above:
+
+| Job | VM cron (PT local) | Command |
+|-----|--------------------|---------|
+| eod     | `30 17 * * 1-5` | `docker compose run --rm eod` |
+| fill    | `31 6 * * 1-5`  | `docker compose run --rm fill` |
+| monitor | `35 5,6,...,13 * * 1-5` | `docker compose run --rm monitor` |
+
+Setup / redeploy (idempotent, re-run any time):
+
+    deploy/provision.sh   # create VM + Docker + timezone (once)
+    deploy/deploy.sh      # build+push image, ship .env/secrets/configs, install cron
+
+Logs live on the VM under `~/sts/logs/{eod,fill,monitor}.log`:
+
+    gcloud compute ssh sts-forward --project stocks-that-move \
+      --zone us-central1-a --tunnel-through-iap \
+      --command "tail -50 ~/sts/logs/eod.log"
+
+Drive auth on the VM uses the dedicated service account
+`sts-drive-sync@stocks-that-move.iam.gserviceaccount.com` (rclone remote
+`gdrive-sa:`, key at `~/sts/secrets/sts-drive-sa.json`), which is shared
+into both Drive folders as Editor. The laptop keeps its own OAuth remote
+`gdrive:` — the two never share credentials.
+
+### Single-writer policy (CRITICAL)
+
+**The VM is THE writer of the forward ledgers.** The laptop launchd agents
+in `deploy/launchd/` must stay uninstalled while the VM is live
+(`deploy/launchd/install.sh -u` to remove if ever re-added). Manual laptop
+runs (`make forward-eod` etc.) are a fallback ONLY when the VM is confirmed
+down (e.g. `gcloud compute instances describe sts-forward` shows not
+RUNNING, or SSH fails) — never run them concurrently with a live VM: the
+Drive merge is append-safe but two writers in the same session can both
+pass the size-then-check fill gate and double-enter positions. The VM's
+`ledger/` is seeded by the merge-only sync itself on first run — remote
+Drive state is the source of truth; never scp a ledger to the VM.
+
 ## Manual commands
 
 ```sh
