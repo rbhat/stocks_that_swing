@@ -84,3 +84,46 @@ def test_dry_run_second_invocation_is_noop(tmp_path, study_store, monkeypatch):
     assert rc2 == 0
     # second run should be recognized as already-done (no-op path)
     assert forward_eod._already_done(ledger, asof)
+
+
+def test_empty_queue_night_sends_book_status_and_no_candidates(
+    tmp_path, study_store, monkeypatch
+):
+    """With Discord enabled (fake send injected), an empty-queue night must
+    send BOTH the explicit no-candidates message and the book status."""
+    store, df = study_store
+    asof = df.index[-1].date()
+
+    monkeypatch.setattr(forward_eod, "_roster_symbols", lambda: ["AAA"])
+    sent: list[str] = []
+    monkeypatch.setattr(forward_eod.alerts, "send", lambda text, **k: sent.append(text) or True)
+
+    rc = forward_eod.run([
+        "--no-fetch", "--no-sync",  # Discord NOT suppressed
+        "--asof", asof.isoformat(),
+        "--ledger-root", str(tmp_path / "ledger"),
+    ])
+    assert rc == 0
+    assert any(f"No candidates for {asof.isoformat()}" in t for t in sent)
+    assert any("equity=" in t for t in sent)  # book_status line
+
+
+def test_noop_second_run_still_invokes_sync(tmp_path, study_store, monkeypatch):
+    store, df = study_store
+    asof = df.index[-1].date()
+
+    monkeypatch.setattr(forward_eod, "_roster_symbols", lambda: ["AAA"])
+    monkeypatch.setattr(forward_eod.alerts, "send", lambda *a, **k: True)
+
+    argv = ["--no-fetch", "--asof", asof.isoformat(),
+            "--ledger-root", str(tmp_path / "ledger")]
+
+    sync_calls: list[bool] = []
+    monkeypatch.setattr(forward_eod, "_run_sync", lambda do_sync: sync_calls.append(do_sync))
+
+    assert forward_eod.run(argv) == 0
+    assert sync_calls == [True]
+
+    # second run hits the already-done path but must still attempt sync
+    assert forward_eod.run(argv) == 0
+    assert sync_calls == [True, True]

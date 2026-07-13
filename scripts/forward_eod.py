@@ -7,8 +7,9 @@ ledger IS the state (upkeep_done + signals per asof), so a killed or re-run
 job for the same `asof` is a safe no-op rather than a double-fire.
 
 SEQUENCE (see .superpowers/sdd/task-7-brief.md):
-  1. env.load(); resolve asof; exit 0 (no-op) if upkeep_done AND signals
-     already recorded for asof.
+  1. env.load(); resolve asof; if upkeep_done AND signals already recorded
+     for asof, skip stages 2-5 but still run sync (stage 6) then exit 0 —
+     a crash between signal gen and sync must not strand the date unsynced.
   2. Incremental fetch of the study roster (skipped by --no-fetch/--dry-run).
   3. run_upkeep -> Discord exit_alert per closed row.
   4. generate_signals -> Discord entry_alert per queued candidate + a
@@ -39,7 +40,7 @@ import yaml  # noqa: E402
 
 from sts import calendar, env  # noqa: E402
 from sts.catalyst import CatalystCalendar, refresh_earnings  # noqa: E402
-from sts.data.fetch import FetchError, fetch_daily  # noqa: E402
+from sts.data.fetch import fetch_daily  # noqa: E402
 from sts.data.study_store import StudyStore  # noqa: E402
 from sts.forward import alerts  # noqa: E402
 from sts.forward.ledger import Ledger, LedgerPaths  # noqa: E402
@@ -97,7 +98,7 @@ def _incremental_fetch(store: StudyStore, symbols: list[str], asof: dt.date) -> 
             merged = new if existing is None else _clean(existing).combine_first(new)
             store.write(sym, merged.sort_index())
             ok += 1
-        except (FetchError, ValueError, Exception) as e:  # noqa: BLE001
+        except Exception as e:  # noqa: BLE001 — fetch or quality-gate failure -> log & continue
             logger.warning("forward_eod: fetch failed for %s: %s", sym, e)
             failed += 1
         elapsed = time.time() - t0
@@ -125,6 +126,23 @@ def _refresh_earnings_if_stale(symbols: list[str]) -> None:
 
 def _already_done(ledger: Ledger, asof: dt.date) -> bool:
     return asof in ledger.processed_upkeep_dates() and bool(ledger.signals(asof))
+
+
+def _run_sync(do_sync: bool) -> None:
+    """Stage 6: ImportError-guarded sync hook. Runs on both the normal path
+    and the already-done no-op path (sync is idempotent/merge-only)."""
+    if not do_sync:
+        print("[6/6] sync: skipped (--dry-run/--no-sync)")
+        return
+    print("[6/6] sync...")
+    try:
+        from sts.forward import sync  # TODO(Task 9): module doesn't exist yet
+    except ImportError:
+        logger.info("forward_eod: sts.forward.sync not available yet (Task 9) — skipping")
+        print("[6/6] sync: skipped (module not yet implemented)")
+        return
+    sync.run_daily_sync()
+    print("[6/6] sync done")
 
 
 def run(argv: list[str]) -> int:
@@ -158,7 +176,13 @@ def run(argv: list[str]) -> int:
         ledger = Ledger(LedgerPaths(root=Path(args.ledger_root)))
 
         if _already_done(ledger, asof):
-            print(f"forward_eod: {asof} already processed (upkeep_done + signals present) — no-op")
+            # Stages 2-5 are ledger-idempotent and already recorded, but a
+            # crash between signal gen and sync would leave the date marked
+            # done with sync never run — so a no-op re-run still attempts
+            # the sync stage (idempotent/merge-only) before exiting.
+            print(f"forward_eod: {asof} already processed (upkeep_done + signals "
+                  f"present) — skipping stages 1-5; running sync only")
+            _run_sync(do_sync)
             return 0
 
         # [1/6] fetch
@@ -190,13 +214,14 @@ def run(argv: list[str]) -> int:
         queued = result["queued"]
         for cand in queued:
             _alert(alerts.entry_alert(cand))
-        if queued:
-            snapshots = [ledger.equity_series(book)[-1] for book in ("shared", "h1solo")
-                         if ledger.equity_series(book)]
-            if snapshots:
-                _alert(alerts.book_status(snapshots))
-        else:
+        if not queued:
             _alert(f"No candidates for {asof.isoformat()}")
+        # Book status goes out every night regardless of queue state —
+        # silence must be distinguishable from outage (prereg caveat).
+        snapshots = [ledger.equity_series(book)[-1] for book in ("shared", "h1solo")
+                     if ledger.equity_series(book)]
+        if snapshots:
+            _alert(alerts.book_status(snapshots))
         print(f"[4/6] signals done: {len(queued)} queued, {len(result['skipped'])} skipped "
               f"in {_fmt_eta(time.time() - t0)}")
 
@@ -209,17 +234,7 @@ def run(argv: list[str]) -> int:
         print(f"[5/6] {len(missed)} missed session(s)")
 
         # [6/6] sync
-        if do_sync:
-            print("[6/6] sync...")
-            try:
-                from sts.forward import sync  # TODO(Task 9): module doesn't exist yet
-                sync.run_daily_sync()
-                print("[6/6] sync done")
-            except ImportError:
-                logger.info("forward_eod: sts.forward.sync not available yet (Task 9) — skipping")
-                print("[6/6] sync: skipped (module not yet implemented)")
-        else:
-            print("[6/6] sync: skipped (--dry-run/--no-sync)")
+        _run_sync(do_sync)
 
         print(f"forward_eod: {asof} complete in {_fmt_eta(time.time() - t_start)}")
         return 0
