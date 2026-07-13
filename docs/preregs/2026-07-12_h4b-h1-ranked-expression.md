@@ -151,6 +151,14 @@ reports bars only; the verdict is recorded by the user in decisions.md.
   ≈0 gap under both cost treatments, vs −0.069R adverse gap in Phase 4. No report.json
   edit; recorded here.
 
+- 2026-07-12 (post-verdict): user recorded **PROCEED** in decisions.md (rubric-mapped, not
+  an override; all four bars pass; independent review signed off at 24ef4b3). The entry
+  states the mandated caveats: second expression on the same OOS window (forward paper is
+  the clean arbiter), seed preference not supported (seeds 84 trades +0.034R vs non-seed
+  366 at +0.122R), ranking-only arm beat the primary (+57.5% vs +38.7% net; throttle cost
+  return, not needed for DD here), 2024 expectancy neutral (+0.021R, inside the ±0.05R
+  band). No bars, rubric, or config changed.
+
 ## Sign-off
 
 - [x] Independent review completed before any PROCEED is acted on.

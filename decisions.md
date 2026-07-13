@@ -4,6 +4,45 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-12 — Phase-4b H1 ranked+throttled re-expression: PROCEED (rubric-mapped, user-recorded)
+
+Per locked prereg `docs/preregs/2026-07-12_h4b-h1-ranked-expression.md` (locked blind at
+62d9015, before any ranked/throttled backtest existed) and `runs/h4b/h1/report.json`
+(624ec04): all four locked bars pass on the primary cell — net return **+38.7%** (base arm,
+vs −3.1% for the Phase-4 H1 expression), max drawdown 9.1% (≤25%), average deployed 60.2%
+(≥20%), year stability 3/3 judgeable years non-negative with 2024 neutral inside the band
+(see below) and 2025 (+0.154R, n=173) / 2026 (+0.172R, n=101) positive → ≥60% bar met.
+450 closed OOS trades, expectancy +0.106R net, bootstrap lower90 +0.046, p_negative 0.9%.
+Survives 2× costs (+24.1%, all bars pass); all six jitter arms (four ATR, throttle 3/5 and
+5/5) positive. Selection-quality read (the reason this study existed): the Phase-4 adverse-
+selection gap is eliminated — taken +0.125R vs all-candidates +0.117R fee-free (report.json's
+−0.40 levels are a flat-fee artifact, see the prereg deviations log). Rubric maps to
+**PROCEED** — not an override; user recorded the verdict 2026-07-12. Independent review of
+the run record already signed off at 24ef4b3.
+
+Adverse/caveat facts, stated plainly per convention:
+
+- **Second expression on the same OOS window.** The H1 OOS window has now been read twice;
+  this pass is weaker evidence than a first-look pass would have been. Per the locked
+  prereg, forward paper is the clean arbiter — this PROCEED is a candidacy claim, not a
+  validated edge.
+- **Seed preference not supported by results.** Seeds: 84 trades at +0.034R vs non-seed:
+  366 trades at +0.122R. The rank key's first criterion (seed-preferred) selected the
+  weaker slice; the edge came from the non-seed book.
+- **Ranking-only arm beat the primary.** The descriptive no-throttle arm returned +57.5%
+  net (650 trades, DD 10.5%) vs the primary's +38.7% (DD 9.1%). The throttle cost return
+  and was not needed for drawdown control in this bull-weighted window. No bar attaches to
+  that arm; the verdict judges the primary cell alone.
+- **2024 expectancy neutral**, +0.021R (n=176), inside the ±0.05R band — the stability bar
+  passes on 2/2 non-neutral years, but the earliest OOS year contributed no judged edge
+  (and goes slightly negative at 2× costs: −0.033R).
+
+Consequence: the 4b H1 book joins H2 solo (PROCEED, e63ef74 record) as Phase-5
+forward-paper material; how the two fit together (separate books vs a re-run combined
+prereg) is a Phase-5 scoping decision, not settled here.
+
+---
+
 ## 2026-07-12 — Independent review of Phase-4/4b verdict record: SIGN OFF
 
 Independent review (Opus subagent) audited the four Phase-4 verdicts (H1 PROCEED-override,
