@@ -1,4 +1,5 @@
 .venv/
+ledger/
 .scratch/*
 !.scratch/.keep
 cache/
