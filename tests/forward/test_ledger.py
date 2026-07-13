@@ -220,6 +220,13 @@ def test_signal_skip_requires_valid_reason(ledger):
     assert len(ledger.signals()) == 1
 
 
+def test_signal_monitor_alert_kind_accepted(ledger):
+    ledger.append_signal({"signal_date": dt.date(2026, 7, 10), "book": "shared",
+                           "entry_id": "shared:h1:NVDA:2026-07-10#stop_touched",
+                           "kind": "monitor_alert"})
+    assert len(ledger.signals(dt.date(2026, 7, 10))) == 1
+
+
 def test_processed_upkeep_dates(ledger):
     ledger.append_signal({"signal_date": dt.date(2026, 7, 10), "book": "shared",
                            "entry_id": None, "kind": "upkeep_done", "date": dt.date(2026, 7, 10)})

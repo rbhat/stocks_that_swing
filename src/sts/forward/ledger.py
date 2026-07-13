@@ -66,7 +66,9 @@ _CLOSED_NON_NULL = frozenset({"exit_price", "exit_reason", "exit_timestamp"})
 _VALID_FAMILIES = frozenset({"h1", "h2"})
 _VALID_STATUSES = frozenset({"open", "closed"})
 
-_VALID_SIGNAL_KINDS = frozenset({"candidate", "skip", "missed_session", "upkeep_done"})
+_VALID_SIGNAL_KINDS = frozenset(
+    {"candidate", "skip", "missed_session", "upkeep_done", "monitor_alert"}
+)
 _VALID_SKIP_REASONS = frozenset(
     {"slot", "throttle", "embargo", "dup_symbol", "deploy_cap", "size_zero"}
 )

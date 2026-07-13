@@ -12,4 +12,10 @@ fetch-roster:
 forward-eod:
 	$(PY) scripts/forward_eod.py
 
-.PHONY: setup test fetch-roster forward-eod
+forward-fill:
+	$(PY) scripts/forward_fill.py
+
+forward-monitor:
+	$(PY) scripts/forward_monitor.py
+
+.PHONY: setup test fetch-roster forward-eod forward-fill forward-monitor
