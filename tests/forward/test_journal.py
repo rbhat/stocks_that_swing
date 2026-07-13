@@ -105,6 +105,17 @@ def test_merge_lines_collision_fallback_raw_string_when_no_updated_at():
     assert merged[0] == expected
 
 
+def test_merge_lines_collision_timestamped_side_wins_when_other_lacks_updated_at():
+    # The line WITH updated_at wins even when the untimestamped line's raw
+    # string would sort larger.
+    with_ts = _line({"key": "x", "updated_at": 1, "value": "aaa"})
+    without_ts = _line({"key": "x", "value": "zzz"})
+    assert without_ts > with_ts  # ensure the string-max fallback would pick the wrong one
+    for a, b in [([with_ts], [without_ts]), ([without_ts], [with_ts])]:
+        merged = merge_lines(a, b, key_fn=lambda d: d["key"])
+        assert merged == [with_ts]
+
+
 def test_merge_lines_is_idempotent():
     a = [_line({"key": "x", "updated_at": 1})]
     b = [_line({"key": "x", "updated_at": 2}), _line({"key": "y", "updated_at": 1})]

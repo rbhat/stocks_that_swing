@@ -43,11 +43,10 @@ class Journal:
         lines = raw.split("\n")
         # A well-formed file ends with "\n", so the last split element is "".
         # Drop it; anything else in that slot is a genuine partial line.
-        trailing_partial = lines[-1] if lines and lines[-1] != "" else None
-        if trailing_partial is not None:
-            lines = lines[:-1]
-        else:
-            lines = lines[:-1] if lines and lines[-1] == "" else lines
+        # A well-formed file ends with "\n", so split leaves a final "";
+        # anything non-empty there is a genuine partial line.
+        trailing_partial = lines[-1] or None
+        lines = lines[:-1]
 
         records: list[dict] = []
         for i, line in enumerate(lines, start=1):
@@ -91,8 +90,15 @@ def merge_lines(a: list[str], b: list[str], key_fn: Callable[[dict], Any]) -> li
         candidate_parsed = json.loads(candidate)
         existing_ts = existing_parsed.get("updated_at")
         candidate_ts = candidate_parsed.get("updated_at")
-        if existing_ts is not None and candidate_ts is not None and existing_ts != candidate_ts:
-            winner = candidate if candidate_ts > existing_ts else existing
+        if existing_ts is not None and candidate_ts is not None:
+            if existing_ts != candidate_ts:
+                winner = candidate if candidate_ts > existing_ts else existing
+            else:
+                winner = max(existing, candidate)
+        elif existing_ts is not None:
+            winner = existing  # a timestamped line beats an untimestamped one
+        elif candidate_ts is not None:
+            winner = candidate
         else:
             winner = max(existing, candidate)
         logger.warning("merge_lines: content collision for key %r; keeping newer line", key)
