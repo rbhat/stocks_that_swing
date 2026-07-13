@@ -153,6 +153,6 @@ reports bars only; the verdict is recorded by the user in decisions.md.
 
 ## Sign-off
 
-- [ ] Independent review completed before any PROCEED is acted on.
-- Reviewer:
-- Date:
+- [x] Independent review completed before any PROCEED is acted on.
+- Reviewer: Independent review (Opus subagent), verified by main session against run artifacts
+- Date: 2026-07-12

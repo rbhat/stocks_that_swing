@@ -4,6 +4,37 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-12 — Independent review of Phase-4/4b verdict record: SIGN OFF
+
+Independent review (Opus subagent) audited the four Phase-4 verdicts (H1 PROCEED-override,
+H3 PARK-override, H2 PROCEED rubric-mapped, combined PARK rubric-mapped) and the Phase-4b
+run record against the locked preregs and run artifacts. Result: **SIGN OFF.** Every
+quoted number reproduces from the report.json files (main session re-verified the anchor
+numbers independently); the combined entry's per-family recompute is honestly disclosed
+and its replication anchors (n=655, +9.5472%) match; all rubric mappings follow the locked
+wording (combined year bands recomputed: 2024 negative, 2025 neutral, 2026 positive);
+overrides carry adverse facts with rubrics unchanged; prereg files show only append-only
+post-lock edits; the Phase-4b lock commit (62d9015) precedes tooling (d0963c6) and
+artifact (624ec04); the 4b run used exactly the locked config, and its fee-free
+selection-quality companion was re-run by the reviewer and reproduced (n=450, +38.6581%;
+all +0.117R / taken +0.125R).
+
+Two NITs, no file changes:
+1. Reviewer read "1/3 judgeable years positive" (combined entry) as imprecise, arguing a
+   neutral year isn't judgeable. Rejected on the locked wording: preregs define
+   non-judgeable solely as n < 10 closed trades, so all 3 years are judgeable and 1/3 is
+   exact. Either denominator fails the 60% bar; PARK unaffected.
+2. H1 entry's "2/3 years negative" states raw expectancy sign; under the ±0.05R band 2024
+   classifies neutral (1 negative/1 neutral/1 positive). Narrative adverse-fact only —
+   the governing bar for H1's STOP mapping was net return, not year bands.
+
+Sign-off sections marked complete in all five preregs (four Phase-4 + Phase-4b). The two
+PROCEEDs are now cleared to be acted on: H2 solo (rubric-mapped) and H1 (user override).
+Phase-4b still carries NO recorded verdict — rubric maps its run to PROCEED (all four
+bars pass); user judgment pending.
+
+---
+
 ## 2026-07-12 — Phase-4 combined book (H1+H2): PARK (rubric-mapped, user-recorded)
 
 Per locked prereg `docs/preregs/2026-07-12_h4-portfolio-combined.md` and

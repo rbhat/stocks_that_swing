@@ -81,6 +81,6 @@ user records the verdict.
 
 ## Sign-off
 
-- [ ] Independent review completed before any PROCEED is acted on.
-- Reviewer:
-- Date:
+- [x] Independent review completed before any PROCEED is acted on.
+- Reviewer: Independent review (Opus subagent), verified by main session against run artifacts
+- Date: 2026-07-12
