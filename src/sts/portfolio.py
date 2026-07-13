@@ -22,7 +22,9 @@ indices within `[start, end)`:
    for that day); an exit books cash at `price*shares - cost`, cost =
    `notional * bps_per_side/10_000 + per_order`.
 2. Entries second — candidates whose `entry_date == today`, processed in
-   deterministic `(signal_date, symbol)` order; each sized via
+   deterministic `(signal_date, symbol)` order by default, or by
+   `entry_rank_key` when the caller supplies one (per-entry-session
+   `sorted(lst, key=entry_rank_key)` instead); each sized via
    `risk.position_size(equity, entry, stop, deployed, cash, open_count)`
    using state updated candidate-by-candidate (so slot/cash/deployed caps
    bind realistically across a crowded day, not against a snapshot taken
@@ -34,7 +36,14 @@ indices within `[start, end)`:
    can resolve on the entry bar itself, and the 15-session time-stop clock
    starts counting from the entry bar.
 3. One open position per symbol at a time — a candidate for an
-   already-held symbol is skipped, never queued.
+   already-held symbol is skipped, never queued. When `max_new_entries_per_window`
+   is set to `(cap, window)`, a candidate arriving in a session whose
+   trailing `window`-session count of entries opened (including today,
+   counted on the union trading calendar this loop walks) is already at
+   `cap` is skipped for that session and counted in `n_throttle_skipped`
+   (a throttle skip is checked after the dup-symbol check, before sizing/
+   slot logic, and is never a slot skip). Off by default (`None`), in which
+   case `n_throttle_skipped` is always present in the summary as 0.
 4. Equity is marked at day close: cash + Σ shares×close, using each open
    symbol's last KNOWN close when today's bar is missing for that symbol.
 5. If `end` is reached with positions still open, they are censored at
@@ -51,6 +60,8 @@ mean, over every marked session, of (Σ shares×close)/equity that session.
 from __future__ import annotations
 
 import datetime as dt
+from collections import deque
+from typing import Callable
 
 import pandas as pd
 
@@ -69,10 +80,18 @@ def simulate_portfolio(
     bps_per_side: float = 5.0,
     per_order: float = 1.0,
     start_capital: float = risk.START_CAPITAL,
+    entry_rank_key: Callable[[dict], tuple] | None = None,
+    max_new_entries_per_window: tuple[int, int] | None = None,
 ) -> dict:
     """Drive `candidates` through a daily portfolio loop over `prices` in the
     session window `[start, end)`. See module docstring for full semantics.
     Returns `{"equity", "trades", "summary"}` per the plan's contract.
+
+    `entry_rank_key`, if given, replaces the default `(signal_date, symbol)`
+    per-entry-session candidate ordering. `max_new_entries_per_window`, if
+    given as `(cap, window)`, throttles new entries to at most `cap` per
+    rolling `window`-session window (Phase-4b prereg). Both default to
+    behavior-identical-off.
     """
     # Per-symbol date -> row-position index, built once (avoids repeated
     # index scans across a potentially long simulation).
@@ -87,8 +106,9 @@ def simulate_portfolio(
     candidates_by_entry_date: dict[dt.date, list[dict]] = {}
     for cand in candidates:
         candidates_by_entry_date.setdefault(cand["entry_date"], []).append(cand)
+    rank_key = entry_rank_key if entry_rank_key is not None else lambda c: (c["signal_date"], c["symbol"])
     for lst in candidates_by_entry_date.values():
-        lst.sort(key=lambda c: (c["signal_date"], c["symbol"]))
+        lst.sort(key=rank_key)
 
     cash = start_capital
     open_pos: dict[str, dict] = {}  # symbol -> {"pos": Position, "family", "signal_date", ...}
@@ -98,7 +118,11 @@ def simulate_portfolio(
     n_slot_skipped = 0
     n_invalid = 0
     n_dup_symbol = 0
+    n_throttle_skipped = 0
     deployed_fracs: list[float] = []
+    # Trailing-window entry-count tracking for the throttle: one deque entry
+    # per walked session, holding the count of positions opened that session.
+    throttle_window: deque[int] = deque()
 
     def get_row(symbol: str, date: dt.date):
         idx = iloc_of.get(symbol)
@@ -162,12 +186,23 @@ def simulate_portfolio(
                 reason, price, shares = exits[0]
                 close_position(symbol, reason, price, shares, today)
 
-        # 2. Entries second, deterministic priority order.
+        # 2. Entries second, deterministic (or ranked) priority order.
+        if max_new_entries_per_window is not None:
+            throttle_window.append(0)
+            _, window = max_new_entries_per_window
+            while len(throttle_window) > window:
+                throttle_window.popleft()
         for cand in candidates_by_entry_date.get(today, []):
             symbol = cand["symbol"]
             if symbol in open_pos:
                 n_dup_symbol += 1
                 continue
+
+            if max_new_entries_per_window is not None:
+                cap, _ = max_new_entries_per_window
+                if sum(throttle_window) >= cap:
+                    n_throttle_skipped += 1
+                    continue
 
             deployed = deployed_value()
             equity_now = cash + deployed
@@ -195,6 +230,9 @@ def simulate_portfolio(
             except risk.RuleViolation:
                 n_invalid += 1
                 continue
+
+            if max_new_entries_per_window is not None:
+                throttle_window[-1] += 1
 
             notional = entry * shares
             entry_cost = _cost(notional, bps_per_side, per_order)
@@ -277,6 +315,7 @@ def simulate_portfolio(
         "n_slot_skipped": n_slot_skipped,
         "n_invalid": n_invalid,
         "n_dup_symbol": n_dup_symbol,
+        "n_throttle_skipped": n_throttle_skipped,
     }
 
     return {"equity": equity, "trades": trades, "summary": summary}

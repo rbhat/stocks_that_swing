@@ -38,10 +38,12 @@ from the locked family definition (independent-review finding F1,
 from __future__ import annotations
 
 import datetime as dt
+from pathlib import Path
 
 import pandas as pd
 
 from sts import risk
+from sts.universe import Universe
 from sts.catalyst import EARNINGS_PATH, CatalystCalendar
 from sts.signals import resolve_detector
 from sts.signals.squeeze import DEFAULTS as SQUEEZE_DEFAULTS
@@ -51,6 +53,19 @@ from sts.study.h1_events import _PARAM_DEFAULTS as _RISK_DEFAULTS
 from sts.study.h1_events import entry_geometry
 from sts.study.h2_events import _PARAM_DEFAULTS as _H2_PARAM_DEFAULTS
 from sts.study.h2_events import assign_deciles, build_reaction_events, load_earnings_dates
+
+_UNIVERSE_PATH = Path(__file__).resolve().parents[3] / "universe.yaml"
+_SEED_SYMBOLS: frozenset[str] | None = None
+
+
+def _seed_symbols() -> frozenset[str]:
+    """The `seeds:` symbol set from `universe.yaml` at repo root, loaded once
+    and cached (Phase-4b prereg's `is_seed` candidate field)."""
+    global _SEED_SYMBOLS
+    if _SEED_SYMBOLS is None:
+        _SEED_SYMBOLS = frozenset(Universe(path=_UNIVERSE_PATH).seeds)
+    return _SEED_SYMBOLS
+
 
 FAMILY_PARAMS: dict[str, dict] = {
     "h1": {
@@ -110,7 +125,11 @@ def _h1_candidates(
                 continue
             if catalyst.catalyst_within(symbol, geo["entry_date"], 2, "block_entry") is not None:
                 continue
-            out.append(_candidate(symbol, "h1", ev.date, geo))
+            cand = _candidate(symbol, "h1", ev.date, geo)
+            cand["rsi2_at_trigger"] = ev.trigger_values["rsi2_at_trigger"]
+            cand["reclaim_wait_sessions"] = ev.trigger_values["reclaim_wait_sessions"]
+            cand["is_seed"] = symbol in _seed_symbols()
+            out.append(cand)
     return out
 
 

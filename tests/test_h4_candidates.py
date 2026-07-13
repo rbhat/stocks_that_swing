@@ -79,6 +79,36 @@ def test_h1_candidate_matches_hand_computed_geometry():
     assert c["entry_date"] == df.index[sig_iloc + 1].date()
 
 
+def test_h1_candidate_carries_rank_fields_and_seed_flag():
+    """Phase-4b prereg fields: rsi2_at_trigger, reclaim_wait_sessions (both
+    from the detector's trigger_values, no new computation), and is_seed
+    (membership in universe.yaml's `seeds:` list) -- AAPL is a real seed."""
+    rows = []
+    price = 100.0
+    for _ in range(30):
+        rows.append(bar(price - 0.5, price + 0.5, price - 0.5, price))
+    last = _trend_pullback_episode(rows, price)
+    _trend_pullback_episode(rows, last)
+    df = make_frame(rows)
+    prices = {"TEST": df, "AAPL": df}
+
+    cands = candidates_for(
+        "h1", prices, dt.date(2000, 1, 1), dt.date(2100, 1, 1), catalyst=_empty_catalyst()
+    )
+    assert len(cands) >= 2
+    by_symbol = {}
+    for c in cands:
+        by_symbol.setdefault(c["symbol"], c)
+
+    for c in cands:
+        assert isinstance(c["rsi2_at_trigger"], float)
+        assert isinstance(c["reclaim_wait_sessions"], int)
+        assert isinstance(c["is_seed"], bool)
+
+    assert by_symbol["AAPL"]["is_seed"] is True
+    assert by_symbol["TEST"]["is_seed"] is False
+
+
 def test_h1_drops_candidate_within_catalyst_embargo():
     rows = []
     price = 100.0
