@@ -9,4 +9,7 @@ test:
 fetch-roster:
 	$(PY) scripts/fetch_study_roster.py
 
-.PHONY: setup test fetch-roster
+forward-eod:
+	$(PY) scripts/forward_eod.py
+
+.PHONY: setup test fetch-roster forward-eod
