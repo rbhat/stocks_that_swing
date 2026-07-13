@@ -141,6 +141,26 @@ def test_run_upkeep_time_exit(ledger, empty_catalyst):
     assert closed[0]["exit_reason"] == "time"
 
 
+def test_run_upkeep_time_exit_day_by_day(ledger, empty_catalyst):
+    """Incremental daily operation: bars_held must carry across upkeep runs
+    so the 15-session time stop fires even when each run sees one new bar."""
+    idx = pd.bdate_range("2024-01-02", periods=20, name="date")
+    rows = flat_rows(20)
+    df = pd.DataFrame(rows, index=idx)[["open", "high", "low", "close", "volume"]]
+
+    entry_date = idx[0].date()
+    ledger.append_row(make_open_row(entry_date))
+
+    all_closed = []
+    for ts in idx[1:17]:
+        all_closed += run_upkeep(ledger, {"AAA": df}, ts.date())
+
+    assert len(all_closed) == 1
+    assert all_closed[0]["exit_reason"] == "time"
+    # 15th bar after entry
+    assert all_closed[0]["exit_timestamp"].startswith(idx[15].date().isoformat())
+
+
 def test_run_upkeep_idempotent(ledger, empty_catalyst):
     idx = pd.bdate_range("2024-01-02", periods=10, name="date")
     rows = flat_rows(10)
@@ -258,6 +278,61 @@ def test_generate_signals_skip_reasons_recorded(ledger, empty_catalyst):
         assert rec["reason"] in {
             "slot", "throttle", "embargo", "dup_symbol", "deploy_cap", "size_zero",
         }
+
+
+def test_generate_signals_sizes_down_under_tight_deploy_room(ledger, empty_catalyst):
+    """When deploy room is tight, position_size sizes DOWN against the 80%
+    cap (matching simulate_portfolio) — candidate is queued at reduced size,
+    not rejected with deploy_cap."""
+    asof = dt.date(2024, 3, 15)
+    prices = make_prices(["AAA", "BBB"], asof)
+
+    # Existing shared-book position consuming most of the 80% deploy budget.
+    ledger.append_row(
+        make_open_row(asof - dt.timedelta(days=5), entry_fill=100.0, qty=780, family="h2")
+    )
+
+    def source(prices, asof, catalyst):
+        return {"h1": [make_candidate("BBB", "h1", asof)], "h2": []}
+
+    result = generate_signals(ledger, prices, asof, empty_catalyst, candidate_source=source)
+
+    shared_queued = [q for q in result["queued"] if q["book"] == "shared"]
+    assert len(shared_queued) == 1
+    q = shared_queued[0]
+    assert 0 < q["qty"] < 90  # sized down well below the unconstrained risk size
+    assert not any(
+        s["reason"] == "deploy_cap" for s in result["skipped"] if s["book"] == "shared"
+    )
+
+
+def test_generate_signals_embargo_uses_next_trading_session(ledger):
+    """asof = Friday: entry session is Monday. An earnings event 2 sessions
+    after Monday must embargo; naive asof+1day (Saturday) anchoring would
+    put it 3 sessions out and miss it."""
+    from sts.catalyst import CatalystEvent
+
+    asof = dt.date(2024, 3, 15)  # Friday; next session Mon 2024-03-18
+    prices = make_prices(["AAA"], asof)
+    cat = CatalystCalendar(
+        events=[
+            CatalystEvent(
+                symbol="AAA",
+                date=dt.date(2024, 3, 20),  # Wed: 2 sessions after Monday
+                type="earnings",
+                source="earnings",
+                actions=frozenset({"block_entry"}),
+            )
+        ]
+    )
+
+    def source(prices, asof, catalyst):
+        return {"h1": [make_candidate("AAA", "h1", asof)], "h2": []}
+
+    result = generate_signals(ledger, prices, asof, cat, candidate_source=source)
+    shared_skips = [s for s in result["skipped"] if s["book"] == "shared"]
+    assert any(s["reason"] == "embargo" for s in shared_skips)
+    assert not any(q["book"] == "shared" for q in result["queued"])
 
 
 # ---------------------------------------------------------------------------

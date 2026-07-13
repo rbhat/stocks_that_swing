@@ -70,12 +70,17 @@ def run_upkeep(ledger: Ledger, prices: dict[str, pd.DataFrame], asof: dt.date) -
             opened=_entry_session(row),
             config=row["family"],
         )
-        pos.bars_held = 0
-
-        bar_dates = [d for d in df.index.date if d > pos.opened and d <= asof]
+        all_dates = sorted({d for d in df.index.date if d > pos.opened and d <= asof})
         if last_processed is not None:
-            bar_dates = [d for d in bar_dates if d > last_processed]
-        bar_dates = sorted(set(bar_dates))
+            # Bars already replayed by prior upkeep runs still count toward
+            # the 15-session time stop: carry bars_held across incremental
+            # invocations, else daily operation would reset it every run and
+            # the time stop would never fire.
+            pos.bars_held = len([d for d in all_dates if d <= last_processed])
+            bar_dates = [d for d in all_dates if d > last_processed]
+        else:
+            pos.bars_held = 0
+            bar_dates = all_dates
 
         for bar_date in bar_dates:
             bar = df.loc[pd.Timestamp(bar_date)]
@@ -195,6 +200,23 @@ def generate_signals(
 
     session_dates = list(sessions_between(asof - dt.timedelta(days=30), asof).date)
 
+    # Calendar-true next trading session (entry session), not asof+1 calendar
+    # day — a Friday signal enters Monday, and the 2-session embargo must be
+    # anchored to the actual entry session.
+    upcoming = sessions_between(asof + dt.timedelta(days=1), asof + dt.timedelta(days=14))
+    next_session = upcoming[0].date() if len(upcoming) else asof + dt.timedelta(days=1)
+
+    # NOTE (same-day re-run): generate_signals is idempotent at the ledger
+    # level — append_signal dedups on (signal_date, book, entry_id), so a
+    # re-run for an already-processed asof never writes duplicate records.
+    # However, the RETURNED payload of a re-run can be misleading: candidates
+    # queued in the first run are now counted by h1_throttle_room, so a
+    # re-run may report them as "throttle" skips (the skip append is then a
+    # dedup no-op, but the in-memory return value still lists them). Callers
+    # alerting from the return value should not re-run for the same asof;
+    # ledger integrity holds regardless. Chosen over an early-return guard to
+    # keep this function stateless w.r.t. "was this asof already signalled".
+
     queued: list[dict] = []
     skipped: list[dict] = []
 
@@ -224,7 +246,6 @@ def generate_signals(
             signal_date = _as_date(cand["signal_date"])
             eid = entry_id(book, family, symbol, signal_date)
 
-            next_session = asof + dt.timedelta(days=1)
             if catalyst.catalyst_within(symbol, next_session, 2, "block_entry") is not None:
                 skipped.append(
                     _append_skip(ledger, book, family, eid, asof, symbol, "embargo")
@@ -273,6 +294,13 @@ def generate_signals(
                     open_positions=open_count_now,
                 )
                 notional = provisional_qty * close_sig if provisional_qty else 0.0
+                # NOTE: position_size already sizes DOWN against the 80%
+                # deploy cap (its by_deployed term), matching
+                # simulate_portfolio's live behavior — so when deploy room is
+                # tight the candidate is queued at reduced size (or falls to
+                # size_zero when no room at all) rather than rejected here.
+                # This branch is therefore normally unreachable and is kept
+                # only defensively (e.g. float-edge rounding).
                 if provisional_qty > 0 and deployed_now + notional > risk.MAX_DEPLOYED_PCT * state.equity:
                     reason = "deploy_cap"
 
