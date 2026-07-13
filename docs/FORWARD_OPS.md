@@ -41,7 +41,7 @@ The script substitutes `__REPO__` in each plist with `git rev-parse
 ## Remote deployment (GCP VM — the production writer)
 
 The pipeline runs unattended on `sts-forward` (e2-micro, Debian 12 + Docker,
-project `stocks-that-move`, zone `us-central1-a`, IAP-tunneled SSH). The VM's
+project `stocks-that-move`, zone `us-west1-b`, IAP-tunneled SSH). The VM's
 timezone is `America/Los_Angeles`, so its cron matches the PT schedule above:
 
 | Job | VM cron (PT local) | Command |
@@ -58,7 +58,7 @@ Setup / redeploy (idempotent, re-run any time):
 Logs live on the VM under `~/sts/logs/{eod,fill,monitor}.log`:
 
     gcloud compute ssh sts-forward --project stocks-that-move \
-      --zone us-central1-a --tunnel-through-iap \
+      --zone us-west1-b --tunnel-through-iap \
       --command "tail -50 ~/sts/logs/eod.log"
 
 Drive auth on the VM uses the dedicated service account

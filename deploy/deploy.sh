@@ -8,7 +8,7 @@
 set -euo pipefail
 
 PROJECT="${STS_PROJECT:-stocks-that-move}"
-ZONE="${STS_ZONE:-us-central1-a}"
+ZONE="${STS_ZONE:-us-west1-b}"
 INSTANCE="${STS_INSTANCE:-sts-forward}"
 REGION="us-central1"
 REPO="sts"
@@ -186,5 +186,5 @@ echo ""
 
 cat <<EOF
 Tail logs with:
-  gcloud compute ssh sts-forward --project stocks-that-move --zone us-central1-a --tunnel-through-iap --command "tail -f ~/sts/logs/eod.log"
+  gcloud compute ssh sts-forward --project stocks-that-move --zone us-west1-b --tunnel-through-iap --command "tail -f ~/sts/logs/eod.log"
 EOF

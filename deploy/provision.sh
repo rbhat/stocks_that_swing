@@ -9,7 +9,7 @@
 set -euo pipefail
 
 PROJECT="${STS_PROJECT:-stocks-that-move}"
-ZONE="${STS_ZONE:-us-central1-a}"
+ZONE="${STS_ZONE:-us-west1-b}"
 INSTANCE="${STS_INSTANCE:-sts-forward}"
 
 echo "== provision.sh: project=${PROJECT} zone=${ZONE} instance=${INSTANCE} =="
