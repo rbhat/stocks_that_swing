@@ -73,7 +73,7 @@ into both Drive folders as Editor. The laptop keeps its own OAuth remote
 in `deploy/launchd/` must stay uninstalled while the VM is live
 (`deploy/launchd/install.sh -u` to remove if ever re-added). Manual laptop
 runs (`make forward-eod` etc.) are a fallback ONLY when the VM is confirmed
-down (e.g. `gcloud compute instances describe sts-forward` shows not
+down (e.g. `gcloud compute instances describe sts-forward --zone us-west1-b` shows not
 RUNNING, or SSH fails) — never run them concurrently with a live VM: the
 Drive merge is append-safe but two writers in the same session can both
 pass the size-then-check fill gate and double-enter positions. The VM's
