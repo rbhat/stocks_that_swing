@@ -115,8 +115,26 @@ vm_ssh "mkdir -p ~/sts/secrets ~/sts/configs ~/sts/cache ~/sts/ledger ~/sts/logs
 echo "-- copying files to VM (.env, secrets, universe.yaml, configs/, docker-compose.yml) --"
 gcloud compute scp --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap \
     "${REPO_ROOT}/.env" "${INSTANCE}:~/sts/.env"
+
+# Stage the VM rclone.conf: repo [gdrive-sa] remote + the operator's OAuth
+# [gdrive] remote from ~/.config/rclone/rclone.conf. The OAuth remote is the
+# one syncs use (STS_RCLONE_REMOTE below): service accounts have no My Drive
+# storage quota, so SA uploads 403 on file CREATION; OAuth uploads own files
+# as the operator and always work. Re-copied every deploy so the token on
+# the VM stays fresh.
+LOCAL_RCLONE_CONF="${HOME}/.config/rclone/rclone.conf"
+if ! grep -q '^\[gdrive\]' "${LOCAL_RCLONE_CONF}" 2>/dev/null; then
+    echo "ERROR: no [gdrive] OAuth remote in ${LOCAL_RCLONE_CONF}; run 'rclone config' first." >&2
+    exit 1
+fi
+STAGED_RCLONE_CONF="$(mktemp)"
+trap 'rm -f "${STAGED_RCLONE_CONF}"' EXIT
+cat "${REPO_ROOT}/secrets/rclone.conf" > "${STAGED_RCLONE_CONF}"
+printf '\n' >> "${STAGED_RCLONE_CONF}"
+awk '/^\[gdrive\]$/{f=1} f&&/^\[/&&!/^\[gdrive\]$/{f=0} f' \
+    "${LOCAL_RCLONE_CONF}" >> "${STAGED_RCLONE_CONF}"
 gcloud compute scp --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap \
-    "${REPO_ROOT}/secrets/rclone.conf" "${INSTANCE}:~/sts/secrets/rclone.conf"
+    "${STAGED_RCLONE_CONF}" "${INSTANCE}:~/sts/secrets/rclone.conf"
 gcloud compute scp --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap \
     "${REPO_ROOT}/secrets/sts-drive-sa.json" "${INSTANCE}:~/sts/secrets/sts-drive-sa.json"
 gcloud compute scp --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap \
@@ -124,10 +142,11 @@ gcloud compute scp --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap 
 gcloud compute scp --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap --recurse \
     "${REPO_ROOT}/configs" "${INSTANCE}:~/sts/"
 
-# STS_RCLONE_REMOTE must name the VM's service-account remote; pin idempotently.
+# STS_RCLONE_REMOTE must name the OAuth remote (see staging note above);
+# pin idempotently.
 vm_ssh "grep -v '^STS_RCLONE_REMOTE=' ~/sts/.env > ~/sts/.env.tmp || true; \
      mv ~/sts/.env.tmp ~/sts/.env; \
-     echo 'STS_RCLONE_REMOTE=gdrive-sa:' >> ~/sts/.env"
+     echo 'STS_RCLONE_REMOTE=gdrive:' >> ~/sts/.env"
 
 echo "-- locking down secrets (chmod 600) --"
 vm_ssh "chmod 600 ~/sts/.env ~/sts/secrets/rclone.conf ~/sts/secrets/sts-drive-sa.json"
