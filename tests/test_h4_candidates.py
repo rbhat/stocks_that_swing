@@ -127,8 +127,15 @@ def test_h1_selected_signal_survives_final_bar_without_entry_geometry():
     selected = selected_signals_for(
         "h1", {"TEST": truncated}, signal_date, signal_date + dt.timedelta(days=1)
     )
-    assert [(r["family"], r["symbol"], r["signal_date"]) for r in selected] == [
-        ("h1", "TEST", signal_date)
+    assert selected == [
+        {
+            "family": "h1",
+            "symbol": "TEST",
+            "signal_date": signal_date,
+            "rsi2_at_trigger": historical[0]["rsi2_at_trigger"],
+            "reclaim_wait_sessions": historical[0]["reclaim_wait_sessions"],
+            "is_seed": historical[0]["is_seed"],
+        }
     ]
     assert candidates_for(
         "h1", {"TEST": truncated}, signal_date, signal_date + dt.timedelta(days=1),
@@ -148,6 +155,13 @@ def test_h2_selected_signal_survives_final_bar_without_entry_geometry(monkeypatc
         "h2", {"TEST": df, "SPY": df}, signal_date, signal_date + dt.timedelta(days=1)
     )
     assert selected == [{"family": "h2", "symbol": "TEST", "signal_date": signal_date}]
+
+
+def test_selected_signals_rejects_non_forward_family():
+    with pytest.raises(ValueError, match="unknown forward family"):
+        selected_signals_for(
+            "h3", {}, dt.date(2024, 1, 1), dt.date(2024, 1, 2)
+        )
 
 
 def test_h1_drops_candidate_within_catalyst_embargo():

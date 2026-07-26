@@ -43,7 +43,6 @@ from pathlib import Path
 import pandas as pd
 
 from sts import risk
-from sts.universe import Universe
 from sts.catalyst import EARNINGS_PATH, CatalystCalendar
 from sts.signals import resolve_detector
 from sts.signals.squeeze import DEFAULTS as SQUEEZE_DEFAULTS
@@ -52,7 +51,12 @@ from sts.signals.trend_pullback import detect as detect_trend_pullback
 from sts.study.h1_events import _PARAM_DEFAULTS as _RISK_DEFAULTS
 from sts.study.h1_events import entry_geometry
 from sts.study.h2_events import _PARAM_DEFAULTS as _H2_PARAM_DEFAULTS
-from sts.study.h2_events import assign_deciles, build_reaction_events, load_earnings_dates
+from sts.study.h2_events import (
+    assign_deciles,
+    build_reaction_events,
+    load_earnings_dates,
+)
+from sts.universe import Universe
 
 _UNIVERSE_PATH = Path(__file__).resolve().parents[3] / "universe.yaml"
 _SEED_SYMBOLS: frozenset[str] | None = None
@@ -98,38 +102,30 @@ def _candidate(symbol: str, family: str, signal_date: dt.date, geo: dict) -> dic
     }
 
 
-def _h1_candidates(
+def _h1_selected_signals(
     prices: dict[str, pd.DataFrame],
     oos_start: dt.date,
     oos_end: dt.date,
-    catalyst: CatalystCalendar,
-    risk_params: dict | None = None,
 ) -> list[dict]:
     detector_params = FAMILY_PARAMS["h1"]["detector_params"]
-    p = risk_params if risk_params is not None else FAMILY_PARAMS["h1"]["risk_params"]
     out: list[dict] = []
     for symbol in sorted(prices):
         df = prices[symbol]
         if df is None or df.empty:
             continue
-        iloc_of = {d: i for i, d in enumerate(df.index.date)}
-        atr_series = risk.atr(df, window=p["atr_window"])
         for ev in detect_trend_pullback(symbol, df, detector_params, "trend_pullback"):
             if ev.date < oos_start or ev.date >= oos_end:
                 continue
-            sig_iloc = iloc_of.get(ev.date)
-            if sig_iloc is None:
-                continue
-            geo = entry_geometry(df, sig_iloc, atr_series, p)
-            if geo is None:
-                continue
-            if catalyst.catalyst_within(symbol, geo["entry_date"], 2, "block_entry") is not None:
-                continue
-            cand = _candidate(symbol, "h1", ev.date, geo)
-            cand["rsi2_at_trigger"] = ev.trigger_values["rsi2_at_trigger"]
-            cand["reclaim_wait_sessions"] = ev.trigger_values["reclaim_wait_sessions"]
-            cand["is_seed"] = symbol in _seed_symbols()
-            out.append(cand)
+            out.append(
+                {
+                    "family": "h1",
+                    "symbol": symbol,
+                    "signal_date": ev.date,
+                    "rsi2_at_trigger": ev.trigger_values["rsi2_at_trigger"],
+                    "reclaim_wait_sessions": ev.trigger_values["reclaim_wait_sessions"],
+                    "is_seed": symbol in _seed_symbols(),
+                }
+            )
     return out
 
 
@@ -166,11 +162,10 @@ def _h3_candidates(
     return out
 
 
-def _h2_candidates(
+def _h2_selected_signals(
     prices: dict[str, pd.DataFrame],
     oos_start: dt.date,
     oos_end: dt.date,
-    catalyst: CatalystCalendar,
     risk_params: dict | None = None,
 ) -> list[dict]:
     p = risk_params if risk_params is not None else FAMILY_PARAMS["h2"]["risk_params"]
@@ -191,25 +186,89 @@ def _h2_candidates(
             continue
         if ev["signal_date"] < oos_start or ev["signal_date"] >= oos_end:
             continue
-        symbol = ev["symbol"]
+        out.append(
+            {
+                "family": "h2",
+                "symbol": ev["symbol"],
+                "signal_date": ev["signal_date"],
+            }
+        )
+    return out
+
+
+_SELECTORS = {"h1": _h1_selected_signals, "h2": _h2_selected_signals}
+
+
+def selected_signals_for(
+    family: str,
+    prices: dict[str, pd.DataFrame],
+    oos_start: dt.date,
+    oos_end: dt.date,
+    risk_params: dict | None = None,
+) -> list[dict]:
+    """Return causal H1/H2 signal facts in ``[oos_start, oos_end)``.
+
+    Every returned field is known at the signal bar's close.  In particular,
+    selection does not require a future bar and never derives an entry date,
+    entry price, stop, or target.  H1's locked detector rank fields are
+    carried through unchanged; H2 retains only events assigned the locked
+    causal top-decile flag.
+
+    ``risk_params`` exists solely to preserve the historical H2 adapter's
+    jitter-call contract.  It does not create execution geometry here.
+    """
+    selector = _SELECTORS.get(family)
+    if selector is None:
+        raise ValueError(
+            f"unknown forward family {family!r}, expected one of {sorted(_SELECTORS)}"
+        )
+    if family == "h2":
+        return selector(prices, oos_start, oos_end, risk_params)
+    return selector(prices, oos_start, oos_end)
+
+
+def _selected_candidates(
+    family: str,
+    prices: dict[str, pd.DataFrame],
+    oos_start: dt.date,
+    oos_end: dt.date,
+    catalyst: CatalystCalendar,
+    risk_params: dict | None = None,
+) -> list[dict]:
+    p = risk_params if risk_params is not None else FAMILY_PARAMS[family]["risk_params"]
+    out: list[dict] = []
+    for signal in selected_signals_for(
+        family, prices, oos_start, oos_end, risk_params
+    ):
+        symbol = signal["symbol"]
         df = prices.get(symbol)
         if df is None or df.empty:
             continue
         iloc_of = {d: i for i, d in enumerate(df.index.date)}
-        sig_iloc = iloc_of.get(ev["signal_date"])
+        sig_iloc = iloc_of.get(signal["signal_date"])
         if sig_iloc is None:
             continue
         atr_series = risk.atr(df, window=p["atr_window"])
         geo = entry_geometry(df, sig_iloc, atr_series, p)
         if geo is None:
             continue
-        if catalyst.catalyst_within(symbol, geo["entry_date"], 2, "block_entry") is not None:
+        if (
+            catalyst.catalyst_within(
+                symbol, geo["entry_date"], 2, "block_entry"
+            )
+            is not None
+        ):
             continue
-        out.append(_candidate(symbol, "h2", ev["signal_date"], geo))
+        cand = _candidate(symbol, family, signal["signal_date"], geo)
+        if family == "h1":
+            cand["rsi2_at_trigger"] = signal["rsi2_at_trigger"]
+            cand["reclaim_wait_sessions"] = signal["reclaim_wait_sessions"]
+            cand["is_seed"] = signal["is_seed"]
+        out.append(cand)
     return out
 
 
-_ADAPTERS = {"h1": _h1_candidates, "h3": _h3_candidates, "h2": _h2_candidates}
+_ADAPTERS = {"h1": _selected_candidates, "h3": _h3_candidates, "h2": _selected_candidates}
 
 
 def candidates_for(
@@ -230,4 +289,7 @@ def candidates_for(
     if family not in _ADAPTERS:
         raise ValueError(f"unknown family {family!r}, expected one of {sorted(_ADAPTERS)}")
     cal = catalyst if catalyst is not None else CatalystCalendar.load()
-    return _ADAPTERS[family](prices, oos_start, oos_end, cal, risk_params)
+    adapter = _ADAPTERS[family]
+    if family == "h3":
+        return adapter(prices, oos_start, oos_end, cal, risk_params)
+    return adapter(family, prices, oos_start, oos_end, cal, risk_params)
