@@ -11,6 +11,7 @@ from sts.forward.pipeline import (
     generate_signals,
     run_upkeep,
 )
+import sts.forward.pipeline as pipeline
 
 
 def bar(o, h, l, c, v=1_000_000):
@@ -220,6 +221,25 @@ def test_generate_signals_h2_before_h1(ledger, empty_catalyst):
     result = generate_signals(ledger, prices, asof, empty_catalyst, candidate_source=source)
     queued = result["queued"]
     assert [q["family"] for q in queued if q["book"] == "shared"][:2] == ["h2", "h1"]
+
+
+def test_default_source_queues_final_bar_selected_signal(
+    ledger, empty_catalyst, monkeypatch
+):
+    asof = dt.date(2024, 3, 15)
+    prices = make_prices(["AAA"], asof)
+
+    def selected(family, prices, start, end):
+        if family == "h1":
+            return [make_candidate("AAA", "h1", asof)]
+        return []
+
+    monkeypatch.setattr(pipeline, "selected_signals_for", selected)
+    result = generate_signals(ledger, prices, asof, empty_catalyst)
+    assert [(r["book"], r["family"], r["ticker"]) for r in result["queued"]] == [
+        ("shared", "h1", "AAA"),
+        ("h1solo", "h1", "AAA"),
+    ]
 
 
 def test_generate_signals_h1_throttle(ledger, empty_catalyst):

@@ -9,7 +9,7 @@ import pytest
 
 from sts.catalyst import CatalystCalendar, CatalystEvent
 from sts.study import h4_candidates
-from sts.study.h4_candidates import FAMILY_PARAMS, candidates_for
+from sts.study.h4_candidates import FAMILY_PARAMS, candidates_for, selected_signals_for
 
 
 def make_frame(rows: list[dict], start="2024-01-02") -> pd.DataFrame:
@@ -107,6 +107,47 @@ def test_h1_candidate_carries_rank_fields_and_seed_flag():
 
     assert by_symbol["AAPL"]["is_seed"] is True
     assert by_symbol["TEST"]["is_seed"] is False
+
+
+def test_h1_selected_signal_survives_final_bar_without_entry_geometry():
+    rows = []
+    price = 100.0
+    for _ in range(30):
+        rows.append(bar(price - 0.5, price + 0.5, price - 0.5, price))
+    last = _trend_pullback_episode(rows, price)
+    _trend_pullback_episode(rows, last)
+    full = make_frame(rows)
+    historical = candidates_for(
+        "h1", {"TEST": full}, dt.date(2000, 1, 1), dt.date(2100, 1, 1),
+        catalyst=_empty_catalyst(),
+    )
+    signal_date = historical[0]["signal_date"]
+    truncated = full[full.index.date <= signal_date]
+
+    selected = selected_signals_for(
+        "h1", {"TEST": truncated}, signal_date, signal_date + dt.timedelta(days=1)
+    )
+    assert [(r["family"], r["symbol"], r["signal_date"]) for r in selected] == [
+        ("h1", "TEST", signal_date)
+    ]
+    assert candidates_for(
+        "h1", {"TEST": truncated}, signal_date, signal_date + dt.timedelta(days=1),
+        catalyst=_empty_catalyst(),
+    ) == []
+
+
+def test_h2_selected_signal_survives_final_bar_without_entry_geometry(monkeypatch):
+    df = make_frame([bar(100, 101, 99, 100) for _ in range(30)])
+    signal_date = df.index[-1].date()
+    event = {"symbol": "TEST", "signal_date": signal_date, "decile_flag": "top"}
+    monkeypatch.setattr(h4_candidates, "load_earnings_dates", lambda path: {})
+    monkeypatch.setattr(h4_candidates, "build_reaction_events", lambda *args: [event])
+    monkeypatch.setattr(h4_candidates, "assign_deciles", lambda *args: [event])
+
+    selected = selected_signals_for(
+        "h2", {"TEST": df, "SPY": df}, signal_date, signal_date + dt.timedelta(days=1)
+    )
+    assert selected == [{"family": "h2", "symbol": "TEST", "signal_date": signal_date}]
 
 
 def test_h1_drops_candidate_within_catalyst_embargo():
