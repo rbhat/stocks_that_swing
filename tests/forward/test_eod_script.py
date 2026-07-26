@@ -112,6 +112,29 @@ def test_empty_queue_night_sends_book_status_and_no_candidates(
     assert asof in ledger.processed_upkeep_dates()
     assert asof in ledger.processed_signal_dates()
     assert asof in ledger.processed_notification_dates()
+    done = next(
+        rec for rec in ledger.signals(asof) if rec["kind"] == "notifications_done"
+    )
+    summary = done["summary"]
+    assert summary["market_data"]["counts"] == {
+        "fresh": 1,
+        "stale": 0,
+        "missing": 0,
+    }
+    assert summary["signal_outcome"] == "selected_zero"
+    assert summary["stage_completion"] == {
+        "upkeep_done": True,
+        "signals_done": True,
+        "notifications_done": True,
+    }
+    assert set(summary["runtime_seconds"]) == {
+        "fetch",
+        "load",
+        "upkeep",
+        "signals",
+        "notifications",
+    }
+    assert any("Nightly status" in text for text in sent)
 
 
 def test_crash_after_signals_done_resumes_notifications_from_ledger(
@@ -214,6 +237,68 @@ def test_failed_notification_delivery_leaves_stage_incomplete(tmp_path):
         )
 
     assert asof not in ledger.processed_notification_dates()
+
+
+def test_zero_streak_warning_is_configurable_and_does_not_create_candidates(
+    tmp_path,
+):
+    from sts.forward.ledger import Ledger, LedgerPaths
+
+    ledger = Ledger(LedgerPaths(root=tmp_path / "ledger"))
+    dates = [dt.date(2024, 3, 13), dt.date(2024, 3, 14), dt.date(2024, 3, 15)]
+    empty_counts = {
+        family: {
+            "detected": 0,
+            "selected": 0,
+            "missing_signal_bar": 0,
+            "stale_signal_bar": 0,
+            "invalid_geometry": 0,
+            "embargoed": 0,
+            "queued": 0,
+            "skipped_by_reason": {},
+        }
+        for family in ("h2", "h1")
+    }
+    for asof in dates:
+        ledger.append_signal(
+            {
+                "kind": "upkeep_done",
+                "book": "shared",
+                "entry_id": None,
+                "signal_date": asof.isoformat(),
+                "date": asof.isoformat(),
+            }
+        )
+        ledger.append_signal(
+            {
+                "kind": "signals_done",
+                "book": "shared",
+                "entry_id": None,
+                "signal_date": asof.isoformat(),
+                "date": asof.isoformat(),
+                "summary": {"families": empty_counts},
+            }
+        )
+
+    sent: list[str] = []
+    forward_eod._send_signal_notifications(
+        ledger,
+        dates[-1],
+        sent.append,
+        zero_streak_warning=3,
+    )
+
+    done = next(
+        rec
+        for rec in ledger.signals(dates[-1])
+        if rec["kind"] == "notifications_done"
+    )
+    assert done["summary"]["consecutive_selected_zero_sessions"] == 3
+    assert done["summary"]["health_warning"] is not None
+    assert any("WARNING selected=0 for 3" in message for message in sent)
+    assert not any(
+        rec["kind"] == "candidate" for rec in ledger.signals(dates[-1])
+    )
 
 
 def test_noop_second_run_still_invokes_sync(tmp_path, study_store, monkeypatch):

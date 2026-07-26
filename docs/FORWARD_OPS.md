@@ -106,6 +106,10 @@ Drive state is the source of truth; never scp a ledger to the VM.
 - `--dry-run` — no Discord, no sync, no fetch (cached bars only); shorthand for the three `--no-*` flags on `forward_eod.py`.
 - `--no-sync` / `--no-discord` / `--no-fetch` — disable individual side effects.
 - `--ledger-root PATH` — point at an alternate ledger directory (default `ledger/`, gitignored).
+- `--zero-streak-warning N` (forward_eod.py only) — warn when `selected=0`
+  for N adjacent completed sessions (default 5; 0 disables). This is an
+  operational health threshold only; it never changes selection or creates a
+  candidate.
 - `--max-wait-min N` (forward_fill.py only) — how long to poll for today's open before giving up.
 - `--no-backtest` (forward_sync.py only) — skip pushing backtest artifacts.
 
@@ -144,6 +148,21 @@ missing rows in either direction and always re-uploads the union.
   ledger, sends the complete set again, and then writes
   `notifications_done`. A crash during notification delivery can therefore
   produce duplicate alerts; delivery is intentionally at least once.
+- **Nightly diagnosis**: `signals_done` carries the per-family
+  detected/selected/queued/embargoed/book-skip counts plus roster freshness
+  details and pre-notification stage runtimes. `notifications_done` carries
+  the completed nightly summary: all three stage markers, outcome
+  classification, stage runtimes, named stale/missing symbols, and the
+  consecutive `selected=0` health state. `selected_zero`,
+  `selected_embargoed`, `selected_book_blocked`, and
+  `signal_stage_incomplete` are distinct conditions. The nightly Discord set
+  includes the same status in readable form.
+- **Consecutive-zero warning**: the default warning begins at 5 adjacent
+  completed sessions with `selected=0`. A missing `signals_done` breaks the
+  streak and is diagnosed as an incomplete stage, not a legitimate zero.
+  Override with `--zero-streak-warning N`; investigate data freshness and
+  detector counts before considering any strategy decision. The warning has
+  no effect on trading.
 - **Sync failure**: nonfatal. `forward_eod.py` step 6 (sync) is wrapped so a
   sync exception does not fail the whole job; an alert is sent and the next
   run's sync retries the merge. Sync is attempted on every invocation,
@@ -165,5 +184,5 @@ missing rows in either direction and always re-uploads the union.
 
 ## Verification
 
-- `make test` — full suite (359 tests as of no-signals repair Phase 4).
+- `make test` — full suite (see the latest phase evidence for the current count).
 - End-to-end rehearsal transcript: `.superpowers/sdd/task-10-report.md`.

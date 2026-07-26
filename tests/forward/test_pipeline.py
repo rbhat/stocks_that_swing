@@ -313,6 +313,103 @@ def test_generate_signals_counts_signal_bar_failures(ledger, empty_catalyst):
     assert result["counts"]["h1"]["invalid_geometry"] == 1
 
 
+def test_price_freshness_names_stale_and_missing_symbols():
+    asof = dt.date(2024, 3, 15)
+    prices = {
+        "FRESH": price_df_for("FRESH", asof),
+        "STALE": price_df_for("STALE", asof - dt.timedelta(days=1)),
+    }
+
+    summary = pipeline.summarize_price_freshness(
+        prices,
+        ["MISSING", "STALE", "FRESH"],
+        asof,
+    )
+
+    assert summary["counts"] == {"fresh": 1, "stale": 1, "missing": 1}
+    assert summary["fresh_symbols"] == ["FRESH"]
+    assert summary["stale_symbols"] == [
+        {"symbol": "STALE", "last_date": "2024-03-14"}
+    ]
+    assert summary["missing_symbols"] == ["MISSING"]
+
+
+@pytest.mark.parametrize(
+    ("counts", "complete", "expected"),
+    [
+        ({}, False, "signal_stage_incomplete"),
+        (
+            {
+                "h1": {
+                    "selected": 0,
+                    "queued": 0,
+                    "embargoed": 0,
+                    "skipped_by_reason": {},
+                }
+            },
+            True,
+            "selected_zero",
+        ),
+        (
+            {
+                "h1": {
+                    "selected": 1,
+                    "queued": 0,
+                    "embargoed": 1,
+                    "skipped_by_reason": {},
+                }
+            },
+            True,
+            "selected_embargoed",
+        ),
+        (
+            {
+                "h1": {
+                    "selected": 1,
+                    "queued": 0,
+                    "embargoed": 0,
+                    "skipped_by_reason": {"slot": 1},
+                }
+            },
+            True,
+            "selected_book_blocked",
+        ),
+    ],
+)
+def test_signal_outcomes_distinguish_zero_trade_causes(counts, complete, expected):
+    assert pipeline.classify_signal_outcome(counts, complete=complete) == expected
+
+
+def test_signals_done_journals_causal_summary(ledger, empty_catalyst):
+    asof = dt.date(2024, 3, 15)
+    market_data = {
+        "counts": {"fresh": 0, "stale": 1, "missing": 1},
+        "fresh_symbols": [],
+        "stale_symbols": [{"symbol": "STALE", "last_date": "2024-03-14"}],
+        "missing_symbols": ["MISSING"],
+    }
+
+    generate_signals(
+        ledger,
+        {},
+        asof,
+        empty_catalyst,
+        candidate_source=lambda *args: {"h2": [], "h1": []},
+        summary_context={
+            "market_data": market_data,
+            "runtime_seconds": {"fetch": 0.1, "load": 0.2, "upkeep": 0.3},
+        },
+    )
+
+    done = next(
+        rec for rec in ledger.signals(asof) if rec["kind"] == "signals_done"
+    )
+    assert done["summary"]["market_data"] == market_data
+    assert done["summary"]["signal_outcome"] == "selected_zero"
+    assert done["summary"]["families"]["h1"]["selected"] == 0
+    assert done["summary"]["runtime_seconds"]["signals"] >= 0
+
+
 def test_generate_signals_h1_throttle(ledger, empty_catalyst):
     asof = dt.date(2024, 3, 15)
     symbols = [f"S{i}" for i in range(6)]

@@ -44,9 +44,11 @@ from sts.data.study_store import StudyStore
 from sts.forward import alerts
 from sts.forward.ledger import Ledger, LedgerPaths
 from sts.forward.pipeline import (
+    classify_signal_outcome,
     detect_missed_sessions,
     generate_signals,
     run_upkeep,
+    summarize_price_freshness,
 )
 
 logger = logging.getLogger("forward_eod")
@@ -54,6 +56,7 @@ logger = logging.getLogger("forward_eod")
 STUDY_ROSTER_YAML = ROOT / "configs" / "study_roster.yaml"
 EARNINGS_PATH = ROOT / "cache" / "catalysts" / "earnings.json"
 EARNINGS_STALE_DAYS = 3
+DEFAULT_ZERO_STREAK_WARNING = 5
 OHLC = ["open", "high", "low", "close"]
 
 
@@ -131,7 +134,136 @@ def _already_done(ledger: Ledger, asof: dt.date) -> bool:
     )
 
 
-def _notification_messages(ledger: Ledger, asof: dt.date) -> list[str]:
+def _signals_done_record(ledger: Ledger, asof: dt.date) -> dict | None:
+    return next(
+        (
+            rec
+            for rec in ledger.signals(asof)
+            if rec.get("kind") == "signals_done"
+        ),
+        None,
+    )
+
+
+def _previous_session(value: dt.date) -> dt.date | None:
+    sessions = calendar.sessions_between(value - dt.timedelta(days=14), value)
+    prior = [stamp.date() for stamp in sessions if stamp.date() < value]
+    return prior[-1] if prior else None
+
+
+def _consecutive_selected_zero_sessions(ledger: Ledger, asof: dt.date) -> int:
+    """Count completed, adjacent sessions ending at ``asof`` with no selection."""
+    summaries = {
+        dt.date.fromisoformat(str(rec["signal_date"])): rec.get("summary", {})
+        for rec in ledger.signals()
+        if rec.get("kind") == "signals_done"
+    }
+    streak = 0
+    current: dt.date | None = asof
+    while current is not None:
+        summary = summaries.get(current)
+        families = summary.get("families") if summary else None
+        if not families:
+            break
+        if sum(family.get("selected", 0) for family in families.values()) != 0:
+            break
+        streak += 1
+        current = _previous_session(current)
+    return streak
+
+
+def _nightly_summary(
+    ledger: Ledger,
+    asof: dt.date,
+    *,
+    zero_streak_warning: int,
+    notification_seconds: float = 0.0,
+) -> dict:
+    signal_record = _signals_done_record(ledger, asof)
+    signal_summary = dict(signal_record.get("summary", {})) if signal_record else {}
+    families = signal_summary.get("families", {})
+    runtimes = dict(signal_summary.get("runtime_seconds", {}))
+    runtimes["notifications"] = round(notification_seconds, 6)
+    zero_streak = _consecutive_selected_zero_sessions(ledger, asof)
+    warning = zero_streak_warning > 0 and zero_streak >= zero_streak_warning
+    complete = signal_record is not None
+    return {
+        **signal_summary,
+        "asof": asof.isoformat(),
+        "families": families,
+        "signal_outcome": classify_signal_outcome(families, complete=complete),
+        "stage_completion": {
+            "upkeep_done": asof in ledger.processed_upkeep_dates(),
+            "signals_done": complete,
+            # This summary is appended as the notifications_done record only
+            # after every notification below succeeds.
+            "notifications_done": True,
+        },
+        "runtime_seconds": runtimes,
+        "consecutive_selected_zero_sessions": zero_streak,
+        "zero_streak_warning_threshold": zero_streak_warning,
+        "health_warning": (
+            f"selected=0 for {zero_streak} consecutive completed sessions"
+            if warning
+            else None
+        ),
+    }
+
+
+def _format_nightly_summary(summary: dict) -> str:
+    data_counts = summary.get("market_data", {}).get("counts", {})
+    families = summary.get("families", {})
+    family_parts = []
+    for family in ("h2", "h1"):
+        counts = families.get(family, {})
+        skips = sum(counts.get("skipped_by_reason", {}).values())
+        family_parts.append(
+            f"{family.upper()} detected={counts.get('detected', 0)} "
+            f"selected={counts.get('selected', 0)} "
+            f"queued={counts.get('queued', 0)} "
+            f"embargoed={counts.get('embargoed', 0)} skips={skips}"
+        )
+    stages = summary["stage_completion"]
+    runtimes = ", ".join(
+        f"{stage}={seconds:.3f}s"
+        for stage, seconds in summary.get("runtime_seconds", {}).items()
+    )
+    lines = [
+        f"Nightly status {summary['asof']}: {summary['signal_outcome']}",
+        (
+            "Data "
+            f"fresh={data_counts.get('fresh', 0)} "
+            f"stale={data_counts.get('stale', 0)} "
+            f"missing={data_counts.get('missing', 0)}"
+        ),
+        *family_parts,
+        (
+            "Stages "
+            f"upkeep_done={stages['upkeep_done']} "
+            f"signals_done={stages['signals_done']} "
+            f"notifications_done={stages['notifications_done']}"
+        ),
+        f"Runtime {runtimes or 'unavailable'}",
+    ]
+    stale = summary.get("market_data", {}).get("stale_symbols", [])
+    missing = summary.get("market_data", {}).get("missing_symbols", [])
+    if stale:
+        lines.append(
+            "Stale symbols "
+            + ", ".join(f"{item['symbol']}({item['last_date']})" for item in stale)
+        )
+    if missing:
+        lines.append("Missing symbols " + ", ".join(missing))
+    if summary.get("health_warning"):
+        lines.append("WARNING " + summary["health_warning"])
+    return "\n".join(lines)
+
+
+def _notification_messages(
+    ledger: Ledger,
+    asof: dt.date,
+    nightly_summary: dict | None = None,
+) -> list[str]:
     """Rebuild the complete nightly signal notification set from durable
     journals. A crash after any send but before `notifications_done` causes
     the whole set to be sent again, providing at-least-once delivery."""
@@ -152,6 +284,8 @@ def _notification_messages(ledger: Ledger, asof: dt.date) -> list[str]:
     ]
     if snapshots:
         messages.append(alerts.book_status(snapshots))
+    if nightly_summary is not None:
+        messages.append(_format_nightly_summary(nightly_summary))
     return messages
 
 
@@ -159,12 +293,26 @@ def _send_signal_notifications(
     ledger: Ledger,
     asof: dt.date,
     notify,
+    *,
+    zero_streak_warning: int = DEFAULT_ZERO_STREAK_WARNING,
 ) -> None:
     if asof in ledger.processed_notification_dates():
         return
-    for message in _notification_messages(ledger, asof):
+    started = time.perf_counter()
+    summary = _nightly_summary(
+        ledger,
+        asof,
+        zero_streak_warning=zero_streak_warning,
+    )
+    for message in _notification_messages(ledger, asof, summary):
         if notify(message) is False:
             raise RuntimeError("signal notification delivery failed")
+    summary = _nightly_summary(
+        ledger,
+        asof,
+        zero_streak_warning=zero_streak_warning,
+        notification_seconds=time.perf_counter() - started,
+    )
     ledger.append_signal(
         {
             "kind": "notifications_done",
@@ -172,8 +320,10 @@ def _send_signal_notifications(
             "entry_id": None,
             "signal_date": asof.isoformat(),
             "date": asof.isoformat(),
+            "summary": summary,
         }
     )
+    print(_format_nightly_summary(summary))
 
 
 def _run_sync(do_sync: bool) -> None:
@@ -201,7 +351,19 @@ def run(argv: list[str]) -> int:
     parser.add_argument("--no-discord", action="store_true")
     parser.add_argument("--no-fetch", action="store_true")
     parser.add_argument("--ledger-root", default="ledger")
+    parser.add_argument(
+        "--zero-streak-warning",
+        type=int,
+        default=DEFAULT_ZERO_STREAK_WARNING,
+        metavar="N",
+        help=(
+            "warn after N adjacent completed sessions with selected=0 "
+            f"(default: {DEFAULT_ZERO_STREAK_WARNING}; 0 disables)"
+        ),
+    )
     args = parser.parse_args(argv)
+    if args.zero_streak_warning < 0:
+        parser.error("--zero-streak-warning must be >= 0")
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
@@ -210,6 +372,7 @@ def run(argv: list[str]) -> int:
     do_sync = not (args.dry_run or args.no_sync)
 
     t_start = time.time()
+    stage_runtimes: dict[str, float] = {}
 
     def _alert(text: str) -> bool:
         if do_discord:
@@ -242,44 +405,71 @@ def run(argv: list[str]) -> int:
             if missed:
                 dates_str = ", ".join(d.isoformat() for d in missed)
                 _alert(f"WARNING: missed upkeep sessions detected: {dates_str}")
-            _send_signal_notifications(ledger, asof, _alert)
+            _send_signal_notifications(
+                ledger,
+                asof,
+                _alert,
+                zero_streak_warning=args.zero_streak_warning,
+            )
         else:
             # [1/6] fetch
+            roster = _roster_symbols()
+            t0 = time.perf_counter()
             if do_fetch:
                 store = StudyStore()
-                _incremental_fetch(store, _roster_symbols(), asof)
+                _incremental_fetch(store, roster, asof)
             else:
                 print("[1/6] fetch: skipped (--dry-run/--no-fetch)")
+            stage_runtimes["fetch"] = round(time.perf_counter() - t0, 6)
 
             # [2/6] load prices
             print("[2/6] loading study store...")
-            t0 = time.time()
+            t0 = time.perf_counter()
             prices = StudyStore().load_all()
+            stage_runtimes["load"] = round(time.perf_counter() - t0, 6)
             print(
                 f"[2/6] loaded {len(prices)} symbols in "
-                f"{_fmt_eta(time.time() - t0)}"
+                f"{_fmt_eta(stage_runtimes['load'])}"
             )
+            market_data = summarize_price_freshness(prices, roster, asof)
 
             # [3/6] upkeep
             print("[3/6] run_upkeep...")
-            t0 = time.time()
+            t0 = time.perf_counter()
             closed_rows = run_upkeep(ledger, prices, asof)
+            stage_runtimes["upkeep"] = round(time.perf_counter() - t0, 6)
             for row in closed_rows:
                 _alert(alerts.exit_alert(row))
             print(
                 f"[3/6] upkeep done: {len(closed_rows)} closed in "
-                f"{_fmt_eta(time.time() - t0)}"
+                f"{_fmt_eta(stage_runtimes['upkeep'])}"
             )
 
             # [4/6] signals
             print("[4/6] generate_signals...")
-            t0 = time.time()
             catalyst = CatalystCalendar.load()
-            result = generate_signals(ledger, prices, asof, catalyst)
+            result = generate_signals(
+                ledger,
+                prices,
+                asof,
+                catalyst,
+                summary_context={
+                    "market_data": market_data,
+                    "runtime_seconds": stage_runtimes,
+                },
+            )
+            signal_record = _signals_done_record(ledger, asof)
+            signal_runtime = (
+                signal_record.get("summary", {})
+                .get("runtime_seconds", {})
+                .get("signals", 0.0)
+                if signal_record
+                else 0.0
+            )
             print(
                 f"[4/6] signals done: {len(result['queued'])} queued, "
                 f"{len(result['skipped'])} skipped in "
-                f"{_fmt_eta(time.time() - t0)}"
+                f"{_fmt_eta(signal_runtime)}"
             )
 
             # [5/6] missed sessions + signal notifications
@@ -288,7 +478,12 @@ def run(argv: list[str]) -> int:
             if missed:
                 dates_str = ", ".join(d.isoformat() for d in missed)
                 _alert(f"WARNING: missed upkeep sessions detected: {dates_str}")
-            _send_signal_notifications(ledger, asof, _alert)
+            _send_signal_notifications(
+                ledger,
+                asof,
+                _alert,
+                zero_streak_warning=args.zero_streak_warning,
+            )
             print(f"[5/6] {len(missed)} missed session(s); notifications done")
 
         print(f"forward_eod: {asof} complete in {_fmt_eta(time.time() - t_start)}")

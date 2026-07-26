@@ -22,6 +22,8 @@ from __future__ import annotations
 
 import datetime as dt
 import math
+import time
+from copy import deepcopy
 
 import pandas as pd
 
@@ -161,6 +163,69 @@ def _prices_through_asof(
     }
 
 
+def summarize_price_freshness(
+    prices: dict[str, pd.DataFrame],
+    symbols: list[str],
+    asof: dt.date,
+) -> dict:
+    """Return a compact roster-level market-data health summary.
+
+    ``fresh`` means the frame contains the requested completed session.
+    ``stale`` includes the last cached session for each lagging symbol, and
+    ``missing`` names roster symbols with no usable frame at all. The symbol
+    lists are intentionally durable: an operator should not need raw logs to
+    identify the stale input.
+    """
+    fresh: list[str] = []
+    stale: list[dict[str, str]] = []
+    missing: list[str] = []
+    for symbol in sorted(set(symbols)):
+        frame = prices.get(symbol)
+        if frame is None or frame.empty:
+            missing.append(symbol)
+            continue
+        dates = [date for date in frame.index.date if date <= asof]
+        if not dates:
+            missing.append(symbol)
+            continue
+        last_date = max(dates)
+        if last_date == asof:
+            fresh.append(symbol)
+        else:
+            stale.append({"symbol": symbol, "last_date": last_date.isoformat()})
+    return {
+        "counts": {
+            "fresh": len(fresh),
+            "stale": len(stale),
+            "missing": len(missing),
+        },
+        "fresh_symbols": fresh,
+        "stale_symbols": stale,
+        "missing_symbols": missing,
+    }
+
+
+def classify_signal_outcome(counts: dict, *, complete: bool) -> str:
+    """Classify the signal stage without collapsing distinct zero-trade cases."""
+    if not complete:
+        return "signal_stage_incomplete"
+    selected = sum(family["selected"] for family in counts.values())
+    queued = sum(family["queued"] for family in counts.values())
+    embargoed = sum(family["embargoed"] for family in counts.values())
+    book_blocked = sum(
+        sum(family["skipped_by_reason"].values()) for family in counts.values()
+    )
+    if selected == 0:
+        return "selected_zero"
+    if queued:
+        return "queued"
+    if embargoed and not book_blocked:
+        return "selected_embargoed"
+    if book_blocked:
+        return "selected_book_blocked"
+    return "selected_data_rejected"
+
+
 def _default_candidate_source(
     prices: dict[str, pd.DataFrame], asof: dt.date, catalyst: CatalystCalendar
 ) -> dict[str, list[dict]]:
@@ -211,7 +276,9 @@ def generate_signals(
     asof: dt.date,
     catalyst,
     candidate_source=_default_candidate_source,
+    summary_context: dict | None = None,
 ) -> dict:
+    signal_started = time.perf_counter()
     prices = _prices_through_asof(prices, asof)
     raw = candidate_source(prices, asof, catalyst)
     atr_window = _H1_RISK_DEFAULTS["atr_window"]
@@ -450,6 +517,12 @@ def generate_signals(
     _walk("shared", queues["shared"], enforce_throttle=True)
     _walk("h1solo", queues["h1solo"], enforce_throttle=True)
 
+    summary = deepcopy(summary_context) if summary_context is not None else {}
+    summary["families"] = counts
+    summary["signal_outcome"] = classify_signal_outcome(counts, complete=True)
+    if summary_context is not None:
+        runtimes = summary.setdefault("runtime_seconds", {})
+        runtimes["signals"] = round(time.perf_counter() - signal_started, 6)
     ledger.append_signal(
         {
             "kind": "signals_done",
@@ -457,6 +530,7 @@ def generate_signals(
             "entry_id": None,
             "signal_date": asof.isoformat(),
             "date": asof.isoformat(),
+            "summary": summary,
         }
     )
 
