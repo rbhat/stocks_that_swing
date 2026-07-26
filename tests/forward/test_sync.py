@@ -18,11 +18,8 @@ def _line(**kw) -> str:
 # ---------------------------------------------------------------------------
 
 def test_merge_lines_remote_wins_on_collision():
-    remote = [_line(entry_id="a", seq=1, updated_at="2026-01-01T00:00:00", val="remote")]
-    local = [_line(entry_id="a", seq=1, updated_at="2026-01-02T00:00:00", val="local")]
-    # local has a *newer* updated_at, but merge_lines resolves by
-    # updated_at recency, not by call order — remote precedence here means
-    # remote is passed FIRST so on a true tie it wins.
+    # merge_lines resolves by updated_at recency, not by call order —
+    # remote precedence here means remote is passed FIRST on a true tie.
     tied_remote = [_line(entry_id="a", seq=1, val="remote")]
     tied_local = [_line(entry_id="a", seq=1, val="local")]
     merged = merge_lines(tied_remote, tied_local, key_fn=lambda r: (r["entry_id"], r["seq"]))
@@ -321,6 +318,20 @@ def test_signals_key_handles_missing_entry_id():
            "date": "2026-01-01", "book": "shared"}
     key = sync._signals_key(rec)
     assert key[:4] == ("2026-01-01", "shared", "missed_session", "2026-01-01")
+
+
+def test_signals_key_distinguishes_stage_controls():
+    base = {
+        "entry_id": None,
+        "signal_date": "2026-01-01",
+        "date": "2026-01-01",
+        "book": "shared",
+    }
+    keys = {
+        sync._signals_key({**base, "kind": kind})
+        for kind in ("upkeep_done", "signals_done", "notifications_done")
+    }
+    assert len(keys) == 3
 
 
 def test_signals_key_never_raises_on_sparse_record():

@@ -339,6 +339,121 @@ def test_generate_signals_h1_throttle(ledger, empty_catalyst):
     assert result["counts"]["h1"]["skipped_by_reason"] == {"throttle": 4}
 
 
+@pytest.mark.parametrize(
+    ("crash_after", "case"),
+    [
+        (0, "after-upkeep-before-first-candidate"),
+        (1, "after-one-h2-candidate"),
+        (4, "midway-through-h1-shared"),
+        (8, "between-shared-and-h1solo"),
+    ],
+    ids=lambda value: value if isinstance(value, str) else None,
+)
+def test_signal_walk_crash_retry_matches_uninterrupted(
+    tmp_path, empty_catalyst, crash_after, case
+):
+    del case
+    asof = dt.date(2024, 3, 15)
+    symbols = ["H2A", "H2B", "H1A", "H1B", "H1C", "H1D", "H1E", "H1F"]
+    prices = make_prices(symbols, asof)
+
+    def source(prices, asof, catalyst):
+        return {
+            "h2": [
+                make_candidate("H2A", "h2", asof),
+                make_candidate("H2B", "h2", asof),
+            ],
+            "h1": [
+                make_candidate(symbol, "h1", asof, rsi2=float(i))
+                for i, symbol in enumerate(symbols[2:])
+            ],
+        }
+
+    uninterrupted = Ledger(LedgerPaths(root=tmp_path / "uninterrupted"))
+    run_upkeep(uninterrupted, prices, asof)
+    expected_result = generate_signals(
+        uninterrupted,
+        prices,
+        asof,
+        empty_catalyst,
+        candidate_source=source,
+    )
+
+    resumed = Ledger(LedgerPaths(root=tmp_path / "resumed"))
+    run_upkeep(resumed, prices, asof)
+    if crash_after == 0:
+        with pytest.raises(RuntimeError, match="injected crash"):
+            generate_signals(
+                resumed,
+                prices,
+                asof,
+                empty_catalyst,
+                candidate_source=lambda *args: (_ for _ in ()).throw(
+                    RuntimeError("injected crash")
+                ),
+            )
+    else:
+        original_append = resumed.append_signal
+        outcome_count = 0
+
+        def append_then_crash(rec):
+            nonlocal outcome_count
+            original_append(rec)
+            if rec.get("kind") in {"candidate", "skip"}:
+                outcome_count += 1
+                if outcome_count == crash_after:
+                    raise RuntimeError("injected crash")
+
+        resumed.append_signal = append_then_crash
+        with pytest.raises(RuntimeError, match="injected crash"):
+            generate_signals(
+                resumed,
+                prices,
+                asof,
+                empty_catalyst,
+                candidate_source=source,
+            )
+        resumed.append_signal = original_append
+
+    assert asof not in resumed.processed_signal_dates()
+    actual_result = generate_signals(
+        resumed,
+        prices,
+        asof,
+        empty_catalyst,
+        candidate_source=source,
+    )
+
+    assert resumed.signals(asof) == uninterrupted.signals(asof)
+    for book in ("shared", "h1solo"):
+        assert resumed.equity_series(book) == uninterrupted.equity_series(book)
+    assert resumed.state() == uninterrupted.state()
+    assert actual_result == expected_result
+    assert asof in resumed.processed_signal_dates()
+    assert [rec["entry_id"] for rec in actual_result["queued"]] == [
+        rec["entry_id"] for rec in expected_result["queued"]
+    ]
+    assert actual_result["counts"]["h1"]["queued"] == 8
+    assert actual_result["counts"]["h1"]["skipped_by_reason"] == {"throttle": 4}
+
+
+def test_zero_event_signal_walk_records_completion(ledger, empty_catalyst):
+    asof = dt.date(2024, 3, 15)
+
+    result = generate_signals(
+        ledger,
+        {},
+        asof,
+        empty_catalyst,
+        candidate_source=lambda *args: {"h2": [], "h1": []},
+    )
+
+    assert result["queued"] == []
+    assert result["skipped"] == []
+    assert asof in ledger.processed_signal_dates()
+    assert [rec["kind"] for rec in ledger.signals(asof)] == ["signals_done"]
+
+
 def test_generate_signals_cross_family_dup_block(ledger, empty_catalyst):
     asof = dt.date(2024, 3, 15)
     prices = make_prices(["AAA"], asof)

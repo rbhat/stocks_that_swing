@@ -8,7 +8,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-import forward_eod  # noqa: E402
+import forward_eod
 
 
 def bar(o, h, l, c, v=1_000_000):
@@ -35,7 +35,7 @@ def study_store(tmp_path, monkeypatch):
 
 
 def test_dry_run_no_network_calls(tmp_path, study_store, monkeypatch):
-    store, df = study_store
+    _store, df = study_store
     asof = df.index[-1].date()
 
     def _boom(*a, **k):
@@ -59,7 +59,7 @@ def test_dry_run_no_network_calls(tmp_path, study_store, monkeypatch):
 
 
 def test_dry_run_second_invocation_is_noop(tmp_path, study_store, monkeypatch):
-    store, df = study_store
+    _store, df = study_store
     asof = df.index[-1].date()
 
     monkeypatch.setattr(forward_eod, "fetch_daily", lambda *a, **k: (_ for _ in ()).throw(
@@ -91,7 +91,7 @@ def test_empty_queue_night_sends_book_status_and_no_candidates(
 ):
     """With Discord enabled (fake send injected), an empty-queue night must
     send BOTH the explicit no-candidates message and the book status."""
-    store, df = study_store
+    _store, df = study_store
     asof = df.index[-1].date()
 
     monkeypatch.setattr(forward_eod, "_roster_symbols", lambda: ["AAA"])
@@ -106,10 +106,118 @@ def test_empty_queue_night_sends_book_status_and_no_candidates(
     assert rc == 0
     assert any(f"No candidates for {asof.isoformat()}" in t for t in sent)
     assert any("equity=" in t for t in sent)  # book_status line
+    from sts.forward.ledger import Ledger, LedgerPaths
+
+    ledger = Ledger(LedgerPaths(root=tmp_path / "ledger"))
+    assert asof in ledger.processed_upkeep_dates()
+    assert asof in ledger.processed_signal_dates()
+    assert asof in ledger.processed_notification_dates()
+
+
+def test_crash_after_signals_done_resumes_notifications_from_ledger(
+    tmp_path, study_store, monkeypatch
+):
+    _store, df = study_store
+    asof = df.index[-1].date()
+    ledger_root = tmp_path / "ledger"
+
+    monkeypatch.setattr(forward_eod, "_roster_symbols", lambda: ["AAA"])
+    sent: list[str] = []
+    monkeypatch.setattr(
+        forward_eod.alerts,
+        "send",
+        lambda text, **kwargs: sent.append(text) or True,
+    )
+    sync_calls: list[bool] = []
+    monkeypatch.setattr(
+        forward_eod,
+        "_run_sync",
+        lambda do_sync: sync_calls.append(do_sync),
+    )
+
+    real_generate = forward_eod.generate_signals
+
+    def generate_then_crash(*args, **kwargs):
+        real_generate(*args, **kwargs)
+        raise RuntimeError("injected crash after signals_done")
+
+    monkeypatch.setattr(forward_eod, "generate_signals", generate_then_crash)
+    argv = [
+        "--no-fetch",
+        "--asof",
+        asof.isoformat(),
+        "--ledger-root",
+        str(ledger_root),
+    ]
+    assert forward_eod.run(argv) == 1
+
+    from sts.forward.ledger import Ledger, LedgerPaths
+
+    ledger = Ledger(LedgerPaths(root=ledger_root))
+    assert asof in ledger.processed_signal_dates()
+    assert asof not in ledger.processed_notification_dates()
+
+    monkeypatch.setattr(forward_eod, "generate_signals", real_generate)
+    assert forward_eod.run(argv) == 0
+
+    ledger = Ledger(LedgerPaths(root=ledger_root))
+    assert asof in ledger.processed_notification_dates()
+    assert any(f"No candidates for {asof.isoformat()}" in text for text in sent)
+    assert any("equity=" in text for text in sent)
+    assert sync_calls == [True, True]
+
+
+def test_notification_marker_is_written_only_after_complete_send_set(tmp_path):
+    from sts.forward.ledger import Ledger, LedgerPaths
+
+    asof = dt.date(2024, 3, 15)
+    ledger = Ledger(LedgerPaths(root=tmp_path / "ledger"))
+    for book in ("shared", "h1solo"):
+        ledger.append_equity_snapshot(
+            {
+                "date": asof,
+                "book": book,
+                "equity": 100_000.0,
+                "cash": 100_000.0,
+                "usd_deployed": 0.0,
+                "open_count": 0,
+            }
+        )
+
+    attempted: list[str] = []
+
+    def crash_after_first(message):
+        attempted.append(message)
+        raise RuntimeError("injected notification crash")
+
+    with pytest.raises(RuntimeError, match="notification crash"):
+        forward_eod._send_signal_notifications(ledger, asof, crash_after_first)
+    assert asof not in ledger.processed_notification_dates()
+
+    forward_eod._send_signal_notifications(ledger, asof, attempted.append)
+    assert asof in ledger.processed_notification_dates()
+    assert sum(message.startswith("No candidates") for message in attempted) == 2
+    assert sum("equity=" in message for message in attempted) == 1
+
+
+def test_failed_notification_delivery_leaves_stage_incomplete(tmp_path):
+    from sts.forward.ledger import Ledger, LedgerPaths
+
+    asof = dt.date(2024, 3, 15)
+    ledger = Ledger(LedgerPaths(root=tmp_path / "ledger"))
+
+    with pytest.raises(RuntimeError, match="delivery failed"):
+        forward_eod._send_signal_notifications(
+            ledger,
+            asof,
+            lambda message: False,
+        )
+
+    assert asof not in ledger.processed_notification_dates()
 
 
 def test_noop_second_run_still_invokes_sync(tmp_path, study_store, monkeypatch):
-    store, df = study_store
+    _store, df = study_store
     asof = df.index[-1].date()
 
     monkeypatch.setattr(forward_eod, "_roster_symbols", lambda: ["AAA"])
@@ -123,7 +231,15 @@ def test_noop_second_run_still_invokes_sync(tmp_path, study_store, monkeypatch):
 
     assert forward_eod.run(argv) == 0
     assert sync_calls == [True]
+    from sts.forward.ledger import Ledger, LedgerPaths
+
+    ledger = Ledger(LedgerPaths(root=tmp_path / "ledger"))
+    assert asof in ledger.processed_upkeep_dates()
+    assert asof in ledger.processed_signal_dates()
+    assert asof in ledger.processed_notification_dates()
+    before = ledger.signals(asof)
 
     # second run hits the already-done path but must still attempt sync
     assert forward_eod.run(argv) == 0
     assert sync_calls == [True, True]
+    assert ledger.signals(asof) == before

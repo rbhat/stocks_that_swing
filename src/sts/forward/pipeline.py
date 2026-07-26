@@ -10,7 +10,9 @@ Two daily jobs, both idempotent/resume-capable, state lives entirely in the
 - `generate_signals`: builds the ranked H2-then-H1 entry queue for `asof`
   (the signal date; next-session-open entry per the backtested convention),
   walks it once per book (`shared` then `h1solo`) applying charter checks,
-  and journals either a `candidate` or a `skip` record per candidate.
+  journals either a `candidate` or a `skip` record per candidate, and writes
+  `signals_done` only after both deterministic walks finish. An interrupted
+  walk resumes from its journaled prefix and reconstructs provisional state.
 - `detect_missed_sessions`: finds sessions between the last `upkeep_done`
   and `asof` with no upkeep record — a job/webhook outage must show up as an
   explicit gap in the journal, never a silent hole (prereg "Known caveats").
@@ -262,20 +264,38 @@ def generate_signals(
     )
     h1_candidates = sorted(_validated("h1"), key=_rank_key_h1)
 
-    # NOTE (same-day re-run): generate_signals is idempotent at the ledger
-    # level — append_signal dedups on (signal_date, book, entry_id), so a
-    # re-run for an already-processed asof never writes duplicate records.
-    # However, the RETURNED payload of a re-run can be misleading: candidates
-    # queued in the first run are now counted by h1_throttle_room, so a
-    # re-run may report them as "throttle" skips (the skip append is then a
-    # dedup no-op, but the in-memory return value still lists them). Callers
-    # alerting from the return value should not re-run for the same asof;
-    # ledger integrity holds regardless. Chosen over an early-return guard to
-    # keep this function stateless w.r.t. "was this asof already signalled".
-
     queued: list[dict] = []
     skipped: list[dict] = []
     embargoed_facts: set[tuple[str, str, dt.date]] = set()
+    queues = {
+        "shared": h2_candidates + h1_candidates,
+        "h1solo": h1_candidates,
+    }
+    existing_by_book = {
+        book: [
+            rec
+            for rec in ledger.signals(asof)
+            if rec.get("book") == book
+            and rec.get("kind") in {"candidate", "skip"}
+        ]
+        for book in queues
+    }
+
+    # A normal crash can only leave a prefix of each deterministic book walk.
+    # Refuse to continue if the cache/source changed enough that the journal
+    # no longer describes such a prefix; guessing would alter slot, sizing,
+    # or throttle outcomes.
+    for book, queue in queues.items():
+        expected_ids = [
+            entry_id(book, cand["family"], cand["symbol"], _as_date(cand["signal_date"]))
+            for cand in queue
+        ]
+        actual_ids = [rec["entry_id"] for rec in existing_by_book[book]]
+        if actual_ids != expected_ids[: len(actual_ids)]:
+            raise RuntimeError(
+                f"cannot resume {book} signal walk for {asof}: "
+                "journaled outcomes are not a deterministic queue prefix"
+            )
 
     def _walk(book: str, queue: list[dict], enforce_throttle: bool) -> None:
         marks: dict[str, float] = {}
@@ -290,12 +310,35 @@ def generate_signals(
         # slots/notional/throttle for subsequent candidates.
         provisional_open: list[dict] = []
         provisional_notional = 0.0
+        existing = {
+            rec["entry_id"]: rec for rec in existing_by_book[book]
+        }
 
         for cand in queue:
             symbol = cand["symbol"]
             family = cand["family"]
             signal_date = _as_date(cand["signal_date"])
             eid = entry_id(book, family, symbol, signal_date)
+
+            if eid in existing:
+                rec = existing[eid]
+                if rec["kind"] == "candidate":
+                    queued.append(rec)
+                    counts[family]["queued"] += 1
+                    provisional_open.append({"symbol": symbol, "family": family})
+                    provisional_notional += rec["qty"] * rec["close_sig"]
+                else:
+                    skipped.append(rec)
+                    reason = rec["reason"]
+                    if reason == "embargo":
+                        fact_id = (family, symbol, signal_date)
+                        if fact_id not in embargoed_facts:
+                            counts[family]["embargoed"] += 1
+                            embargoed_facts.add(fact_id)
+                    else:
+                        reasons = counts[family]["skipped_by_reason"]
+                        reasons[reason] = reasons.get(reason, 0) + 1
+                continue
 
             if catalyst.catalyst_within(symbol, next_session, 2, "block_entry") is not None:
                 fact_id = (family, symbol, signal_date)
@@ -404,8 +447,18 @@ def generate_signals(
             provisional_open.append({"symbol": symbol, "family": family})
             provisional_notional += qty * close_sig
 
-    _walk("shared", h2_candidates + h1_candidates, enforce_throttle=True)
-    _walk("h1solo", h1_candidates, enforce_throttle=True)
+    _walk("shared", queues["shared"], enforce_throttle=True)
+    _walk("h1solo", queues["h1solo"], enforce_throttle=True)
+
+    ledger.append_signal(
+        {
+            "kind": "signals_done",
+            "book": "shared",
+            "entry_id": None,
+            "signal_date": asof.isoformat(),
+            "date": asof.isoformat(),
+        }
+    )
 
     return {"queued": queued, "skipped": skipped, "counts": counts}
 

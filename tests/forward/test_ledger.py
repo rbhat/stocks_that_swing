@@ -13,7 +13,7 @@ def make_open_row(**overrides):
         "book": "shared",
         "ticker": "NVDA",
         "signal_date": dt.date(2026, 7, 10),
-        "timestamp": dt.datetime(2026, 7, 10, 13, 30),
+        "timestamp": dt.datetime(2026, 7, 10, 13, 30, tzinfo=dt.UTC),
         "qty": 10,
         "entry_ref": 120.0,
         "entry_fill": 120.05,
@@ -80,7 +80,7 @@ def test_seq_auto_increments_per_entry_id(ledger):
     closed = make_open_row(
         status="closed",
         exit_price=125.0,
-        exit_timestamp=dt.datetime(2026, 7, 11, 20, 0),
+        exit_timestamp=dt.datetime(2026, 7, 11, 20, 0, tzinfo=dt.UTC),
         exit_reason="target",
         pnl_usd=50.0,
         r_net=1.0,
@@ -95,7 +95,7 @@ def test_seq_auto_increments_per_entry_id(ledger):
 def test_state_returns_latest_version_only(ledger):
     ledger.append_row(make_open_row())
     ledger.append_row(make_open_row(status="closed", exit_price=125.0,
-                                     exit_timestamp=dt.datetime(2026, 7, 11, 20, 0),
+                                     exit_timestamp=dt.datetime(2026, 7, 11, 20, 0, tzinfo=dt.UTC),
                                      exit_reason="target", pnl_usd=50.0, r_net=1.0))
     state = ledger.state()
     eid = entry_id("shared", "h1", "NVDA", dt.date(2026, 7, 10))
@@ -110,7 +110,7 @@ def test_open_rows_filters_closed(ledger):
         ticker="AAPL",
         status="closed",
         exit_price=125.0,
-        exit_timestamp=dt.datetime(2026, 7, 11, 20, 0),
+        exit_timestamp=dt.datetime(2026, 7, 11, 20, 0, tzinfo=dt.UTC),
         exit_reason="target",
         pnl_usd=50.0,
         r_net=1.0,
@@ -231,3 +231,35 @@ def test_processed_upkeep_dates(ledger):
     ledger.append_signal({"signal_date": dt.date(2026, 7, 10), "book": "shared",
                            "entry_id": None, "kind": "upkeep_done", "date": dt.date(2026, 7, 10)})
     assert ledger.processed_upkeep_dates() == {dt.date(2026, 7, 10)}
+
+
+def test_control_records_coexist_and_have_specific_processed_dates(ledger):
+    date = dt.date(2026, 7, 10)
+    for kind in ("upkeep_done", "signals_done", "notifications_done"):
+        ledger.append_signal(
+            {
+                "signal_date": date,
+                "date": date,
+                "book": "shared",
+                "entry_id": None,
+                "kind": kind,
+            }
+        )
+        ledger.append_signal(
+            {
+                "signal_date": date,
+                "date": date,
+                "book": "shared",
+                "entry_id": None,
+                "kind": kind,
+            }
+        )
+
+    assert [rec["kind"] for rec in ledger.signals(date)] == [
+        "upkeep_done",
+        "signals_done",
+        "notifications_done",
+    ]
+    assert ledger.processed_upkeep_dates() == {date}
+    assert ledger.processed_signal_dates() == {date}
+    assert ledger.processed_notification_dates() == {date}

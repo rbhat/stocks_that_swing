@@ -3,21 +3,20 @@
 WHY: glues the merged forward-paper modules (sts.forward.pipeline/ledger/
 alerts, sts.data.study_store/fetch, sts.catalyst) into the single script a
 cron job runs once per completed session. Every stage is resumable: the
-ledger IS the state (upkeep_done + signals per asof), so a killed or re-run
-job for the same `asof` is a safe no-op rather than a double-fire.
+ledger IS the state (`upkeep_done`, `signals_done`, and
+`notifications_done`), so a killed or re-run job resumes the incomplete
+stage without changing the deterministic signal walk.
 
 SEQUENCE (see .superpowers/sdd/task-7-brief.md):
-  1. env.load(); resolve asof; if upkeep_done AND signals already recorded
-     for asof, skip stages 2-5 but still run sync (stage 6) then exit 0 —
-     a crash between signal gen and sync must not strand the date unsynced.
+  1. env.load(); resolve asof; if all three stage records exist, skip stages
+     2-5. If signals are done but notifications are not, rebuild the nightly
+     signal notifications from the ledger.
   2. Incremental fetch of the study roster (skipped by --no-fetch/--dry-run).
   3. run_upkeep -> Discord exit_alert per closed row.
-  4. generate_signals -> Discord entry_alert per queued candidate + a
-     book_status line; explicit "no candidates" message when the queue is
-     empty (silence must be distinguishable from outage).
-  5. detect_missed_sessions -> Discord warning if any gap found.
-  6. sync.run_daily_sync() (Task 9) — ImportError-guarded so this script
-     runs standalone until Task 9 lands the sync module.
+  4. generate_signals -> durable `signals_done` after both book walks.
+  5. detect_missed_sessions, then send ledger-rebuilt candidate/no-candidate
+     and book-status notifications; append `notifications_done` afterward.
+  6. sync.run_daily_sync() on every invocation, including failed retries.
 
 Exit code 0 on success, 1 on any stage exception (traceback logged; a
 best-effort Discord failure alert is attempted before exiting).
@@ -36,15 +35,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-import yaml  # noqa: E402
+import yaml
 
-from sts import calendar, env  # noqa: E402
-from sts.catalyst import CatalystCalendar, refresh_earnings  # noqa: E402
-from sts.data.fetch import fetch_daily  # noqa: E402
-from sts.data.study_store import StudyStore  # noqa: E402
-from sts.forward import alerts  # noqa: E402
-from sts.forward.ledger import Ledger, LedgerPaths  # noqa: E402
-from sts.forward.pipeline import (  # noqa: E402
+from sts import calendar, env
+from sts.catalyst import CatalystCalendar, refresh_earnings
+from sts.data.fetch import fetch_daily
+from sts.data.study_store import StudyStore
+from sts.forward import alerts
+from sts.forward.ledger import Ledger, LedgerPaths
+from sts.forward.pipeline import (
     detect_missed_sessions,
     generate_signals,
     run_upkeep,
@@ -116,8 +115,8 @@ def _refresh_earnings_if_stale(symbols: list[str]) -> None:
             "sts.catalyst.refresh_earnings directly)", EARNINGS_PATH,
         )
         return
-    age_days = (dt.datetime.now(dt.timezone.utc)
-                - dt.datetime.fromtimestamp(EARNINGS_PATH.stat().st_mtime, tz=dt.timezone.utc)).days
+    age_days = (dt.datetime.now(dt.UTC)
+                - dt.datetime.fromtimestamp(EARNINGS_PATH.stat().st_mtime, tz=dt.UTC)).days
     if age_days <= EARNINGS_STALE_DAYS:
         return
     print(f"  earnings cache is {age_days}d old (>{EARNINGS_STALE_DAYS}d) — refreshing")
@@ -125,7 +124,56 @@ def _refresh_earnings_if_stale(symbols: list[str]) -> None:
 
 
 def _already_done(ledger: Ledger, asof: dt.date) -> bool:
-    return asof in ledger.processed_upkeep_dates() and bool(ledger.signals(asof))
+    return (
+        asof in ledger.processed_upkeep_dates()
+        and asof in ledger.processed_signal_dates()
+        and asof in ledger.processed_notification_dates()
+    )
+
+
+def _notification_messages(ledger: Ledger, asof: dt.date) -> list[str]:
+    """Rebuild the complete nightly signal notification set from durable
+    journals. A crash after any send but before `notifications_done` causes
+    the whole set to be sent again, providing at-least-once delivery."""
+    queued = [
+        rec
+        for rec in ledger.signals(asof)
+        if rec.get("kind") == "candidate"
+    ]
+    messages = [alerts.entry_alert(cand) for cand in queued]
+    if not queued:
+        messages.append(f"No candidates for {asof.isoformat()}")
+
+    snapshots = [
+        snap
+        for book in ("shared", "h1solo")
+        for snap in ledger.equity_series(book)
+        if str(snap.get("date")) == asof.isoformat()
+    ]
+    if snapshots:
+        messages.append(alerts.book_status(snapshots))
+    return messages
+
+
+def _send_signal_notifications(
+    ledger: Ledger,
+    asof: dt.date,
+    notify,
+) -> None:
+    if asof in ledger.processed_notification_dates():
+        return
+    for message in _notification_messages(ledger, asof):
+        if notify(message) is False:
+            raise RuntimeError("signal notification delivery failed")
+    ledger.append_signal(
+        {
+            "kind": "notifications_done",
+            "book": "shared",
+            "entry_id": None,
+            "signal_date": asof.isoformat(),
+            "date": asof.isoformat(),
+        }
+    )
 
 
 def _run_sync(do_sync: bool) -> None:
@@ -163,12 +211,13 @@ def run(argv: list[str]) -> int:
 
     t_start = time.time()
 
-    def _alert(text: str) -> None:
+    def _alert(text: str) -> bool:
         if do_discord:
-            alerts.send(text)
-        else:
-            logger.info("forward_eod (alert suppressed): %s", text)
+            return alerts.send(text)
+        logger.info("forward_eod (alert suppressed): %s", text)
+        return True
 
+    rc = 0
     try:
         env.load()
         asof = dt.date.fromisoformat(args.asof) if args.asof else calendar.last_completed_session()
@@ -176,77 +225,91 @@ def run(argv: list[str]) -> int:
         ledger = Ledger(LedgerPaths(root=Path(args.ledger_root)))
 
         if _already_done(ledger, asof):
-            # Stages 2-5 are ledger-idempotent and already recorded, but a
-            # crash between signal gen and sync would leave the date marked
-            # done with sync never run — so a no-op re-run still attempts
-            # the sync stage (idempotent/merge-only) before exiting.
-            print(f"forward_eod: {asof} already processed (upkeep_done + signals "
-                  f"present) — skipping stages 1-5; running sync only")
-            _run_sync(do_sync)
-            return 0
-
-        # [1/6] fetch
-        if do_fetch:
-            store = StudyStore()
-            _incremental_fetch(store, _roster_symbols(), asof)
+            print(
+                f"forward_eod: {asof} already processed (upkeep/signals/"
+                "notifications done) — skipping stages 1-5; running sync only"
+            )
+        elif (
+            asof in ledger.processed_upkeep_dates()
+            and asof in ledger.processed_signal_dates()
+        ):
+            # No market data is needed to recover the notification stage:
+            # candidates and same-date book snapshots are durable.
+            print(
+                f"forward_eod: {asof} signals complete; resuming notifications"
+            )
+            missed = detect_missed_sessions(ledger, asof)
+            if missed:
+                dates_str = ", ".join(d.isoformat() for d in missed)
+                _alert(f"WARNING: missed upkeep sessions detected: {dates_str}")
+            _send_signal_notifications(ledger, asof, _alert)
         else:
-            print("[1/6] fetch: skipped (--dry-run/--no-fetch)")
+            # [1/6] fetch
+            if do_fetch:
+                store = StudyStore()
+                _incremental_fetch(store, _roster_symbols(), asof)
+            else:
+                print("[1/6] fetch: skipped (--dry-run/--no-fetch)")
 
-        # [2/6] load prices
-        print("[2/6] loading study store...")
-        t0 = time.time()
-        prices = StudyStore().load_all()
-        print(f"[2/6] loaded {len(prices)} symbols in {_fmt_eta(time.time() - t0)}")
+            # [2/6] load prices
+            print("[2/6] loading study store...")
+            t0 = time.time()
+            prices = StudyStore().load_all()
+            print(
+                f"[2/6] loaded {len(prices)} symbols in "
+                f"{_fmt_eta(time.time() - t0)}"
+            )
 
-        # [3/6] upkeep
-        print("[3/6] run_upkeep...")
-        t0 = time.time()
-        closed_rows = run_upkeep(ledger, prices, asof)
-        for row in closed_rows:
-            _alert(alerts.exit_alert(row))
-        print(f"[3/6] upkeep done: {len(closed_rows)} closed in {_fmt_eta(time.time() - t0)}")
+            # [3/6] upkeep
+            print("[3/6] run_upkeep...")
+            t0 = time.time()
+            closed_rows = run_upkeep(ledger, prices, asof)
+            for row in closed_rows:
+                _alert(alerts.exit_alert(row))
+            print(
+                f"[3/6] upkeep done: {len(closed_rows)} closed in "
+                f"{_fmt_eta(time.time() - t0)}"
+            )
 
-        # [4/6] signals
-        print("[4/6] generate_signals...")
-        t0 = time.time()
-        catalyst = CatalystCalendar.load()
-        result = generate_signals(ledger, prices, asof, catalyst)
-        queued = result["queued"]
-        for cand in queued:
-            _alert(alerts.entry_alert(cand))
-        if not queued:
-            _alert(f"No candidates for {asof.isoformat()}")
-        # Book status goes out every night regardless of queue state —
-        # silence must be distinguishable from outage (prereg caveat).
-        snapshots = [ledger.equity_series(book)[-1] for book in ("shared", "h1solo")
-                     if ledger.equity_series(book)]
-        if snapshots:
-            _alert(alerts.book_status(snapshots))
-        print(f"[4/6] signals done: {len(queued)} queued, {len(result['skipped'])} skipped "
-              f"in {_fmt_eta(time.time() - t0)}")
+            # [4/6] signals
+            print("[4/6] generate_signals...")
+            t0 = time.time()
+            catalyst = CatalystCalendar.load()
+            result = generate_signals(ledger, prices, asof, catalyst)
+            print(
+                f"[4/6] signals done: {len(result['queued'])} queued, "
+                f"{len(result['skipped'])} skipped in "
+                f"{_fmt_eta(time.time() - t0)}"
+            )
 
-        # [5/6] missed sessions
-        print("[5/6] detect_missed_sessions...")
-        missed = detect_missed_sessions(ledger, asof)
-        if missed:
-            dates_str = ", ".join(d.isoformat() for d in missed)
-            _alert(f"WARNING: missed upkeep sessions detected: {dates_str}")
-        print(f"[5/6] {len(missed)} missed session(s)")
-
-        # [6/6] sync
-        _run_sync(do_sync)
+            # [5/6] missed sessions + signal notifications
+            print("[5/6] detect_missed_sessions + notifications...")
+            missed = detect_missed_sessions(ledger, asof)
+            if missed:
+                dates_str = ", ".join(d.isoformat() for d in missed)
+                _alert(f"WARNING: missed upkeep sessions detected: {dates_str}")
+            _send_signal_notifications(ledger, asof, _alert)
+            print(f"[5/6] {len(missed)} missed session(s); notifications done")
 
         print(f"forward_eod: {asof} complete in {_fmt_eta(time.time() - t_start)}")
-        return 0
 
-    except Exception:
+    except Exception:  # noqa: BLE001 — top-level job boundary
         logger.error("forward_eod: fatal error\n%s", traceback.format_exc())
         try:
             if not args.dry_run and not args.no_discord:
                 alerts.send(f"forward_eod FAILED: {traceback.format_exc()[-500:]}")
         except Exception:
-            pass
-        return 1
+            logger.exception("forward_eod: failure alert raised unexpectedly")
+        rc = 1
+    finally:
+        # Merge-only sync is useful after both successful stages and partial
+        # failures, and must never be stranded behind an early return.
+        try:
+            _run_sync(do_sync)
+        except Exception:  # noqa: BLE001  # pragma: no cover
+            logger.error("forward_eod: unexpected sync wrapper failure\n%s", traceback.format_exc())
+
+    return rc
 
 
 if __name__ == "__main__":

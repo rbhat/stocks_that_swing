@@ -133,26 +133,37 @@ missing rows in either direction and always re-uploads the union.
   `forward_eod.py` invocation runs `detect_missed_sessions()` (stage 5),
   which posts a Discord warning for any gap. Re-run `forward_eod.py
   --asof <missed-date>` manually to backfill; it is idempotent (ledger
-  `upkeep_done` + signals rows are the source of truth — a re-run for an
-  already-processed `asof` skips stages 1–5 and only re-runs sync).
+  stage records are the source of truth).
+- **EOD crash/retry**: `upkeep_done`, `signals_done`, and
+  `notifications_done` distinguish the three durable stages. A partial
+  signal walk resumes its journaled deterministic prefix, reconstructing
+  candidate slot, notional, and H1-throttle effects once before continuing.
+  `signals_done` is written only after both the shared and H1-solo walks
+  finish. If signals finished but notifications did not, a re-run rebuilds
+  candidate (or explicit no-candidate) and book-status messages from the
+  ledger, sends the complete set again, and then writes
+  `notifications_done`. A crash during notification delivery can therefore
+  produce duplicate alerts; delivery is intentionally at least once.
 - **Sync failure**: nonfatal. `forward_eod.py` step 6 (sync) is wrapped so a
   sync exception does not fail the whole job; an alert is sent and the next
-  run's sync retries the merge. Ledger state itself is never blocked on
-  sync succeeding.
+  run's sync retries the merge. Sync is attempted on every invocation,
+  including partial failures and fully completed no-op re-runs. Ledger state
+  itself is never blocked on sync succeeding.
 - **Fill job runs before today's bar exists** (e.g. machine woke late):
   `forward_fill.py --max-wait-min N` polls for the open print; on timeout it
   logs candidates as "unavailable" for this run without corrupting state —
   re-run later in the day once the bar is cached.
 - **Discord webhook down/misconfigured**: `alerts.send()` never raises; it
-  retries 3x then logs a warning and returns `False`. All ledger-side
-  effects still happen — Discord is a notification layer only, not part of
-  the state machine.
+  retries 3x then logs a warning and returns `False`. All trading-ledger
+  effects remain durable, but the EOD job leaves `notifications_done`
+  absent and exits nonzero so the next invocation retries the complete
+  nightly notification set.
 - **Re-running idempotently**: every script keys off `--asof` + ledger
   content. Re-running any job for a date that's already fully processed is
-  a safe no-op (verified in the Task 10 rehearsal — see
-  `.superpowers/sdd/task-10-report.md`).
+  a safe no-op except for the merge-only sync attempt. For EOD, "fully
+  processed" means all three stage records exist.
 
 ## Verification
 
-- `make test` — full suite (343 tests as of Task 10).
+- `make test` — full suite (359 tests as of no-signals repair Phase 4).
 - End-to-end rehearsal transcript: `.superpowers/sdd/task-10-report.md`.

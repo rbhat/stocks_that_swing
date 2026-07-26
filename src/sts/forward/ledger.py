@@ -67,7 +67,15 @@ _VALID_FAMILIES = frozenset({"h1", "h2"})
 _VALID_STATUSES = frozenset({"open", "closed"})
 
 _VALID_SIGNAL_KINDS = frozenset(
-    {"candidate", "skip", "missed_session", "upkeep_done", "monitor_alert"}
+    {
+        "candidate",
+        "skip",
+        "missed_session",
+        "upkeep_done",
+        "signals_done",
+        "notifications_done",
+        "monitor_alert",
+    }
 )
 _VALID_SKIP_REASONS = frozenset(
     {"slot", "throttle", "embargo", "dup_symbol", "deploy_cap", "size_zero"}
@@ -128,7 +136,9 @@ def _validate_row(row: dict) -> None:
 class Ledger:
     """Wraps the two family journals plus the equity and signal journals."""
 
-    def __init__(self, paths: LedgerPaths = LedgerPaths()):
+    def __init__(self, paths: LedgerPaths | None = None):
+        if paths is None:
+            paths = LedgerPaths()
         self.paths = paths
         self._h1 = Journal(paths.h1)
         self._h2 = Journal(paths.h2)
@@ -205,11 +215,18 @@ class Ledger:
             raise ValueError(f"invalid signal kind: {kind!r}")
         if kind == "skip" and rec.get("reason") not in _VALID_SKIP_REASONS:
             raise ValueError(f"invalid skip reason: {rec.get('reason')!r}")
-        key = (str(rec["signal_date"]), rec["book"], rec.get("entry_id"))
+        key = self._signal_key(rec)
         for r in self._signals.read():
-            if (str(r["signal_date"]), r["book"], r.get("entry_id")) == key:
+            if self._signal_key(r) == key:
                 return
         self._signals.append(rec)
+
+    @staticmethod
+    def _signal_key(rec: dict) -> tuple:
+        key = (str(rec["signal_date"]), rec["book"], rec.get("entry_id"))
+        if rec.get("entry_id") is None:
+            return (*key, rec.get("kind"))
+        return key
 
     def signals(self, signal_date: dt.date | None = None) -> list[dict]:
         rows = self._signals.read()
@@ -217,12 +234,21 @@ class Ledger:
             rows = [r for r in rows if str(r["signal_date"]) == str(signal_date)]
         return rows
 
-    def processed_upkeep_dates(self) -> set[dt.date]:
+    def _processed_control_dates(self, kind: str) -> set[dt.date]:
         dates: set[dt.date] = set()
         for r in self._signals.read():
-            if r.get("kind") == "upkeep_done":
-                d = r["date"]
+            if r.get("kind") == kind:
+                d = r.get("date", r["signal_date"])
                 if isinstance(d, str):
                     d = dt.date.fromisoformat(d)
                 dates.add(d)
         return dates
+
+    def processed_upkeep_dates(self) -> set[dt.date]:
+        return self._processed_control_dates("upkeep_done")
+
+    def processed_signal_dates(self) -> set[dt.date]:
+        return self._processed_control_dates("signals_done")
+
+    def processed_notification_dates(self) -> set[dt.date]:
+        return self._processed_control_dates("notifications_done")
