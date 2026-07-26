@@ -19,6 +19,7 @@ Two daily jobs, both idempotent/resume-capable, state lives entirely in the
 from __future__ import annotations
 
 import datetime as dt
+import math
 
 import pandas as pd
 
@@ -29,7 +30,7 @@ from sts.forward.book import BookState, h1_throttle_room
 from sts.forward.broker import cost_side
 from sts.forward.ledger import Ledger, entry_id
 from sts.study.h1_events import _PARAM_DEFAULTS as _H1_RISK_DEFAULTS
-from sts.study.h4_candidates import candidates_for
+from sts.study.h4_candidates import selected_signals_for
 
 _CONFIG_NAME = {"h1": "trend_pullback", "h2": "pead_day2_open"}
 
@@ -145,14 +146,29 @@ def run_upkeep(ledger: Ledger, prices: dict[str, pd.DataFrame], asof: dt.date) -
     return closed_rows
 
 
+def _prices_through_asof(
+    prices: dict[str, pd.DataFrame], asof: dt.date
+) -> dict[str, pd.DataFrame]:
+    return {
+        symbol: (
+            frame.loc[frame.index.date <= asof]
+            if frame is not None and not frame.empty
+            else frame
+        )
+        for symbol, frame in prices.items()
+    }
+
+
 def _default_candidate_source(
     prices: dict[str, pd.DataFrame], asof: dt.date, catalyst: CatalystCalendar
 ) -> dict[str, list[dict]]:
+    del catalyst
     oos_start = asof
     oos_end = asof + dt.timedelta(days=1)
+    prices = _prices_through_asof(prices, asof)
     return {
-        "h2": candidates_for("h2", prices, oos_start, oos_end, catalyst),
-        "h1": candidates_for("h1", prices, oos_start, oos_end, catalyst),
+        "h2": selected_signals_for("h2", prices, oos_start, oos_end),
+        "h1": selected_signals_for("h1", prices, oos_start, oos_end),
     }
 
 
@@ -178,10 +194,12 @@ def _provisional_geometry(
     idx = list(df.index.date).index(asof)
     close_sig = float(df["close"].iloc[idx])
     atr_sig = float(atr_series.iloc[idx])
-    if not (atr_sig > 0):
+    if not (math.isfinite(close_sig) and math.isfinite(atr_sig) and atr_sig > 0):
         return None
     stop = risk.atr_stop(close_sig, atr_sig, multiple=2.0)
     target = risk.atr_target(close_sig, atr_sig, multiple=2.0)
+    if not (math.isfinite(stop) and math.isfinite(target)):
+        return None
     return close_sig, atr_sig, stop, target
 
 
@@ -192,10 +210,8 @@ def generate_signals(
     catalyst,
     candidate_source=_default_candidate_source,
 ) -> dict:
+    prices = _prices_through_asof(prices, asof)
     raw = candidate_source(prices, asof, catalyst)
-    h2_candidates = sorted(raw.get("h2", []), key=lambda c: (c["signal_date"], c["symbol"]))
-    h1_candidates = sorted(raw.get("h1", []), key=_rank_key_h1)
-
     atr_window = _H1_RISK_DEFAULTS["atr_window"]
 
     session_dates = list(sessions_between(asof - dt.timedelta(days=30), asof).date)
@@ -205,6 +221,46 @@ def generate_signals(
     # anchored to the actual entry session.
     upcoming = sessions_between(asof + dt.timedelta(days=1), asof + dt.timedelta(days=14))
     next_session = upcoming[0].date() if len(upcoming) else asof + dt.timedelta(days=1)
+
+    counts = {
+        family: {
+            "detected": len(raw.get(family, [])),
+            "selected": len(raw.get(family, [])),
+            "missing_signal_bar": 0,
+            "stale_signal_bar": 0,
+            "invalid_geometry": 0,
+            "embargoed": 0,
+            "queued": 0,
+            "skipped_by_reason": {},
+        }
+        for family in ("h2", "h1")
+    }
+
+    def _validated(family: str) -> list[dict]:
+        valid: list[dict] = []
+        for cand in raw.get(family, []):
+            signal_date = _as_date(cand["signal_date"])
+            if signal_date != asof:
+                counts[family]["stale_signal_bar"] += 1
+                continue
+            df = prices.get(cand["symbol"])
+            if df is None or df.empty:
+                counts[family]["missing_signal_bar"] += 1
+                continue
+            if asof not in set(df.index.date):
+                counts[family]["stale_signal_bar"] += 1
+                continue
+            geom = _provisional_geometry(df, asof, atr_window)
+            if geom is None:
+                counts[family]["invalid_geometry"] += 1
+                continue
+            valid.append({**cand, "_forward_geometry": geom})
+        return valid
+
+    h2_candidates = sorted(
+        _validated("h2"), key=lambda c: (c["signal_date"], c["symbol"])
+    )
+    h1_candidates = sorted(_validated("h1"), key=_rank_key_h1)
 
     # NOTE (same-day re-run): generate_signals is idempotent at the ledger
     # level — append_signal dedups on (signal_date, book, entry_id), so a
@@ -219,12 +275,7 @@ def generate_signals(
 
     queued: list[dict] = []
     skipped: list[dict] = []
-
-    def _geom(cand: dict) -> tuple[float, float, float, float] | None:
-        df = prices.get(cand["symbol"])
-        if df is None or df.empty:
-            return None
-        return _provisional_geometry(df, asof, atr_window)
+    embargoed_facts: set[tuple[str, str, dt.date]] = set()
 
     def _walk(book: str, queue: list[dict], enforce_throttle: bool) -> None:
         marks: dict[str, float] = {}
@@ -247,18 +298,16 @@ def generate_signals(
             eid = entry_id(book, family, symbol, signal_date)
 
             if catalyst.catalyst_within(symbol, next_session, 2, "block_entry") is not None:
+                fact_id = (family, symbol, signal_date)
+                if fact_id not in embargoed_facts:
+                    counts[family]["embargoed"] += 1
+                    embargoed_facts.add(fact_id)
                 skipped.append(
                     _append_skip(ledger, book, family, eid, asof, symbol, "embargo")
                 )
                 continue
 
-            geom = _geom(cand)
-            if geom is None:
-                skipped.append(
-                    _append_skip(ledger, book, family, eid, asof, symbol, "size_zero")
-                )
-                continue
-            close_sig, atr_sig, stop, target = geom
+            close_sig, atr_sig, stop, target = cand["_forward_geometry"]
 
             shared_blocked: set[str] = set()
             if book == "shared":
@@ -320,6 +369,8 @@ def generate_signals(
                 skipped.append(
                     _append_skip(ledger, book, family, eid, asof, symbol, reason)
                 )
+                reasons = counts[family]["skipped_by_reason"]
+                reasons[reason] = reasons.get(reason, 0) + 1
                 continue
 
             qty = provisional_qty
@@ -348,6 +399,7 @@ def generate_signals(
 
             ledger.append_signal(rec)
             queued.append(rec)
+            counts[family]["queued"] += 1
 
             provisional_open.append({"symbol": symbol, "family": family})
             provisional_notional += qty * close_sig
@@ -355,7 +407,7 @@ def generate_signals(
     _walk("shared", h2_candidates + h1_candidates, enforce_throttle=True)
     _walk("h1solo", h1_candidates, enforce_throttle=True)
 
-    return {"queued": queued, "skipped": skipped}
+    return {"queued": queued, "skipped": skipped, "counts": counts}
 
 
 def _append_skip(

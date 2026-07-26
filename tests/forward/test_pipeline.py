@@ -4,6 +4,7 @@ import pandas as pd
 import pytest
 
 from sts.catalyst import CatalystCalendar
+from sts.forward import pipeline
 from sts.forward.broker import cost_side
 from sts.forward.ledger import Ledger, LedgerPaths, entry_id
 from sts.forward.pipeline import (
@@ -11,7 +12,6 @@ from sts.forward.pipeline import (
     generate_signals,
     run_upkeep,
 )
-import sts.forward.pipeline as pipeline
 
 
 def bar(o, h, l, c, v=1_000_000):
@@ -227,19 +227,90 @@ def test_default_source_queues_final_bar_selected_signal(
     ledger, empty_catalyst, monkeypatch
 ):
     asof = dt.date(2024, 3, 15)
-    prices = make_prices(["AAA"], asof)
+    prices = make_prices(["AAA", "BBB"], asof)
 
     def selected(family, prices, start, end):
+        assert all(max(df.index.date) == asof for df in prices.values())
         if family == "h1":
             return [make_candidate("AAA", "h1", asof)]
-        return []
+        return [make_candidate("BBB", "h2", asof)]
 
     monkeypatch.setattr(pipeline, "selected_signals_for", selected)
     result = generate_signals(ledger, prices, asof, empty_catalyst)
     assert [(r["book"], r["family"], r["ticker"]) for r in result["queued"]] == [
+        ("shared", "h2", "BBB"),
         ("shared", "h1", "AAA"),
         ("h1solo", "h1", "AAA"),
     ]
+    assert result["counts"]["h2"] == {
+        "detected": 1,
+        "selected": 1,
+        "missing_signal_bar": 0,
+        "stale_signal_bar": 0,
+        "invalid_geometry": 0,
+        "embargoed": 0,
+        "queued": 1,
+        "skipped_by_reason": {},
+    }
+    assert result["counts"]["h1"] == {
+        "detected": 1,
+        "selected": 1,
+        "missing_signal_bar": 0,
+        "stale_signal_bar": 0,
+        "invalid_geometry": 0,
+        "embargoed": 0,
+        "queued": 2,
+        "skipped_by_reason": {},
+    }
+
+
+def test_default_source_truncates_future_bars_without_mutating_input(
+    ledger, empty_catalyst, monkeypatch
+):
+    asof = dt.date(2024, 3, 15)
+    prices = make_prices(["AAA"], asof)
+    future = pd.Timestamp("2024-03-18")
+    prices["AAA"].loc[future] = bar(110.0, 111.0, 109.0, 110.0)
+    seen_families = []
+
+    def selected(family, causal_prices, start, end):
+        seen_families.append(family)
+        assert max(causal_prices["AAA"].index.date) == asof
+        return []
+
+    monkeypatch.setattr(pipeline, "selected_signals_for", selected)
+    result = generate_signals(ledger, prices, asof, empty_catalyst)
+
+    assert seen_families == ["h2", "h1"]
+    assert max(prices["AAA"].index.date) == future.date()
+    assert result["queued"] == []
+
+
+def test_generate_signals_counts_signal_bar_failures(ledger, empty_catalyst):
+    asof = dt.date(2024, 3, 15)
+    stale = price_df_for("STALE", asof - dt.timedelta(days=1))
+    invalid = price_df_for("INVALID", asof)
+    invalid.loc[pd.Timestamp(asof), ["high", "low", "close"]] = float("nan")
+    prices = {"STALE": stale, "INVALID": invalid}
+
+    def source(prices, asof, catalyst):
+        return {
+            "h2": [make_candidate("MISSING", "h2", asof)],
+            "h1": [
+                make_candidate("STALE", "h1", asof),
+                make_candidate("INVALID", "h1", asof),
+            ],
+        }
+
+    result = generate_signals(
+        ledger, prices, asof, empty_catalyst, candidate_source=source
+    )
+
+    assert result["queued"] == []
+    assert result["skipped"] == []
+    assert result["counts"]["h2"]["missing_signal_bar"] == 1
+    assert result["counts"]["h1"]["stale_signal_bar"] == 1
+    assert result["counts"]["h1"]["invalid_geometry"] == 1
 
 
 def test_generate_signals_h1_throttle(ledger, empty_catalyst):
@@ -264,6 +335,8 @@ def test_generate_signals_h1_throttle(ledger, empty_catalyst):
     assert len(shared_queued) == 4
     throttle_skips = [s for s in shared_skipped if s["reason"] == "throttle"]
     assert len(throttle_skips) == 2
+    assert result["counts"]["h1"]["queued"] == 8
+    assert result["counts"]["h1"]["skipped_by_reason"] == {"throttle": 4}
 
 
 def test_generate_signals_cross_family_dup_block(ledger, empty_catalyst):
@@ -353,6 +426,9 @@ def test_generate_signals_embargo_uses_next_trading_session(ledger):
     shared_skips = [s for s in result["skipped"] if s["book"] == "shared"]
     assert any(s["reason"] == "embargo" for s in shared_skips)
     assert not any(q["book"] == "shared" for q in result["queued"])
+    assert result["counts"]["h1"]["embargoed"] == 1
+    assert result["counts"]["h1"]["queued"] == 0
+    assert result["counts"]["h1"]["skipped_by_reason"] == {}
 
 
 # ---------------------------------------------------------------------------
