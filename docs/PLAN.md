@@ -222,6 +222,14 @@ backtest, or a successful deployment is not success by itself.
   `docs/evidence/success-v2/phase-3.md`. Zero exact candidates cleared the
   fixed detector-versus-control gate, so Phase 4 is not authorized and no
   post-wall reader or collector exists.
+- 2026-07-26 — ML restart exploration memo completed; user decision pending.
+  Evidence: `docs/evidence/success-v2/ml-restart-exploration.md`. This memo
+  does not alter the Phase 3 STOP, authorize Phase 4, select a model, create
+  a locked ML plan, or permit implementation or new evidence access.
+- 2026-07-26 — User authorized ML plan drafting. Locked planning package:
+  `docs/superpowers/plans/2026-07-26-ml-restart.md` and
+  `docs/preregs/2026-07-26_ml-restart-development.md`. Implementation is
+  paused pending separate explicit authorization; Phase 3 remains STOP.
 
 ## Proposed ML restart exploration (not authorized)
 
@@ -269,3 +277,14 @@ model fitting, post-Phase-3 data read, collection, or deployment is authorized b
 If the user authorizes a restart after the exploration session, create a separately locked,
 append-only ML plan with its own phases, data walls, tests, evidence, documentation, focused
 commits, and independent-review gates before implementation begins.
+
+## ML plan disposition (append-only)
+
+- 2026-07-26 — **AUTHORIZE PLAN DRAFTING selected.** The ML implementation
+  plan and development prereg were locked as documentation only. The clean
+  evidence lower bound remains 2026-07-27, while the actual ML event wall
+  must be a later future exchange session set after candidate/code/config
+  hashes are locked. The intervening period is never backfilled.
+- Implementation is **not authorized**. The next allowed action is to wait
+  for explicit user authorization to begin Task 1 of
+  `docs/superpowers/plans/2026-07-26-ml-restart.md`.

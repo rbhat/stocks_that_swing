@@ -4,6 +4,30 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-26 — ML restart plan locked; implementation paused
+
+The user authorized a locked ML plan covering multiple research units,
+targets, model families, controls, and data gates. The planning package is:
+
+- `docs/evidence/success-v2/ml-restart-exploration.md`;
+- `docs/superpowers/plans/2026-07-26-ml-restart.md`;
+- `docs/preregs/2026-07-26_ml-restart-development.md`.
+
+The core development matrix is fixed at two tracks × three targets × two
+model families, with one optional grouped-ranking challenger that may run
+only if its dependency gate passes before real-data construction. Selection
+is governed by date-grouped incremental 2×-cost net R versus matched
+same-date controls, not total profit or a generic prediction metric.
+
+This decision authorizes and locks planning only. Phase 3 remains **STOP**;
+Phase 4 remains unauthorized; no model or rule candidate is selected. No
+dependency installation, feature/label construction, model fitting,
+post-2023 ML data read, collection, deployment, or portfolio work is
+authorized. Implementation begins only after a new explicit user
+authorization.
+
+---
+
 ## 2026-07-26 — Success-v2 Phase-3 discovery: STOP
 
 The fixed pre-2024 IS screen produced no credible exact candidate. All six
