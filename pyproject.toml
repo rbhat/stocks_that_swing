@@ -16,6 +16,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+ml = [
+    "lightgbm>=4.6,<5",
+    "scikit-learn>=1.7,<2",
+]
 
 [build-system]
 requires = ["setuptools>=68"]
