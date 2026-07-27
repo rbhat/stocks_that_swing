@@ -3,6 +3,12 @@
 > **RESTART FREEZE — 2026-07-26:** this runbook describes the legacy Phase-5 book.
 > Manage existing open paper positions to exit, but do not generate or fill new legacy
 > entries. `docs/PLAN.md` is the sole authority for any new versioned collection.
+>
+> Production was inspected and frozen on 2026-07-26. It had no open positions and no
+> queued candidates, so the `eod` and `fill` crontab entries were removed; only the
+> non-mutating monitor schedule remains. The prior crontab is retained on the VM as
+> `~/sts/crontab.pre-success-v2-freeze-20260726.txt`. Do not restore those entry jobs.
+> Local legacy EOD/fill code also fails closed for sessions on or after 2026-07-27.
 
 Phase-5 forward-paper pipeline: nightly EOD signal generation, morning fill
 capture, hourly advisory monitoring, and daily Drive sync. This doc is the

@@ -42,6 +42,7 @@ from sts.catalyst import CatalystCalendar, refresh_earnings
 from sts.data.fetch import fetch_daily
 from sts.data.study_store import StudyStore
 from sts.forward import alerts
+from sts.forward.freeze import LEGACY_ENTRY_FREEZE_WALL, legacy_entries_frozen
 from sts.forward.ledger import Ledger, LedgerPaths
 from sts.forward.pipeline import (
     classify_signal_outcome,
@@ -145,6 +146,49 @@ def _signals_done_record(ledger: Ledger, asof: dt.date) -> dict | None:
     )
 
 
+def _record_legacy_freeze(
+    ledger: Ledger,
+    asof: dt.date,
+    *,
+    market_data: dict,
+    runtime_seconds: dict[str, float],
+) -> dict:
+    """Durably complete the signal stage without running a legacy detector."""
+    family_counts = {
+        family: {
+            "detected": 0,
+            "selected": 0,
+            "missing_signal_bar": 0,
+            "stale_signal_bar": 0,
+            "invalid_geometry": 0,
+            "embargoed": 0,
+            "queued": 0,
+            "skipped_by_reason": {"legacy_entry_freeze": 1},
+        }
+        for family in ("h2", "h1")
+    }
+    summary = {
+        "families": family_counts,
+        "market_data": market_data,
+        "runtime_seconds": {**runtime_seconds, "signals": 0.0},
+        "legacy_entry_freeze": {
+            "active": True,
+            "wall": LEGACY_ENTRY_FREEZE_WALL.isoformat(),
+        },
+    }
+    ledger.append_signal(
+        {
+            "kind": "signals_done",
+            "book": "shared",
+            "entry_id": None,
+            "signal_date": asof.isoformat(),
+            "date": asof.isoformat(),
+            "summary": summary,
+        }
+    )
+    return {"queued": [], "skipped": []}
+
+
 def _previous_session(value: dt.date) -> dt.date | None:
     sessions = calendar.sessions_between(value - dt.timedelta(days=14), value)
     prior = [stamp.date() for stamp in sessions if stamp.date() < value]
@@ -191,7 +235,11 @@ def _nightly_summary(
         **signal_summary,
         "asof": asof.isoformat(),
         "families": families,
-        "signal_outcome": classify_signal_outcome(families, complete=complete),
+        "signal_outcome": (
+            "legacy_entry_frozen"
+            if signal_summary.get("legacy_entry_freeze", {}).get("active")
+            else classify_signal_outcome(families, complete=complete)
+        ),
         "stage_completion": {
             "upkeep_done": asof in ledger.processed_upkeep_dates(),
             "signals_done": complete,
@@ -446,18 +494,30 @@ def run(argv: list[str]) -> int:
             )
 
             # [4/6] signals
-            print("[4/6] generate_signals...")
-            catalyst = CatalystCalendar.load()
-            result = generate_signals(
-                ledger,
-                prices,
-                asof,
-                catalyst,
-                summary_context={
-                    "market_data": market_data,
-                    "runtime_seconds": stage_runtimes,
-                },
-            )
+            if legacy_entries_frozen(asof):
+                print(
+                    "[4/6] legacy entry freeze active "
+                    f"(wall {LEGACY_ENTRY_FREEZE_WALL}) — detectors skipped"
+                )
+                result = _record_legacy_freeze(
+                    ledger,
+                    asof,
+                    market_data=market_data,
+                    runtime_seconds=stage_runtimes,
+                )
+            else:
+                print("[4/6] generate_signals...")
+                catalyst = CatalystCalendar.load()
+                result = generate_signals(
+                    ledger,
+                    prices,
+                    asof,
+                    catalyst,
+                    summary_context={
+                        "market_data": market_data,
+                        "runtime_seconds": stage_runtimes,
+                    },
+                )
             signal_record = _signals_done_record(ledger, asof)
             signal_runtime = (
                 signal_record.get("summary", {})

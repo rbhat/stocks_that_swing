@@ -121,6 +121,37 @@ def test_fill_idempotent_on_second_run(tmp_path, monkeypatch, ledger):
     assert after[cand["entry_id"]]["seq"] == before[cand["entry_id"]]["seq"]
 
 
+def test_restart_freeze_refuses_queued_legacy_candidate_without_market_data(
+    tmp_path, monkeypatch, ledger
+):
+    from sts.forward.freeze import LEGACY_ENTRY_FREEZE_WALL
+
+    signal_date = dt.date(2026, 7, 24)
+    cand = candidate_signal(LEGACY_ENTRY_FREEZE_WALL, signal_date)
+    ledger.append_signal(cand)
+    monkeypatch.setattr(
+        forward_fill,
+        "StudyStore",
+        lambda: (_ for _ in ()).throw(
+            AssertionError("frozen fills must not load or fetch market data")
+        ),
+    )
+
+    rc = forward_fill.run(
+        [
+            "--asof",
+            LEGACY_ENTRY_FREEZE_WALL.isoformat(),
+            "--ledger-root",
+            str(tmp_path / "ledger"),
+            "--no-discord",
+        ]
+    )
+
+    assert rc == 0
+    assert cand["entry_id"] not in ledger.state()
+    assert forward_fill._fillable_candidates(ledger, LEGACY_ENTRY_FREEZE_WALL) == []
+
+
 def test_fill_unavailable_open_defers_candidate(tmp_path, monkeypatch, ledger):
     signal_date = dt.date(2024, 1, 2)
     entry_session = _entry_session_for(signal_date)

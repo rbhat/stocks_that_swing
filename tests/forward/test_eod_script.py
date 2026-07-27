@@ -86,6 +86,53 @@ def test_dry_run_second_invocation_is_noop(tmp_path, study_store, monkeypatch):
     assert forward_eod._already_done(ledger, asof)
 
 
+def test_restart_freeze_runs_upkeep_but_never_legacy_detectors(tmp_path, monkeypatch):
+    from sts.forward.freeze import LEGACY_ENTRY_FREEZE_WALL
+    from sts.forward.ledger import Ledger, LedgerPaths
+
+    asof = LEGACY_ENTRY_FREEZE_WALL
+    prices = {"AAA": make_frame(30, start="2026-06-15")}
+
+    class FrozenStore:
+        def load_all(self):
+            return prices
+
+    monkeypatch.setattr(forward_eod, "StudyStore", FrozenStore)
+    monkeypatch.setattr(forward_eod, "_roster_symbols", lambda: ["AAA"])
+    monkeypatch.setattr(
+        forward_eod,
+        "generate_signals",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("legacy detectors must not run at the restart wall")
+        ),
+    )
+    monkeypatch.setattr(forward_eod, "_run_sync", lambda do_sync: None)
+
+    ledger_root = tmp_path / "ledger"
+    rc = forward_eod.run(
+        [
+            "--dry-run",
+            "--asof",
+            asof.isoformat(),
+            "--ledger-root",
+            str(ledger_root),
+        ]
+    )
+
+    assert rc == 0
+    ledger = Ledger(LedgerPaths(root=ledger_root))
+    assert asof in ledger.processed_upkeep_dates()
+    assert asof in ledger.processed_signal_dates()
+    assert not any(rec.get("kind") == "candidate" for rec in ledger.signals(asof))
+    done = next(
+        rec for rec in ledger.signals(asof) if rec.get("kind") == "signals_done"
+    )
+    assert done["summary"]["legacy_entry_freeze"] == {
+        "active": True,
+        "wall": LEGACY_ENTRY_FREEZE_WALL.isoformat(),
+    }
+
+
 def test_empty_queue_night_sends_book_status_and_no_candidates(
     tmp_path, study_store, monkeypatch
 ):

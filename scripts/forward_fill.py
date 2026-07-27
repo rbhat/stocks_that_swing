@@ -57,6 +57,7 @@ from sts.data.study_store import StudyStore  # noqa: E402
 from sts.forward import alerts  # noqa: E402
 from sts.forward.book import BookState  # noqa: E402
 from sts.forward.broker import StubPaperBroker, cost_side  # noqa: E402
+from sts.forward.freeze import LEGACY_ENTRY_FREEZE_WALL, legacy_entries_frozen
 from sts.forward.ledger import SOURCES, Ledger, LedgerPaths  # noqa: E402
 
 logger = logging.getLogger("forward_fill")
@@ -100,6 +101,8 @@ def _as_date(value: dt.date | str) -> dt.date:
 
 
 def _fillable_candidates(ledger: Ledger, asof: dt.date) -> list[dict]:
+    if legacy_entries_frozen(asof):
+        return []
     filled = set(ledger.state().keys())
     out = []
     for rec in ledger.signals():
@@ -270,6 +273,13 @@ def run(argv: list[str]) -> int:
 
         if not calendar.is_session(asof):
             print(f"forward_fill: {asof} is not a trading session — nothing to do")
+            return 0
+
+        if legacy_entries_frozen(asof):
+            print(
+                "forward_fill: legacy entry freeze active "
+                f"(wall {LEGACY_ENTRY_FREEZE_WALL}) — no candidates may fill"
+            )
             return 0
 
         ledger = Ledger(LedgerPaths(root=Path(args.ledger_root)))
