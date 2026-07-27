@@ -2,8 +2,9 @@
 
 Systematic swing-trading research and forward-paper trading pipeline.
 
-## Forward-paper operations
+## Current status
 
-Scheduling, manual commands, ledger locations, and failure/recovery
-procedures for the Phase-5 forward-paper pipeline are documented in
-[`docs/FORWARD_OPS.md`](docs/FORWARD_OPS.md).
+Full strategic restart locked 2026-07-26. [`docs/PLAN.md`](docs/PLAN.md) is the sole
+governing plan; prior studies and the Phase-5 forward book are historical only.
+
+Start the next execution session with [`prompt_restart.md`](prompt_restart.md).

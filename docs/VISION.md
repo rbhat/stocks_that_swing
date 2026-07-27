@@ -14,27 +14,32 @@ and judged at their own scale, they compound through turnover: many small resolu
 instead of a few large ones.
 
 **Success looks like:**
-- At least one setup family with out-of-sample, event-level expectancy **> 0 net of 2× assumed
-  friction**, on n ≥ 100 events, stable across years (no single regime carrying it).
-- A forward paper book whose realized expectancy sits inside its out-of-sample band after
+- At least one setup family with **positive out-of-sample net profit after friction** on
+  n ≥ 100 closed events. Every entry must offer **planned reward:risk > 1.5R**, and every
+  initial stop must risk **< 25% of entry** (the charter's existing ≤ 12% stop bound is
+  stricter). These are entry-time geometry bars; realized winners are reported as a
+  distribution, not forced to exceed 1.5R after the fact.
+- A forward paper book whose realized net return sits inside the matched-trade-count
+  out-of-sample net-return band after
   **≥ 30 closed trades and ≥ 3 months** — swing velocity makes this cheap; forward evidence is
   the arbiter, and here it arrives in months, not years.
 - Median hold ≤ 15 sessions; every trade carries its setup, trigger, stop, target, and time
   stop at entry — nothing is a black box.
-- Drawdown inside the charter cap — **25% max peak-to-trough on net portfolio equity**
-  (ratified 2026-07-12); friction share of gross P&L tracked on every report. A portfolio
-  backtest only counts as a real read at **≥ 20% average deployed** over its window
-  (ratified 2026-07-12) — a book that sits in cash proves nothing.
+- Drawdown inside the charter cap — **40% max peak-to-trough on net portfolio equity**
+  (amended 2026-07-26); friction share of gross P&L tracked on every report. A portfolio
+  backtest only counts as a real read at **≥ 10% average deployed** over its window
+  (amended 2026-07-26) — a book that sits in cash proves nothing.
 
 **The honest kill criterion:** if no hypothesis family survives its pre-registered Phase-3
 bars (HYPOTHESES.md) after H1–H3 and one exploratory round, the project records a well-earned
-STOP. The parent taught us how to park; a new repo is not an excuse to forget.
+STOP.
 
 **Principles:**
 - **Swing-native geometry.** Risk is anchored to the instrument's own volatility (ATR) and
-  structure, never to a fixed percent designed for multi-year holds. Expectancy after friction
-  is the governing criterion — not a reward-to-risk floor (the parent's ≥2R floor is the
-  single biggest thing that broke swing there).
+  structure, never to a fixed percent designed for multi-year holds. The >1.5R planned
+  reward:risk bar is a prospective entry-quality constraint; net profit after friction is
+  still the outcome that governs. The bar must not be met by widening stops, extending the
+  15-session hold, or relabeling old studies.
 - **No shared surface with the parent.** Code, data, decisions, and configuration are never
   copied wholesale from `stocks_that_move`. LESSONS §7 names a short list of infrastructure
   files (calendar, fetch, store, quality gate, atomic-write plumbing) ported near-verbatim
@@ -83,9 +88,10 @@ Stops & exits:
 - **Time stop: 15 sessions, hard** (user constraint, 2026-07-11 — swing trades resolve in 2–3
   weeks or they are wrong).
 - Targets are study-determined (structure: prior swing high / measured move / mean touch; or
-  ATR multiples). **No hard R:R floor** — with right-sized stops the parent's tiny-win-vs-
-  huge-stop pathology cannot occur, and mean-reversion families legitimately run high win
-  rate at ~1:1. Planned R:R is reported on every trade and every study.
+  ATR multiples). Every new entry must have **planned reward:risk > 1.5R** at the actual
+  fill, using the immutable initial stop as the R denominator. Planned R:R is reported on
+  every trade and every study. Geometry locked before this 2026-07-26 amendment remains
+  historical evidence only; it is never silently rewritten or promoted under the new bar.
 
 Entries & catalysts:
 - No new entries within **2 sessions before** a scheduled earnings date; holding through
@@ -110,3 +116,6 @@ Process:
   changes, and method changes; long-running scripts resumable with elapsed/ETA.
 - trades.jsonl append-only when the forward book exists; alerts (if ever) are trade events
   only.
+- The 2026-07-26 success amendment applies prospectively. Existing preregs, reports, and
+  verdicts remain immutable historical records, but no pre-amendment setup advances to a
+  new forward entry unless it is requalified under a fresh prereg and untouched data.

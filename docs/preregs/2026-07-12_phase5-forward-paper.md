@@ -138,7 +138,11 @@ anything acts on a PROCEED.
 
 ## Deviations log
 
-(append-only; none at draft)
+- **2026-07-26 — superseded by full strategic restart.** The user replaced the success
+  definition and authorized a clean restart. This prereg and its ledgers remain immutable
+  historical evidence but authorize no new candidate, fill, verdict, or promotion. Existing
+  open legacy paper positions, if any, are managed to exit without new legacy entries.
+  `docs/PLAN.md` is the sole active plan.
 
 ## Sign-off
 

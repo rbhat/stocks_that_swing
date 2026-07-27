@@ -1,155 +1,210 @@
-# Plan
+# Restart Plan — Success-v2
 
-Each phase gates the next. The heart of the project is Phase 3 — everything before it is the
-minimum harness needed to run honest studies; everything after it exists only if a study
-survives. Estimated effort assumes part-time sessions.
+- **Locked:** 2026-07-26
+- **Canonical plan:** this file
+- **Clean OOS wall:** 2026-07-27
+- **Starting code baseline:** the repository state immediately before this plan's commit
 
-**Guardrail (see VISION.md "No shared surface with the parent"):** LESSONS §7's ported files
-are infrastructure only. Every risk, sizing, stop, target, and exit rule in this plan is
-designed fresh from the charter numbers in VISION.md — never copied from the parent's
-defaults, even when a ported file (e.g. `eventsim.py`'s shape) came from there originally.
-When a phase says "port," read it as "port the mechanical pattern, redesign the numbers."
+## Restart decision
 
-## Phase 0 — Charter ratification (user, ~1 session)
+This is a strategic restart, not a continuation of the Phase-5 no-signals repair.
 
-Walk the decision list below; record each answer in a fresh `decisions.md` (append-only,
-newest first); mark VISION.md's proposed rules ratified. Nothing else happens first.
+- All pre-restart H1/H2/H3 studies, Phase-4 verdicts, and the Phase-5 forward prereg are
+  retained as historical context only. None authorizes a new entry or promotion.
+- Existing data, calendar, store, risk, event simulator, portfolio simulator, append-only
+  journal, causal signal-selection, retry, and observability code may be reused only after
+  it passes the gates below.
+- No old setup is grandfathered. H1/H2 may reappear only as newly named candidates selected
+  without using consumed OOS results.
+- No production entry generation, retrospective paper fills, dashboard work, or live-money
+  work occurs until this plan explicitly permits it.
+- Every phase ends with tests, evidence, and one focused commit. Do not carry uncommitted
+  work into the next phase.
 
-**Decision list:**
-1. **Universe** — clone the parent's 250-name study-roster shape (recommended: consistency +
-   statistical power), or a curated ~150 liquid/high-beta list? Eligibility floors ($5, $20M
-   dollar-vol) confirmed?
-2. **OOS wall** — keep 2025-01-01 (recommended; ~18 months of OOS exists on day one), noting
-   the H3 partial-consumption caveat?
-3. **Risk numbers** — 0.75% per trade, 8 positions, 80% deployed, 15% notional cap, ≤12% stop
-   bound: confirm or set your own.
-4. **Short side** — phase-gated amendment after Phase 5 (recommended), or off the table
-   entirely?
-5. **Costs** — 5 bps/side + $1/order (parent's numbers) with a mandatory 2× sensitivity arm on
-   every verdict: confirm.
-6. **Catalyst rule** — confirm the standing directive (2-session pre-earnings entry embargo;
-   holding through allowed).
-7. **Repo name** and whether Drive sync / multi-machine is ever wanted (recommend: not before
-   Phase 6).
+## Success contract
 
-## Phase 1 — Port the foundations (~2–3 sessions)
+The following definitions are load-bearing:
 
-Copy the parent's battle-tested modules (exact list: LESSONS §7) — calendar, fetch, store,
-quality gate, env, atomic-write patterns, test patterns. Fresh cache; fetch the roster
-(resumable, budgeted, ~2M bars). Suite green. **Gate:** second fetch run is a no-op;
-quality-gate rejects a corrupted frame in a test.
+- `initial_risk = entry_fill - stop_initial`
+- `planned_r = (target_initial - entry_fill) / initial_risk`
+- `initial_risk_pct = initial_risk / entry_fill`
+- `net_profit = sum of closed-trade P&L after both-side friction`
+- `matched OOS band = 90% blocked-bootstrap interval of net portfolio return, sampled at the
+  forward book's closed-trade count and elapsed-session count`
 
-## Phase 2 — Swing risk engine + study harness (~2–3 sessions)
+A setup family succeeds only if all event-level bars pass:
 
-The one genuinely new build:
-- `risk.py` (new, swing-native): ATR/structure stops, structure/ATR targets, 15-session time
-  stop, 0.75% stop-based sizing. Small, pure, unit-tested.
-- Port the parent's event-simulator pattern (`eventsim.py`): every detector event simmed
-  independently through the swing exit structure — the instrument every study uses.
-- Two-layer read built in from day one: (a) raw forward returns at h=5/10/15 sessions
-  (exit-free signal quality), then (b) exit-simmed expectancy — a family that only wins under
-  layer (b) is an exit artifact.
-- Weekly-bar resampler with shift-safety (a weekly bar exists only after its Friday close) +
-  shift-guard tests, for the multi-timeframe conditions.
-- Prereg template (bars, slices, adequacy floors, cost arms) checked into the repo.
+1. At least 100 closed events strictly on or after the clean OOS wall.
+2. Planned reward:risk is strictly greater than 1.5R on every valid entry.
+3. Initial stop risk is below 25% of entry on every valid entry. The existing 12% stop bound
+   remains stricter and may not be loosened.
+4. Total net profit is positive at base and 2× assumed friction.
+5. Median hold is at most 15 sessions.
+6. Raw h=15 forward return is positive; exit logic cannot manufacture the entire edge.
 
-**Gate:** negative control — random entries through the harness yield ~zero gross expectancy
-minus friction; shift-guard tests green.
+A portfolio expression succeeds only if:
 
-## Phase 2.5 — Exploratory discovery pass (~2–4 sessions; optional, feeds Phase 3)
+- net return is positive after friction;
+- max peak-to-trough drawdown is at most 40%;
+- average deployed capital is at least 10%;
+- every actual/modelled fill still satisfies planned R >1.5 and initial risk <25%;
+- year, regime, exit-reason, net-R, MAE, and friction distributions are reported.
 
-**Purpose:** use the full IS window and any technique (grid sweeps, feature screens, ML models
-— classifiers/rankers on engineered features, clustering, whatever surfaces a pattern) to
-*generate* candidate hypotheses/configs, not to *validate* them. This is where "try everything
-and see what works" belongs — it is explicitly barred from Phase 3's confirmatory studies
-(HYPOTHESES §0, PREREG_TEMPLATE) because judging on the same data you searched is how the
-parent project got burned (LESSONS).
+Forward promotion is a second, later holdout. It starts only after an event-level PROCEED and
+additionally requires at least 30 closed trades and three calendar months, with realized net
+return positive and inside the matched event-OOS band. A profitable realized time-stop exit
+below 1.5R is reported honestly; the 1.5R rule is entry-time planned geometry, not a post-hoc
+relabeling of outcomes.
 
-**Hard rule — the OOS wall is load-bearing here too:** every exploratory run, sweep, or model
-fit in this phase uses only data strictly before 2024-01-01. No OOS bar, slice, or event is
-read, plotted, or fed to a model at any point in this phase — not even "just to look." A
-pattern discovered by peeking at OOS is not a discovery, it's a leak, and it poisons every
-study built on it afterward.
+## Phase 0 — Freeze and baseline
 
-**Output is candidates, never verdicts.** This phase cannot itself produce PROCEED / PARK /
-STOP — it has no locked prereg and no untouched OOS to judge against, so nothing it produces is
-evidence. Its only deliverable is a short list of named, specific configs (or a frozen model
-spec: architecture, features, training window) worth preregistering — added to HYPOTHESES.md
-as new H-entries or as refinements to existing ones (e.g. "H1 cell narrowed to X based on IS
-screen").
+1. Record the restart commit SHA and `git status --short`.
+2. Inspect local and production state read-only:
+   - identify any active cron/container;
+   - identify open legacy paper positions and queued legacy candidates;
+   - record image digest, ledger roots, last completed stages, and last sync.
+3. If legacy entry generation is active, disable new entries while preserving upkeep, exits,
+   notifications, and append-only sync for already-open paper positions.
+4. Never fill a queued legacy candidate after the restart wall.
+5. Run the full local suite and repository lint baseline. Record all pre-existing failures
+   before changing code.
+6. Record local price/catalyst coverage and freshness. A missing catalyst cache is an input
+   failure, never a zero-event result.
 
-**Promotion path (mandatory):** a candidate that looks good here does not skip Phase 3. It
-gets its own dated prereg (PREREG_TEMPLATE.md) naming that exact config/model as the primary
-cell, locked before it ever sees OOS data, then runs through Phase 3's normal two-layer read
-and locked bars. The IS performance from this phase is disclosed in that prereg as a *prior*,
-never substituted for the OOS verdict.
+**Gate:** baseline evidence committed; no new legacy entry can occur; existing paper
+positions remain safely managed; no ledger was truncated or rewritten.
 
-**Gate:** none in the pass/fail sense — this phase can't fail, only produce zero, one, or many
-candidates. Optional: skip it entirely if the named H1–H3 families already look sufficient.
+## Phase 1 — Build the success gate before a strategy
 
-## Phase 3 — Hypothesis studies (the heart; ~2–5 days each incl. review)
+Implement pure, strategy-agnostic metrics and tests:
 
-Run the families in HYPOTHESES.md priority order: **H1 trend-conditioned pullback → H2
-earnings-reaction drift → H3 re-geometried breakouts**, then one exploratory round (H4, with
-the user-proposed H6 setups as its named backlog) if warranted. Per study: prereg locked
-before the script → run (resumable, ETA) → verdict entry in decisions.md → independent review
-of any PROCEED.
+- planned R and initial-risk calculations;
+- strict boundary behavior (`1.5R` fails, `<25%` means 25% fails);
+- net profit at base and 2× costs;
+- event count, hold distribution, win/loss distribution, profit factor, MAE, and friction;
+- portfolio drawdown, deployment, and matched-return bootstrap;
+- explicit not-run/adequacy/invalid-geometry states.
 
-**Gate per family:** its locked bars (shape in HYPOTHESES §bars). **Project kill criterion:**
-all families PARK/STOP → record the STOP; do not invent H6 to keep the lights on.
+Extend study artifacts with the metrics, but do not change any locked historical report.
 
-## Phase 4 — Portfolio expression + validation gate (~2–3 sessions per survivor)
+**Gate:** hand-calculated unit cases, property/boundary tests, random-entry negative control,
+and full suite pass.
 
-Surviving families become configs in a real portfolio backtest: sizing, position caps, slot
-contention, both cost arms. Judged **absolutely** (positive net return, drawdown inside
-charter cap, exposure floor, expectancy stable) with SPY buy-and-hold reported for reference —
-never as a relative-MAR duel (parent lesson: that duel judges the tape, not the strategy).
-Validation gate is gate-v2-shaped but swing-calibrated: event-level OOS n (large by
-construction), year-by-year stability with a neutral band, fixed-horizon bootstrap, param
-jitter. Folds sized so a fold ≫ max hold — trivial at 15 sessions (a structural advantage:
-swing suffers no censoring problem).
+## Phase 2 — Version the research/live boundary
 
-**Stretch (only over survivors):** the cross-config confluence study (HYPOTHESES §H6) —
-whether independent setups *agreeing* on an entry zone beats any single config — lives here,
-prereg'd, never as an all-configs-at-once fishing pass.
+1. Add an immutable `strategy_version` to candidate, signal, fill, position, summary, sync,
+   and deterministic identity contracts.
+2. Preserve legacy row readability; new writes use a fresh ledger and remote namespace.
+3. Make stop/target multiples explicit candidate facts rather than hidden forward constants.
+4. Revalidate planned R and initial risk at the actual next-session-open fill.
+5. Reject invalid actual-fill geometry with a durable reason; never widen a stop to pass.
+6. Preserve final-bar causality, actual-open geometry parity, H2/H1 ordering semantics,
+   crash/retry determinism, and zero-event observability.
 
-**Gate:** locked prereg + independent review.
+**Gate:** legacy ledgers remain readable and immutable; success-v2 ledgers are disjoint;
+interrupted and uninterrupted state is identical; no future bar is required at EOD.
 
-## Phase 5 — Forward paper book (ongoing; decision point ~3 months in)
+## Phase 3 — IS-only candidate discovery
 
-Persistent paper portfolio, backtest-identical semantics, idempotent daily job — port the
-parent's forward-engine pattern. Runs locally on a laptop cron; no VM. Review cadence weekly.
-**Promotion prereg locked while the book is blind** (parent 10c pattern): n ≥ 30 closed,
-≥ 3 months live, realized expectancy > 0 and inside the OOS band, no divergence flag.
+Use only bars strictly before 2024-01-01. The previously read 2024–2026 window is consumed
+and cannot select a detector, target, rank key, throttle, or parameter.
 
-## Phase 6 — Ops (only after Phase-5 survival)
+1. Re-evaluate a small mechanism-led set:
+   - trend-conditioned pullback;
+   - post-earnings drift after catalyst coverage passes;
+   - volatility-compression/breakout;
+   - at most one exploratory family.
+2. Every candidate must satisfy planned R >1.5 by construction without widening stops or
+   extending the 15-session hold.
+3. Screen exact geometry on IS only. Report raw returns, net profit, n, MAE, regime slices,
+   parameter neighborhoods, and negative controls.
+4. Select at most three exact candidates. If none is credible, record STOP; do not force a
+   2R target onto a mechanism that does not support it.
+5. Save all screen inputs, candidate configs, and rejection reasons.
 
-Alerts (trade events only), minimal dashboard, VM/cron — all portable from the
-parent in days precisely because it built them well. Deliberately last.
+**Gate:** a short frozen candidate list or an honest STOP; no bar dated 2024-01-01 or later
+was read by discovery code.
 
-**Remote deploy:** GCP always-free `e2-micro` VM (Debian 12 + Docker, IAP-tunneled SSH,
-no public IP), same pattern as the parent's `stm-daily` instance — `deploy/provision.sh`
-(idempotent create + Docker install) and `deploy/deploy.sh` (scp `.env`/secrets/configs,
-build+push image, install cron entries idempotently). Cron runs the jobs on a
-weekday schedule via `docker compose run --rm eod|fill|monitor`, logging to the VM. Ported directly
-from the parent, adapted for this repo's config/secrets layout. Shipped 2026-07 — see
-docs/FORWARD_OPS.md "Remote deployment".
+## Phase 4 — Lock preregs before fresh evidence
 
-**Discord webhook message format** (trade-event alerts only):
+For each selected candidate:
 
-```
-{ticker} Entry @{price_low}-{price_high}, TP1: @{tp1}, TP2: @{tp2}, SL: {sl}. Config: {config_name}. Alerted at {timestamp PT}.
-```
+1. Create a dated prereg with exact detector, entry, stop, target, time stop, ranking,
+   throttle, catalyst treatment, cost arms, slices, bars, and verdict rubric.
+2. Declare all prior exposure and the discovery results as priors.
+3. Lock the prereg and implementation commit before reading any bar on or after 2026-07-27.
+4. Add an independent checklist for causality, geometry, costs, and data-wall enforcement.
 
-- `{price_low}-{price_high}`: entry price range, same precision as the config's price series.
-- `TP1`/`TP2`: numeric targets, `@`-prefixed.
-- `SL`: stop-loss level, no `@` prefix.
-- `{config_name}`: the surviving Phase-4 config identifier (family + variant).
-- `{timestamp PT}`: alert fire time in US Pacific, e.g. `2026-07-12 09:31 AM PT`.
+**Gate:** prereg and code hashes are immutable; the post-wall reader refuses to run against
+an unlocked or mismatched config.
 
----
+## Phase 5 — Local full-flow rehearsal
 
-**Rough arc:** Phases 0–2 ≈ one week of sessions. Each Phase-3 study days, not weeks. A
-first forward book could be live within ~a month of kickoff; forward n ≥ 30 lands ~2–4 months
-after that. The parent's swing arc burned most of its calendar on gate relitigation — this
-plan spends it on studies instead.
+1. Replay representative pre-wall sessions with every frame truncated at each `asof`.
+2. Verify selected-signal identity, next-session calendar handling, catalyst embargo,
+   actual-open geometry, fills, stops, targets, time exits, sizing, and costs.
+3. Inject crashes after every durable stage and compare resumed state byte-for-byte with an
+   uninterrupted run.
+4. Run a multi-session scratch ledger through entry, upkeep, exit, notification, and sync.
+5. Run the full suite, `ruff check --fix`, `git diff --check`, and a secret-exposure scan.
+
+**Gate:** all local gates pass; independent review signs off; deployable commit SHA known.
+
+## Phase 6 — Untouched event-level shadow collection
+
+Deploy only the reviewed, versioned event collector:
+
+- keep legacy upkeep isolated until all old positions close;
+- use a fresh local ledger root and remote namespace;
+- simulate every selected event independently for event-level n; portfolio limits never
+  suppress an event in this phase;
+- do not count this phase as the later forward portfolio holdout;
+- never backfill missed trades;
+- journal data coverage, detector counts, geometry rejects, event outcomes, and completion
+  markers nightly;
+- make the scheduled job the first writer of post-wall evidence.
+
+**Gate:** first scheduled EOD/fill/upkeep cycle reconciles; no duplicate or legacy entry;
+sync is append-only and namespace-isolated.
+
+## Phase 7 — Event-level verdict
+
+After a family reaches 100 closed post-wall events:
+
+1. Produce the locked report at base and 2× costs.
+2. Verify raw h=15 return, planned geometry, initial risk, net profit, hold time, MAE,
+   friction, and required slices.
+3. Record PROCEED/PARK/STOP in `decisions.md`.
+4. Require independent review before acting on PROCEED.
+
+**Gate:** at least one family PROCEEDs, or the project records the honest STOP.
+
+## Phase 8 — Portfolio expression and forward promotion
+
+Only event-level survivors receive a fresh portfolio prereg. Test slot contention, ordering,
+throttle, sizing, drawdown, deployment, and costs. Lock a second untouched forward wall after
+the event-level verdict, then start a fresh portfolio ledger. No Phase-6 event row counts
+toward the forward read. Continue until both forward floors are met: at least 30 closed trades
+and three months.
+
+**Final promotion gate:** positive forward net return inside the matched OOS band, drawdown
+≤40%, deployment ≥10%, geometry intact at every fill, no unresolved data/execution divergence,
+and independent review.
+
+## Stop conditions
+
+Stop immediately and record the reason if:
+
+- discovery or fitting reads data on or after its allowed wall;
+- code changes a detector/geometry after its prereg lock;
+- a fill at planned R ≤1.5 or initial risk ≥25% is accepted;
+- a legacy and restart ledger/sync namespace can collide;
+- evidence is retrospectively filled, rewritten, or silently omitted;
+- a failed bar is bypassed by an override.
+
+## Definition of done
+
+The restart is complete only when one newly preregistered family passes 100 untouched
+event-level trades and a later, independently walled versioned forward portfolio passes the
+30-trade/three-month promotion gate. Infrastructure completion, a profitable consumed-data
+backtest, or a successful deployment is not success by itself.

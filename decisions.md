@@ -4,6 +4,32 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-26 — Full strategic restart under success-v2
+
+The user authorized discarding all in-progress restart/no-signals work and beginning from a
+clean plan. `docs/PLAN.md` is now the sole governing plan.
+
+The restart preserves tested infrastructure and append-only historical evidence, but no
+pre-restart H1/H2/H3 verdict, Phase-4 expression, Phase-5 prereg, queued candidate, or
+consumed-data result authorizes a new entry or promotion. Existing legacy paper positions,
+if any, remain managed to exit; new legacy entries and fills are frozen.
+
+Success-v2 is interpreted causally and prospectively:
+
+- planned reward:risk must be strictly >1.5R at every actual/modelled fill;
+- initial stop risk must be <25% of entry (the existing ≤12% stop cap remains stricter);
+- a family needs positive net profit at base and 2× friction on ≥100 closed events dated
+  on or after the clean 2026-07-27 OOS wall;
+- portfolio drawdown cap is 40%, deployment adequacy floor is 10%;
+- forward promotion needs ≥30 closed trades, ≥3 months, positive realized net return inside
+  the matched OOS net-return band.
+
+No fixed 4×ATR target or prior setup is preselected by this decision. Candidate geometry is
+chosen on pre-2024 IS only, then locked before fresh evidence. If no mechanism credibly
+supports the success bars, the correct result is STOP.
+
+---
+
 ## 2026-07-12 — Phase-4b H1 ranked+throttled re-expression: PROCEED (rubric-mapped, user-recorded)
 
 Per locked prereg `docs/preregs/2026-07-12_h4b-h1-ranked-expression.md` (locked blind at

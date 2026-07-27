@@ -40,23 +40,31 @@ say so explicitly — a prior is not disqualifying, but it must be named, not di
 ## Risk & exit parameters
 
 - Stop: ATR multiple or structure rule, with exact params (e.g. `atr_stop(entry, atr14, multiple=2.0)` or the structure level definition).
-- Target: ATR multiple or structure rule, with exact params. No R:R floor is imposed — state the expected R:R shape anyway (e.g. "~1:1, high win rate" for mean reversion) so a reader can sanity-check the result against the mechanism.
+- Target: ATR multiple or structure rule, with exact params. Planned reward:risk must be
+  strictly >1.5R at the actual/modelled fill, using the immutable initial stop as the R
+  denominator. State how fill-time geometry is revalidated.
 - Time stop: 15 sessions, hard (charter constant, `sts.risk.TIME_STOP_SESSIONS` — not a per-study tunable).
 - Position sizing: 0.75% equity risk/trade, 15% per-position notional cap, 8 max concurrent positions, 80% max deployed (charter constants, `sts.risk` — not per-study tunables). Event-level studies (layer b via `sts.eventsim`) run without portfolio caps by convention; state here if this study is event-level-only or also runs a portfolio expression.
 
 ## Two-layer read
 
 - **Layer (a):** raw forward returns at h = 5/10/15 sessions (`sts.eventsim.raw_forward_returns`), exit-free. Must be positive at the study's traded horizon — a family that only wins after exit-sim is an exit artifact, not an entry edge.
-- **Layer (b):** event-level exit-simmed expectancy (`sts.eventsim.simulate_events`), net of 2× assumed friction.
+- **Layer (b):** event-level exit-simmed net profit and R distribution
+  (`sts.eventsim.simulate_events`) at base and 2× assumed friction.
 
 ## Bars (locked — check the ones this study is judged against; do not add bars after seeing results)
 
 - [ ] Layer (a): positive raw forward return at the traded horizon.
-- [ ] Layer (b): OOS event-level expectancy > 0, net of 2× friction, n ≥ 100 OOS events. Below-n is PARK-on-adequacy, never STOP (a test the window can't support is reported not-run).
-- [ ] Year-by-year stability: ≥ 60% of judgeable years positive, with a ±(state noise band) neutral zone — near-zero years vote for nobody.
-- [ ] No single year > ~40% of total edge.
-- [ ] Regime slice (SPY above/below 200d) reported; bull-only concentration flagged explicitly.
-- [ ] Cost sensitivity: verdict also computed at 2× costs (10bps/side + $2/order); survives = robust, dies = fragile — state which in the verdict.
+- [ ] OOS net profit >0 at base and 2× friction on n ≥100 closed events. Below-n is
+  PARK-on-adequacy, never STOP.
+- [ ] Planned reward:risk >1.5R on every entry.
+- [ ] Initial stop risk <25% of entry on every entry.
+- [ ] Median hold ≤15 sessions.
+
+Mandatory diagnostics, never substitutes for a failed bar:
+
+- [ ] Year and regime results, edge concentration, net-R distribution, win/loss distribution,
+  profit factor, MAE, exit reasons, and friction share reported.
 
 ## Slices
 

@@ -1,5 +1,9 @@
 # Forward-Paper Operations Runbook
 
+> **RESTART FREEZE — 2026-07-26:** this runbook describes the legacy Phase-5 book.
+> Manage existing open paper positions to exit, but do not generate or fill new legacy
+> entries. `docs/PLAN.md` is the sole authority for any new versioned collection.
+
 Phase-5 forward-paper pipeline: nightly EOD signal generation, morning fill
 capture, hourly advisory monitoring, and daily Drive sync. This doc is the
 day-2 operational reference — see `docs/PLAN.md` (Phase-5 section) and

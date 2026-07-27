@@ -2,7 +2,8 @@
 
 **Review date:** 2026-07-26
 **Scope:** repository design, signal generation, production VM state/logs, tests, deployment, and the research-to-forward handoff.
-**Repair handoff:** `plan_fix_no_signals.md` and `prompt_fix_no_signals.md`.
+**Historical status:** diagnosis retained; its former repair handoff was superseded by the
+2026-07-26 full restart. `docs/PLAN.md` is the sole active plan.
 
 ## Executive conclusion
 

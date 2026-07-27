@@ -1,5 +1,9 @@
 # Hypotheses — what to try, and why believe any of it
 
+> **Restart note (2026-07-26):** this file is a hypothesis/prior catalog, not an active
+> candidate list or gate. `docs/PLAN.md` governs IS-only discovery and success-v2 bars;
+> no setup below is grandfathered.
+
 Ranked setup families for Phase 3. Each entry: the setup, the external evidence, the internal
 priors carried from the parent project, a study sketch, and its failure modes. Bars shape at
 the bottom applies to all.
@@ -210,7 +214,10 @@ the clustering rule and the comparison before running it.
 
 ---
 
-## Bars shape (pre-registered per study; numbers locked in each prereg, these are the shape)
+## Historical bars shape
+
+The bars below describe pre-restart studies only. New candidate selection and preregs use
+the success-v2 contract in `docs/PLAN.md`.
 
 - Layer (a) raw forward returns positive at the traded horizon — an entry that only wins
   after exit-sim is an exit artifact.
