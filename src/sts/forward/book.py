@@ -40,7 +40,7 @@ class BookState:
     open_rows: list[dict]
 
     @classmethod
-    def from_ledger(cls, ledger: Ledger, book: str, marks: dict[str, float]) -> "BookState":
+    def from_ledger(cls, ledger: Ledger, book: str, marks: dict[str, float]) -> BookState:
         rows = [r for r in ledger.state().values() if r["book"] == book]
         rows.sort(key=lambda r: r["seq"])
 
@@ -97,8 +97,8 @@ class BookState:
             open_positions=self.open_count(),
         )
 
-    def snapshot(self, date: dt.date) -> dict:
-        return {
+    def snapshot(self, date: dt.date, *, strategy_version: str | None = None) -> dict:
+        snap = {
             "date": date.isoformat(),
             "book": self.book,
             "equity": self.equity,
@@ -106,6 +106,9 @@ class BookState:
             "usd_deployed": self.deployed_usd(),
             "open_count": self.open_count(),
         }
+        if strategy_version is not None:
+            snap["strategy_version"] = strategy_version
+        return snap
 
 
 def _as_date(value: dt.date | str) -> dt.date:

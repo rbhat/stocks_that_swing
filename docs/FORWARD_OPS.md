@@ -132,6 +132,11 @@ Drive state is the source of truth; never scp a ledger to the VM.
   `--ledger-root` override) — safe to delete/regenerate.
 - Logs: `logs/forward/<job-name>.log` (gitignored via the repo-wide `*.log`
   pattern).
+- Success-v2 ledgers are never placed directly in the legacy root. A locked
+  version uses `ledger/success-v2/<strategy_version>/`; pass the same
+  `--strategy-version` to `forward_fill.py` and `forward_sync.py`. These
+  flags provide boundary plumbing only and do not authorize collection.
+  Phase 6 and its local/review gates must authorize any scheduled writer.
 
 ## Drive folders (sync)
 
@@ -140,6 +145,10 @@ artifacts to the configured Google Drive remote (see `sts.forward.sync` /
 `.env` for remote name and target paths). Sync is **merge-only** — it never
 deletes or overwrites remote history with a shorter local file; it appends
 missing rows in either direction and always re-uploads the union.
+Versioned ledger sync is additionally confined to
+`success-v2/<strategy_version>/` and refuses a missing or mismatched version
+before upload. The unprefixed remote files remain the frozen legacy
+namespace.
 
 ## Failure & recovery
 

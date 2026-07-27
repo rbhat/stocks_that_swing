@@ -32,12 +32,14 @@ import logging
 import os
 import subprocess
 import tempfile
+from collections.abc import Callable
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 from sts.forward import alerts
 from sts.forward.journal import merge_lines
-from sts.forward.ledger import LedgerPaths
+from sts.forward.ledger import LedgerPaths, validate_strategy_version
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +52,31 @@ RCLONE_BIN = "rclone"
 # any other non-zero exit is a real failure and must fail CLOSED (raise),
 # never be misread as an empty remote.
 _RCLONE_NOT_FOUND_EXITS = frozenset({3, 4})
+
+
+@dataclass(frozen=True)
+class SyncNamespace:
+    """One append-only remote ledger namespace."""
+
+    folder_id: str
+    prefix: str = ""
+    strategy_version: str | None = None
+
+    @classmethod
+    def success_v2(cls, strategy_version: str) -> SyncNamespace:
+        version = validate_strategy_version(strategy_version)
+        return cls(
+            folder_id=FORWARD_FOLDER_ID,
+            prefix=f"success-v2/{version}",
+            strategy_version=version,
+        )
+
+    def object_name(self, filename: str) -> str:
+        relative = f"{self.prefix}/{filename}" if self.prefix else filename
+        return f"{_remote().rstrip(':')}:{relative}"
+
+
+LEGACY_SYNC_NAMESPACE = SyncNamespace(folder_id=FORWARD_FOLDER_ID)
 
 
 def _remote() -> str:
@@ -96,29 +123,41 @@ def _read_lines(path: Path) -> list[str]:
 
 
 def _family_key(rec: dict) -> Any:
-    return (rec.get("entry_id"), rec.get("seq"))
+    legacy = (rec.get("entry_id"), rec.get("seq"))
+    version = rec.get("strategy_version")
+    return legacy if version is None else (version, *legacy)
 
 
 def _equity_key(rec: dict) -> Any:
-    return (str(rec.get("date")), rec.get("book"))
+    legacy = (str(rec.get("date")), rec.get("book"))
+    version = rec.get("strategy_version")
+    return legacy if version is None else (version, *legacy)
 
 
 def _signals_key(rec: dict) -> Any:
     entry_id = rec.get("entry_id")
     if entry_id is not None:
-        return (str(rec.get("signal_date")), rec.get("book"), entry_id)
+        legacy = (str(rec.get("signal_date")), rec.get("book"), entry_id)
+        version = rec.get("strategy_version")
+        return (
+            legacy
+            if version is None
+            else (version, *legacy, rec.get("kind"))
+        )
     # missed_session/upkeep_done records carry no entry_id — fall back to a
     # key built from whatever identifying fields they do carry, and as a
     # last resort the raw sorted-JSON line so the key function is total and
     # never raises (a genuinely unparseable record would already have
     # failed json.loads upstream in merge_lines).
-    return (
+    legacy = (
         str(rec.get("signal_date")),
         rec.get("book"),
         rec.get("kind"),
         rec.get("date"),
         json.dumps(rec, sort_keys=True, default=str),
     )
+    version = rec.get("strategy_version")
+    return legacy if version is None else (version, *legacy)
 
 
 _LEDGER_FILES: tuple[tuple[str, Callable[[dict], Any]], ...] = (
@@ -129,14 +168,22 @@ _LEDGER_FILES: tuple[tuple[str, Callable[[dict], Any]], ...] = (
 )
 
 
-def _download_remote(filename: str, tmp_dir: Path) -> list[str]:
+def _download_remote(
+    filename: str,
+    tmp_dir: Path,
+    namespace: SyncNamespace | None = None,
+) -> list[str]:
     """Download the remote copy into tmp_dir. Downloads are non-destructive
     and therefore run even under --dry-run (the merge/safety check must see
     real remote content). Fails CLOSED: only a not-found exit (3/4) means
     fresh start; any other non-zero exit raises SyncError so a transient
     rclone failure can never be misread as an empty remote."""
+    namespace = namespace or LEGACY_SYNC_NAMESPACE
     dest = tmp_dir / f"{filename}.remote"
-    result = _rc(["copyto", f"{_remote()}:{filename}", str(dest)], FORWARD_FOLDER_ID)
+    result = _rc(
+        ["copyto", namespace.object_name(filename), str(dest)],
+        namespace.folder_id,
+    )
     if result.returncode in _RCLONE_NOT_FOUND_EXITS:
         logger.info("sync: remote %s not found — treating as empty (fresh start)", filename)
         return []
@@ -151,14 +198,38 @@ def _download_remote(filename: str, tmp_dir: Path) -> list[str]:
     return _read_lines(dest)
 
 
-def _sync_one_file(filename: str, key_fn: Callable[[dict], Any], paths: LedgerPaths,
-                    tmp_dir: Path, dry_run: bool) -> str:
+def _sync_one_file(
+    filename: str,
+    key_fn: Callable[[dict], Any],
+    paths: LedgerPaths,
+    tmp_dir: Path,
+    dry_run: bool,
+    namespace: SyncNamespace | None = None,
+) -> str:
+    namespace = namespace or LEGACY_SYNC_NAMESPACE
     local_path = paths.root / filename
     # Download is non-destructive (into tmp) and runs even under dry_run so
     # the merge + safety check below validate against REAL remote content;
     # only the local write and upload are skipped in dry-run mode.
-    remote_lines = _download_remote(filename, tmp_dir)
+    if namespace.strategy_version is None:
+        # Keep the frozen legacy call shape for compatibility and tests.
+        remote_lines = _download_remote(filename, tmp_dir)
+    else:
+        remote_lines = _download_remote(filename, tmp_dir, namespace)
     local_lines = _read_lines(local_path)
+
+    if namespace.strategy_version is not None:
+        wrong = [
+            line
+            for line in remote_lines + local_lines
+            if json.loads(line).get("strategy_version")
+            != namespace.strategy_version
+        ]
+        if wrong:
+            raise SyncError(
+                f"{filename} contains {len(wrong)} row(s) outside strategy_version "
+                f"{namespace.strategy_version!r}"
+            )
 
     merged = merge_lines(remote_lines, local_lines, key_fn)
 
@@ -180,7 +251,10 @@ def _sync_one_file(filename: str, key_fn: Callable[[dict], Any], paths: LedgerPa
         return "dry-run"
 
     _atomic_write_lines(local_path, merged)
-    result = _rc(["copyto", str(local_path), f"{_remote()}:{filename}"], FORWARD_FOLDER_ID)
+    result = _rc(
+        ["copyto", str(local_path), namespace.object_name(filename)],
+        namespace.folder_id,
+    )
     if result.returncode != 0:
         raise SyncError(
             f"rclone copyto upload for {filename} failed (exit {result.returncode}): {result.stderr}"
@@ -195,11 +269,23 @@ def sync_ledgers(paths: LedgerPaths, dry_run: bool = False) -> dict[str, str]:
     (or rclone failure) is caught, alerted, and recorded, but does not stop
     the remaining files from syncing."""
     outcomes: dict[str, str] = {}
+    namespace = (
+        SyncNamespace.success_v2(paths.strategy_version)
+        if paths.strategy_version is not None
+        else LEGACY_SYNC_NAMESPACE
+    )
     with tempfile.TemporaryDirectory(prefix="sts-sync-") as tmp:
         tmp_dir = Path(tmp)
         for filename, key_fn in _LEDGER_FILES:
             try:
-                outcomes[filename] = _sync_one_file(filename, key_fn, paths, tmp_dir, dry_run)
+                outcomes[filename] = _sync_one_file(
+                    filename,
+                    key_fn,
+                    paths,
+                    tmp_dir,
+                    dry_run,
+                    namespace,
+                )
             except Exception as exc:  # noqa: BLE001 — any failure is alerted, never fatal
                 logger.error("sync: %s failed: %s", filename, exc)
                 alerts.send(f"forward sync FAILED for {filename}: {exc}")

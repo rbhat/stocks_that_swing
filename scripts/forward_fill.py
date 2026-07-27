@@ -49,16 +49,20 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-import pandas as pd  # noqa: E402
+import pandas as pd
 
-from sts import calendar, env, risk  # noqa: E402
-from sts.data.fetch import fetch_daily  # noqa: E402
-from sts.data.study_store import StudyStore  # noqa: E402
-from sts.forward import alerts  # noqa: E402
-from sts.forward.book import BookState  # noqa: E402
-from sts.forward.broker import StubPaperBroker, cost_side  # noqa: E402
+from sts import calendar, env
+from sts.data.fetch import fetch_daily
+from sts.data.study_store import StudyStore
+from sts.forward import alerts
+from sts.forward.book import BookState
+from sts.forward.broker import (
+    StubPaperBroker,
+    actual_fill_geometry,
+    cost_side,
+)
 from sts.forward.freeze import LEGACY_ENTRY_FREEZE_WALL, legacy_entries_frozen
-from sts.forward.ledger import SOURCES, Ledger, LedgerPaths  # noqa: E402
+from sts.forward.ledger import SOURCES, Ledger, LedgerPaths
 
 logger = logging.getLogger("forward_fill")
 
@@ -101,7 +105,7 @@ def _as_date(value: dt.date | str) -> dt.date:
 
 
 def _fillable_candidates(ledger: Ledger, asof: dt.date) -> list[dict]:
-    if legacy_entries_frozen(asof):
+    if ledger.strategy_version is None and legacy_entries_frozen(asof):
         return []
     filled = set(ledger.state().keys())
     out = []
@@ -117,7 +121,7 @@ def _fillable_candidates(ledger: Ledger, asof: dt.date) -> list[dict]:
 
 def _fill_with_retry(broker: StubPaperBroker, symbol: str, date: dt.date, qty: int,
                       max_wait_min: float, sleep_fn) -> dict | None:
-    max_polls = max(1, int(round(max_wait_min * 60 / POLL_INTERVAL_SEC)))
+    max_polls = max(1, round(max_wait_min * 60 / POLL_INTERVAL_SEC))
     for attempt in range(1, max_polls + 1):
         fill = broker.fill_entry(symbol, date, qty)
         if fill is not None:
@@ -167,9 +171,33 @@ def _process_candidate(
         return "unavailable"
 
     fill_price = fill["price"]
-    atr_sig = cand["atr_sig"]
-    sl = risk.atr_stop(fill_price, atr_sig, 2.0)
-    tp1 = risk.atr_target(fill_price, atr_sig, 2.0)
+    geometry = actual_fill_geometry(cand, fill_price)
+    if cand.get("strategy_version") is not None and not geometry["accepted"]:
+        ledger.append_signal(
+            {
+                "kind": "geometry_reject",
+                "book": book,
+                "family": family,
+                "entry_id": eid,
+                "signal_date": cand["signal_date"],
+                "fill_session": asof.isoformat(),
+                "ticker": symbol,
+                "reason": "invalid_actual_fill_geometry",
+                "geometry_reason": geometry["reason"],
+                "entry_fill": fill_price,
+                "geometry": geometry,
+                "strategy_version": cand["strategy_version"],
+            }
+        )
+        logger.warning(
+            "forward_fill: %s (%s) rejected actual-fill geometry: %s",
+            symbol,
+            eid,
+            geometry["reason"],
+        )
+        return "skipped"
+    sl = geometry["stop_initial"]
+    tp1 = geometry["target_initial"]
 
     marks = _marks_for_book(ledger, store, book)
     state = BookState.from_ledger(ledger, book, marks=marks)
@@ -200,6 +228,11 @@ def _process_candidate(
                 "signal_date": asof.isoformat(),
                 "ticker": symbol,
                 "reason": reason,
+                **(
+                    {"strategy_version": ledger.strategy_version}
+                    if ledger.strategy_version is not None
+                    else {}
+                ),
             }
         )
         logger.info("forward_fill: %s (%s) skipped at fill time: %s", symbol, eid, reason)
@@ -209,8 +242,11 @@ def _process_candidate(
     # Pin the timestamp's DATE to the asof session: pipeline._entry_session
     # derives the entry session from this timestamp's date, and a fill
     # recorded after 8pm ET would otherwise land on the next UTC day.
-    fill_ts = dt.datetime.fromisoformat(fill["timestamp"])
-    pinned_ts = dt.datetime.combine(asof, fill_ts.timetz()).isoformat()
+    if ledger.strategy_version is not None:
+        pinned_ts = calendar.nyse().session_open(pd.Timestamp(asof)).isoformat()
+    else:
+        fill_ts = dt.datetime.fromisoformat(fill["timestamp"])
+        pinned_ts = dt.datetime.combine(asof, fill_ts.timetz()).isoformat()
     row = {
         "entry_id": eid,
         "family": family,
@@ -224,6 +260,7 @@ def _process_candidate(
         "entry_fill": fill_price,
         "entry_price_range": cand["entry_price_range"],
         "stop_initial": sl,
+        "target_initial": tp1,
         "sl": sl,
         "tp1": tp1,
         "tp2": None,
@@ -240,6 +277,15 @@ def _process_candidate(
         "pnl_usd": None,
         "r_net": None,
     }
+    if ledger.strategy_version is not None:
+        row.update(
+            {
+                "strategy_version": ledger.strategy_version,
+                "stop_atr_multiple": geometry["stop_atr_multiple"],
+                "target_atr_multiple": geometry["target_atr_multiple"],
+                "geometry": geometry["metrics"],
+            }
+        )
     ledger.append_row(row)
     alert_fn(
         f"{symbol} FILLED @{fill_price:.2f} qty={qty}, SL={sl:.2f}, TP1={tp1:.2f} ({book})"
@@ -253,6 +299,11 @@ def run(argv: list[str]) -> int:
     parser.add_argument("--dry-run", action="store_true", help="no Discord")
     parser.add_argument("--no-discord", action="store_true")
     parser.add_argument("--ledger-root", default="ledger")
+    parser.add_argument(
+        "--strategy-version",
+        default=None,
+        help="success-v2 version; selects ledger-root/success-v2/<version>",
+    )
     parser.add_argument("--max-wait-min", type=float, default=DEFAULT_MAX_WAIT_MIN)
     args = parser.parse_args(argv)
 
@@ -275,14 +326,22 @@ def run(argv: list[str]) -> int:
             print(f"forward_fill: {asof} is not a trading session — nothing to do")
             return 0
 
-        if legacy_entries_frozen(asof):
+        if args.strategy_version is None and legacy_entries_frozen(asof):
             print(
                 "forward_fill: legacy entry freeze active "
                 f"(wall {LEGACY_ENTRY_FREEZE_WALL}) — no candidates may fill"
             )
             return 0
 
-        ledger = Ledger(LedgerPaths(root=Path(args.ledger_root)))
+        paths = (
+            LedgerPaths.success_v2(
+                args.strategy_version,
+                base_root=Path(args.ledger_root),
+            )
+            if args.strategy_version is not None
+            else LedgerPaths(root=Path(args.ledger_root))
+        )
+        ledger = Ledger(paths)
         store = StudyStore()
         broker = StubPaperBroker(get_open=lambda symbol, date: _get_open(store, symbol, date))
 
@@ -306,13 +365,13 @@ def run(argv: list[str]) -> int:
               f"{unavailable} unavailable (resumable)")
         return 0
 
-    except Exception:
+    except Exception:  # noqa: BLE001 — top-level job boundary must alert and return 1
         logger.error("forward_fill: fatal error\n%s", traceback.format_exc())
         try:
             if not args.dry_run and not args.no_discord:
                 alerts.send(f"forward_fill FAILED: {traceback.format_exc()[-500:]}")
         except Exception:
-            pass
+            logger.debug("forward_fill: failure alert also failed", exc_info=True)
         return 1
 
 

@@ -208,3 +208,13 @@ The restart is complete only when one newly preregistered family passes 100 unto
 event-level trades and a later, independently walled versioned forward portfolio passes the
 30-trade/three-month promotion gate. Infrastructure completion, a profitable consumed-data
 backtest, or a successful deployment is not success by itself.
+
+## Execution log (append-only)
+
+- 2026-07-26 — Phase 0 PASS. Evidence:
+  `docs/evidence/success-v2/phase-0.md`; commit `8d7484a`.
+- 2026-07-26 — Phase 1 PASS. Evidence:
+  `docs/evidence/success-v2/phase-1.md`; commit `d6d330d`.
+- 2026-07-26 — Phase 2 PASS. Evidence:
+  `docs/evidence/success-v2/phase-2.md`. No collection or deployment was
+  enabled; Phase 3 is the next authorized data wall.

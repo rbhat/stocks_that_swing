@@ -13,9 +13,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from sts import env  # noqa: E402
-from sts.forward.ledger import LedgerPaths  # noqa: E402
-from sts.forward.sync import push_backtest_artifacts, sync_ledgers  # noqa: E402
+from sts import env
+from sts.forward.ledger import LedgerPaths
+from sts.forward.sync import push_backtest_artifacts, sync_ledgers
 
 logger = logging.getLogger("forward_sync")
 
@@ -24,13 +24,25 @@ def run(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--dry-run", action="store_true", help="pass --dry-run to rclone, skip local writes/uploads")
     parser.add_argument("--ledger-root", default="ledger")
+    parser.add_argument(
+        "--strategy-version",
+        default=None,
+        help="success-v2 version; sync ledger-root/success-v2/<version> only",
+    )
     parser.add_argument("--no-backtest", action="store_true", help="skip backtest artifact push")
     args = parser.parse_args(argv)
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
     env.load()
-    paths = LedgerPaths(root=Path(args.ledger_root))
+    paths = (
+        LedgerPaths.success_v2(
+            args.strategy_version,
+            base_root=Path(args.ledger_root),
+        )
+        if args.strategy_version is not None
+        else LedgerPaths(root=Path(args.ledger_root))
+    )
 
     ledger_outcomes = sync_ledgers(paths, dry_run=args.dry_run)
     print("ledgers:")

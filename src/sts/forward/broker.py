@@ -11,13 +11,71 @@ from __future__ import annotations
 import datetime as dt
 import math
 from abc import ABC, abstractmethod
-from typing import Callable, TypedDict
+from collections.abc import Callable
+from typing import TypedDict
+
+from sts import risk
+from sts.study.success_gate import entry_geometry
 
 
 class Fill(TypedDict):
     price: float
     fees: float
     timestamp: str
+
+
+def actual_fill_geometry(candidate: dict, entry_fill: float) -> dict:
+    """Re-anchor and strictly validate candidate geometry at the real open.
+
+    Success-v2 candidates must carry the stop/target ATR multiples as
+    immutable facts.  Legacy candidates remain readable through the frozen
+    2.0/2.0 fallback, but only success-v2 geometry is judged by this helper's
+    ``accepted`` result.
+    """
+    version = candidate.get("strategy_version")
+    if version is not None:
+        missing = [
+            field
+            for field in ("stop_atr_multiple", "target_atr_multiple")
+            if field not in candidate
+        ]
+        if missing:
+            return {
+                "accepted": False,
+                "reason": f"missing_candidate_geometry_facts:{','.join(missing)}",
+                "entry_fill": entry_fill,
+                "stop_initial": None,
+                "target_initial": None,
+                "metrics": None,
+            }
+    stop_multiple = float(candidate.get("stop_atr_multiple", 2.0))
+    target_multiple = float(candidate.get("target_atr_multiple", 2.0))
+    try:
+        atr_sig = float(candidate["atr_sig"])
+        stop = risk.atr_stop(entry_fill, atr_sig, stop_multiple)
+        target = risk.atr_target(entry_fill, atr_sig, target_multiple)
+    except (KeyError, TypeError, ValueError) as exc:
+        return {
+            "accepted": False,
+            "reason": f"invalid_candidate_geometry_facts:{exc}",
+            "entry_fill": entry_fill,
+            "stop_initial": None,
+            "target_initial": None,
+            "metrics": None,
+        }
+
+    metrics = entry_geometry(entry_fill, stop, target)
+    accepted = bool(metrics["valid"])
+    return {
+        "accepted": accepted,
+        "reason": None if accepted else metrics["reason"],
+        "entry_fill": entry_fill,
+        "stop_initial": stop,
+        "target_initial": target,
+        "stop_atr_multiple": stop_multiple,
+        "target_atr_multiple": target_multiple,
+        "metrics": metrics,
+    }
 
 
 def cost_side(price: float, qty: int, bps: float = 5.0, per_order: float = 1.0) -> float:
@@ -37,12 +95,12 @@ class PaperBroker(ABC):
         """No-op hook: resting stop/target management is pipeline-upkeep-side
         this phase. A real broker implementation may override this to place
         a resting stop/target order."""
-        return None
+        return
 
     def cancel(self, entry_id: str) -> None:
         """No-op hook: a real broker implementation may override this to
         cancel a resting order for `entry_id`."""
-        return None
+        return
 
 
 class StubPaperBroker(PaperBroker):

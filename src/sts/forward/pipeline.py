@@ -37,6 +37,16 @@ from sts.study.h1_events import _PARAM_DEFAULTS as _H1_RISK_DEFAULTS
 from sts.study.h4_candidates import selected_signals_for
 
 _CONFIG_NAME = {"h1": "trend_pullback", "h2": "pead_day2_open"}
+_LEGACY_GEOMETRY = {
+    "h1": {"stop_atr_multiple": 2.0, "target_atr_multiple": 2.0},
+    "h2": {"stop_atr_multiple": 2.0, "target_atr_multiple": 2.0},
+}
+
+
+def _version_fact(ledger: Ledger) -> dict:
+    if ledger.strategy_version is None:
+        return {}
+    return {"strategy_version": ledger.strategy_version}
 
 
 def _as_date(value: dt.date | str) -> dt.date:
@@ -131,7 +141,9 @@ def run_upkeep(ledger: Ledger, prices: dict[str, pd.DataFrame], asof: dt.date) -
             if df is not None and not df.empty:
                 marks[r["ticker"]] = float(df["close"].iloc[-1])
         state = BookState.from_ledger(ledger, book, marks=marks)
-        ledger.append_equity_snapshot(state.snapshot(asof))
+        ledger.append_equity_snapshot(
+            state.snapshot(asof, strategy_version=ledger.strategy_version)
+        )
 
     ledger.append_signal(
         {
@@ -144,6 +156,7 @@ def run_upkeep(ledger: Ledger, prices: dict[str, pd.DataFrame], asof: dt.date) -
             "entry_id": None,
             "signal_date": asof.isoformat(),
             "date": asof.isoformat(),
+            **_version_fact(ledger),
         }
     )
 
@@ -250,11 +263,16 @@ def _rank_key_h1(c: dict) -> tuple:
 
 
 def _provisional_geometry(
-    df: pd.DataFrame, asof: dt.date, atr_window: int
+    df: pd.DataFrame,
+    asof: dt.date,
+    atr_window: int,
+    *,
+    stop_atr_multiple: float,
+    target_atr_multiple: float,
 ) -> tuple[float, float, float, float] | None:
     """close_sig, atr_sig, provisional stop/target anchored at the signal
     bar's own close+ATR (fill job re-anchors at the actual next-open fill
-    with the same 2.0/2.0 multiples later)."""
+    with the candidate's explicit immutable multiples later)."""
     if asof not in set(df.index.date):
         return None
     atr_series = risk.atr(df, window=atr_window)
@@ -263,8 +281,8 @@ def _provisional_geometry(
     atr_sig = float(atr_series.iloc[idx])
     if not (math.isfinite(close_sig) and math.isfinite(atr_sig) and atr_sig > 0):
         return None
-    stop = risk.atr_stop(close_sig, atr_sig, multiple=2.0)
-    target = risk.atr_target(close_sig, atr_sig, multiple=2.0)
+    stop = risk.atr_stop(close_sig, atr_sig, multiple=stop_atr_multiple)
+    target = risk.atr_target(close_sig, atr_sig, multiple=target_atr_multiple)
     if not (math.isfinite(stop) and math.isfinite(target)):
         return None
     return close_sig, atr_sig, stop, target
@@ -277,11 +295,24 @@ def generate_signals(
     catalyst,
     candidate_source=_default_candidate_source,
     summary_context: dict | None = None,
+    strategy_geometry: dict[str, dict[str, float]] | None = None,
 ) -> dict:
     signal_started = time.perf_counter()
     prices = _prices_through_asof(prices, asof)
     raw = candidate_source(prices, asof, catalyst)
     atr_window = _H1_RISK_DEFAULTS["atr_window"]
+    if ledger.strategy_version is not None and strategy_geometry is None:
+        raise ValueError(
+            "success-v2 signal generation requires explicit strategy_geometry"
+        )
+    geometry = strategy_geometry if strategy_geometry is not None else _LEGACY_GEOMETRY
+    for family in ("h2", "h1"):
+        facts = geometry.get(family, {})
+        if {
+            "stop_atr_multiple",
+            "target_atr_multiple",
+        } - facts.keys():
+            raise ValueError(f"{family} is missing explicit stop/target multiples")
 
     session_dates = list(sessions_between(asof - dt.timedelta(days=30), asof).date)
 
@@ -319,7 +350,13 @@ def generate_signals(
             if asof not in set(df.index.date):
                 counts[family]["stale_signal_bar"] += 1
                 continue
-            geom = _provisional_geometry(df, asof, atr_window)
+            geom = _provisional_geometry(
+                df,
+                asof,
+                atr_window,
+                stop_atr_multiple=float(geometry[family]["stop_atr_multiple"]),
+                target_atr_multiple=float(geometry[family]["target_atr_multiple"]),
+            )
             if geom is None:
                 counts[family]["invalid_geometry"] += 1
                 continue
@@ -354,7 +391,13 @@ def generate_signals(
     # or throttle outcomes.
     for book, queue in queues.items():
         expected_ids = [
-            entry_id(book, cand["family"], cand["symbol"], _as_date(cand["signal_date"]))
+            entry_id(
+                book,
+                cand["family"],
+                cand["symbol"],
+                _as_date(cand["signal_date"]),
+                strategy_version=ledger.strategy_version,
+            )
             for cand in queue
         ]
         actual_ids = [rec["entry_id"] for rec in existing_by_book[book]]
@@ -385,7 +428,13 @@ def generate_signals(
             symbol = cand["symbol"]
             family = cand["family"]
             signal_date = _as_date(cand["signal_date"])
-            eid = entry_id(book, family, symbol, signal_date)
+            eid = entry_id(
+                book,
+                family,
+                symbol,
+                signal_date,
+                strategy_version=ledger.strategy_version,
+            )
 
             if eid in existing:
                 rec = existing[eid]
@@ -501,6 +550,13 @@ def generate_signals(
                 "atr_sig": atr_sig,
                 "close_sig": close_sig,
                 "config_name": _CONFIG_NAME[family],
+                "stop_atr_multiple": float(
+                    geometry[family]["stop_atr_multiple"]
+                ),
+                "target_atr_multiple": float(
+                    geometry[family]["target_atr_multiple"]
+                ),
+                **_version_fact(ledger),
             }
             if family == "h1":
                 rec["is_seed"] = cand["is_seed"]
@@ -520,6 +576,8 @@ def generate_signals(
     summary = deepcopy(summary_context) if summary_context is not None else {}
     summary["families"] = counts
     summary["signal_outcome"] = classify_signal_outcome(counts, complete=True)
+    if ledger.strategy_version is not None:
+        summary["strategy_version"] = ledger.strategy_version
     if summary_context is not None:
         runtimes = summary.setdefault("runtime_seconds", {})
         runtimes["signals"] = round(time.perf_counter() - signal_started, 6)
@@ -531,6 +589,7 @@ def generate_signals(
             "signal_date": asof.isoformat(),
             "date": asof.isoformat(),
             "summary": summary,
+            **_version_fact(ledger),
         }
     )
 
@@ -548,6 +607,7 @@ def _append_skip(
         "signal_date": asof.isoformat(),
         "ticker": symbol,
         "reason": reason,
+        **_version_fact(ledger),
     }
     ledger.append_signal(rec)
     return rec
@@ -572,6 +632,7 @@ def detect_missed_sessions(ledger: Ledger, asof: dt.date) -> list[dt.date]:
                 "entry_id": f"missed:{d.isoformat()}",
                 "signal_date": d.isoformat(),
                 "date": d.isoformat(),
+                **_version_fact(ledger),
             }
         )
 
