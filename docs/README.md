@@ -10,7 +10,7 @@ active promotion authority.
 2. `PLAN.md` — sole governing restart plan and phase gates.
 3. `SUCCESS_GATE.md` — success-v2 metrics and new study-artifact contract.
 4. `superpowers/plans/2026-07-26-ml-restart.md` — locked ML implementation
-   sequence; paused pending implementation authorization.
+   sequence; completed through Task 2 and paused before Task 3.
 5. `preregs/2026-07-26_ml-restart-development.md` — locked development
    matrix, controls, walls, and selection rubric.
 6. `../decisions.md` — append-only decisions, newest first.
@@ -22,13 +22,13 @@ Use `../prompt_restart.md` to start the next execution session.
 
 ## Current status
 
-- Strategic state: success-v2 Phase 3 STOP; ML planning locked and paused
-  before implementation Task 1.
+- Strategic state: success-v2 Phase 3 STOP; ML Tasks 1–2 complete and
+  paused before Task 3 data construction.
 - Clean evidence lower bound: 2026-07-27; the actual ML event wall will be
   a later future session set only after candidate/code/config lock.
 - Legacy research/forward book: historical and fail-closed; production had no open
   positions or queued candidates when frozen.
-- Success gate and versioned boundary: implemented and locally verified
-  through success-v2 Phase 2.
+- Dependency lock and pure causal ML wall/unit/feature/label contracts:
+  implemented and synthetically verified without reading real ML data.
 - Next action: wait for explicit user authorization before starting
-  `superpowers/plans/2026-07-26-ml-restart.md` Task 1.
+  `superpowers/plans/2026-07-26-ml-restart.md` Task 3.

@@ -230,6 +230,13 @@ backtest, or a successful deployment is not success by itself.
   `docs/superpowers/plans/2026-07-26-ml-restart.md` and
   `docs/preregs/2026-07-26_ml-restart-development.md`. Implementation is
   paused pending separate explicit authorization; Phase 3 remains STOP.
+- 2026-07-27 — ML restart Task 1 PASS. Bounded scikit-learn/LightGBM
+  dependencies and `uv.lock` committed at `7a49602`; isolated synthetic M3
+  compatibility passed. Evidence: `docs/evidence/ml-restart/phase-0.md`.
+- 2026-07-27 — ML restart Task 2 PASS. Pure wall, session, unit, feature,
+  label, target, canonical-hash, and row-identity contracts pass synthetic
+  canaries and the full suite. Evidence:
+  `docs/evidence/ml-restart/phase-1.md`. Task 3 remains unauthorized.
 
 ## Proposed ML restart exploration (not authorized)
 
@@ -288,3 +295,8 @@ commits, and independent-review gates before implementation begins.
 - Implementation is **not authorized**. The next allowed action is to wait
   for explicit user authorization to begin Task 1 of
   `docs/superpowers/plans/2026-07-26-ml-restart.md`.
+- 2026-07-27 — The user separately authorized and completed implementation
+  Tasks 1 and 2. Their gates passed without reading real ML data or fitting
+  a market-data model. Implementation is paused before Task 3; no data
+  manifest, development matrix, model fit, collection, or deployment is
+  authorized by the completed tasks.

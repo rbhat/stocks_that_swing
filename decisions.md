@@ -4,6 +4,29 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-27 — ML Tasks 1–2 complete; paused before data construction
+
+The user separately authorized ML implementation Tasks 1 and 2. Task 1
+locked the bounded scikit-learn and optional LightGBM dependencies after
+the isolated synthetic LightGBM gate passed. Task 2 added pure contracts
+for strict data walls, explicit exchange-session arithmetic, Track A/B
+units, eligibility, the locked causal feature dictionary, fixed-policy
+labels and costs, all three targets, canonical config hashes, deterministic
+row identities, and leakage canaries.
+
+Both task gates passed using synthetic facts only. No real price or catalyst
+input was read, no development matrix was built, and no market-data model
+was fitted. Success-v2 Phase 3 remains **STOP**, Phase 4 remains
+unauthorized, and the legacy entry freeze remains intact.
+
+Implementation is paused before Task 3. A data manifest, pre-2024 matrix
+builder, real-data ML read, model fit, collection, deployment, or portfolio
+work requires later explicit authorization under the locked sequence.
+Evidence: `docs/evidence/ml-restart/phase-0.md` and
+`docs/evidence/ml-restart/phase-1.md`.
+
+---
+
 ## 2026-07-26 — ML restart plan locked; implementation paused
 
 The user authorized a locked ML plan covering multiple research units,
