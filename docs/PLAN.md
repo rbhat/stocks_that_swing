@@ -222,3 +222,50 @@ backtest, or a successful deployment is not success by itself.
   `docs/evidence/success-v2/phase-3.md`. Zero exact candidates cleared the
   fixed detector-versus-control gate, so Phase 4 is not authorized and no
   post-wall reader or collector exists.
+
+## Proposed ML restart exploration (not authorized)
+
+This proposal records a possible next research direction without reopening Phase 3,
+authorizing Phase 4, selecting a model, or permitting new data access, fitting, collection,
+or deployment. The frozen rule-study history and its STOP remain unchanged.
+
+### Exploration goal
+
+Determine whether a causal, machine-learning-based study can identify stable opportunity
+buckets with positive incremental net profit after friction, rather than merely rediscovering
+the positive drift and activity advantage exposed by the symbol-matched random controls.
+
+### Questions for the exploration session
+
+- What economic behavior should the model attempt to identify, and what causal information
+  would be available at the decision time?
+- Should the research unit be a symbol-session, an event, or a date-level cross-sectional
+  ranking, and what portfolio or capacity constraints must the result ultimately survive?
+- Which outcome best represents useful skill: control-relative net return, net R, a ranked
+  opportunity score, downside-aware value, or another decision-aligned target?
+- Which model families and interpretability standards deserve comparison, given the data
+  volume, hardware, survivorship risk, and dependence across symbols and dates?
+- What walk-forward walls, embargoes, negative controls, friction stresses, adequacy floors,
+  and independent-review checks would make a result credible?
+- How should candidate buckets be selected without optimizing directly on realized total
+  profit or repeatedly consuming the same holdout?
+
+### Proposed session outputs
+
+The exploration session should produce a decision memo, not fitted models. It should:
+
+1. state the ML study's decision objective and explicit non-goals;
+2. inventory usable point-in-time data and identify leakage, survivorship, and coverage gaps;
+3. compare a small set of model and target alternatives without prescribing a winner;
+4. propose evaluation measures that distinguish timing skill from trade count and market drift;
+5. propose data walls and a validation/review sequence that preserves a genuinely fresh test;
+6. identify compute and dependency options, expected cost, and material compatibility risks; and
+7. end with a user decision to authorize, revise, park, or reject a new preregistered plan.
+
+### Proposal gate
+
+No ML dependency installation, feature generation, label construction, hyperparameter search,
+model fitting, post-Phase-3 data read, collection, or deployment is authorized by this section.
+If the user authorizes a restart after the exploration session, create a separately locked,
+append-only ML plan with its own phases, data walls, tests, evidence, documentation, focused
+commits, and independent-review gates before implementation begins.
