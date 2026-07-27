@@ -1,4 +1,3 @@
-Resume `docs/PLAN.md` at Phase 2 autonomously; Phases 0–1 are complete, evidenced, and committed, so do not redo them.
-Preserve append-only history, keep legacy entries frozen, manage any synced legacy positions to exit, and obey every phase data wall.
-Finish each phase with tests, evidence, docs, and one focused commit; stop only at an explicit plan gate or a real user-authority blocker.
-Do not deploy success-v2 collection until the local causal, retry, geometry, sync-isolation, and independent-review gates all pass.
+Review the committed success-v2 Phase-3 STOP in `docs/PLAN.md`, `decisions.md`, and `docs/evidence/success-v2/phase-3.md`; do not redo or weaken its fixed control gate.
+Phase 4 is unauthorized because zero exact candidates were selected; preserve append-only history, frozen legacy entries, legacy exit upkeep, and every data wall.
+Propose a new user-authorized research restart or missing-catalyst remediation only; do not preregister, read post-wall data, deploy, or collect success-v2 evidence.

@@ -1,0 +1,110 @@
+schema: success-v2.phase3-screen.v1
+data:
+  start_inclusive: '2010-01-01'
+  end_exclusive: '2024-01-01'
+  price_root: cache/study_frames
+  catalyst_path: cache/catalysts/earnings.json
+  minimum_filtered_rows: 300
+costs:
+  bps_per_side: 5.0
+  per_order_usd: 1.0
+selection:
+  min_closed_events: 100
+  min_passing_neighbor_cells: 2
+  require_event_gate_pass: true
+  require_2x_expectancy_over_matched_random: true
+negative_control:
+  kind: symbol_matched_random_session
+  seed: 20260726
+geometry:
+  atr_window: 14
+  stop_atr_multiple: 2.0
+  target_atr_multiple: 4.0
+  time_stop_sessions: 15
+families:
+  trend_conditioned_pullback:
+    mechanism: oversold episode in a confirmed rising weekly trend, followed by a close reclaim
+    detector: trend_pullback
+    ranking:
+    - rsi2_at_trigger_asc
+    - reclaim_wait_sessions_asc
+    - signal_date_asc
+    - symbol_asc
+    cells:
+    - id: tp-rsi6-w5
+      config_name: trend_pullback_v201
+      params:
+        weekly_ma_window: 20
+        weekly_rising_lag: 4
+        rsi_window: 2
+        rsi_oversold: 6.0
+        reclaim_max_wait: 5
+        swing_window: 60
+    - id: tp-rsi10-w7
+      config_name: trend_pullback_v202
+      params:
+        weekly_ma_window: 20
+        weekly_rising_lag: 4
+        rsi_window: 2
+        rsi_oversold: 10.0
+        reclaim_max_wait: 7
+        swing_window: 60
+    - id: tp-rsi14-w10
+      config_name: trend_pullback_v203
+      params:
+        weekly_ma_window: 20
+        weekly_rising_lag: 4
+        rsi_window: 2
+        rsi_oversold: 14.0
+        reclaim_max_wait: 10
+        swing_window: 60
+  post_earnings_drift:
+    mechanism: positive earnings-reaction drift after verified catalyst coverage
+    detector: pead_catalyst_required
+    required_input: cache/catalysts/earnings.json
+    ranking:
+    - reaction_score_desc
+    - signal_date_asc
+    - symbol_asc
+    cells:
+    - id: pead-covered-catalyst
+      config_name: pead_covered_v201
+      params:
+        reaction_min_return: 0.03
+        reaction_min_volume_ratio: 1.5
+  volatility_compression_breakout:
+    mechanism: low historical ATR percentile followed by range expansion and a strong up close
+    detector: vol_squeeze
+    ranking:
+    - atr_percentile_asc
+    - true_range_ratio_desc
+    - signal_date_asc
+    - symbol_asc
+    cells:
+    - id: vc-tight
+      config_name: vol_squeeze_v201
+      params:
+        atr_window: 14
+        squeeze_window: 60
+        squeeze_percentile: 0.10
+        expansion_ratio: 1.75
+        close_pos_min: 0.70
+        trend_filter: bos_bullish
+    - id: vc-core
+      config_name: vol_squeeze_v202
+      params:
+        atr_window: 14
+        squeeze_window: 60
+        squeeze_percentile: 0.20
+        expansion_ratio: 1.50
+        close_pos_min: 0.65
+        trend_filter: bos_bullish
+    - id: vc-broad
+      config_name: vol_squeeze_v203
+      params:
+        atr_window: 14
+        squeeze_window: 60
+        squeeze_percentile: 0.30
+        expansion_ratio: 1.25
+        close_pos_min: 0.60
+        trend_filter: bos_bullish

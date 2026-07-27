@@ -218,3 +218,7 @@ backtest, or a successful deployment is not success by itself.
 - 2026-07-26 — Phase 2 PASS. Evidence:
   `docs/evidence/success-v2/phase-2.md`. No collection or deployment was
   enabled; Phase 3 is the next authorized data wall.
+- 2026-07-26 — Phase 3 STOP. Evidence:
+  `docs/evidence/success-v2/phase-3.md`. Zero exact candidates cleared the
+  fixed detector-versus-control gate, so Phase 4 is not authorized and no
+  post-wall reader or collector exists.

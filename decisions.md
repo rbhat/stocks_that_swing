@@ -4,6 +4,25 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-26 — Success-v2 Phase-3 discovery: STOP
+
+The fixed pre-2024 IS screen produced no credible exact candidate. All six
+evaluated trend-pullback and volatility-compression cells cleared the
+nominal geometry, n, raw-return, base/2× profit, and hold bars, but every
+symbol-matched random-session control had higher raw h=15 return and higher
+mean 2× net profit. Positive absolute results therefore do not establish
+incremental detector edge. The catalyst-dependent PEAD family was not run
+because the earnings cache was absent; this is an input failure, not a
+zero-event result.
+
+Per `docs/PLAN.md` Phase 3, verdict **STOP**. No cell is forced through, no
+Phase-4 prereg is created, and no post-wall reader or collector is
+authorized. Evidence:
+`docs/evidence/success-v2/phase-3.md` and
+`runs/success-v2/phase3/discovery.json`.
+
+---
+
 ## 2026-07-26 — Full strategic restart under success-v2
 
 The user authorized discarding all in-progress restart/no-signals work and beginning from a
