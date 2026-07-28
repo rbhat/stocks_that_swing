@@ -237,6 +237,20 @@ backtest, or a successful deployment is not success by itself.
   label, target, canonical-hash, and row-identity contracts pass synthetic
   canaries and the full suite. Evidence:
   `docs/evidence/ml-restart/phase-1.md`. Task 3 remains unauthorized.
+- 2026-07-27 — ML restart Task 3 PASS. The walled builder produced
+  deterministic Track A/B yearly shards and manifest from pre-2024 data only;
+  zero post-wall rows, duplicate keys, or Track B orphans were observed.
+  Evidence: `docs/evidence/ml-restart/phase-2.md`; commit `15eea78`.
+- 2026-07-27 — ML restart Task 4 PASS. The bounded fold-local model,
+  control, permutation, economic-evaluation, and credibility harness passed
+  synthetic and hand-calculated verification without fitting market data.
+  Evidence: `docs/evidence/ml-restart/phase-3.md`; commit `2f1f544`.
+- 2026-07-27 — ML restart Task 5 STOP. All 13 locked arms were non-credible,
+  candidate count was zero, and eight aggregated within-date permutation
+  controls cleared the real economic gate. Independent QA also found that the
+  report's embedded reviewer omitted that required permutation check. No
+  candidate prereg was created and ML Task 6 is not authorized. Evidence:
+  `docs/evidence/ml-restart/phase-4.md`.
 
 ## Proposed ML restart exploration (not authorized)
 

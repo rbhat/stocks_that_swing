@@ -4,6 +4,28 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-27 — ML restart Task 5 development: STOP
+
+The complete locked pre-2024 matrix evaluated 13 arms and 1,092 fold attempts
+twice with byte-identical analysis payloads. Every real arm was non-credible
+and candidate count is zero.
+
+The decisive falsification failure is stronger than a merely weak model
+result: eight aggregated within-date target-permutation controls cleared the
+real economic gate. Per the locked stop conditions, all real arms fail required
+controls and the verdict is **STOP**. No least-bad arm is promoted and no
+candidate prereg is created.
+
+The report's embedded consistency reviewer passed its listed checks but omitted
+the required no-permutation-clear check; independent methodology QA rates that
+review incomplete and records the defect without overriding the STOP.
+Success-v2 Phase 3 remains **STOP**, Phase 4 remains unauthorized, and ML Task
+6 is not authorized. Evidence:
+`docs/evidence/ml-restart/phase-4.md` and
+`runs/ml-restart/development/report.json`.
+
+---
+
 ## 2026-07-27 — ML Tasks 1–2 complete; paused before data construction
 
 The user separately authorized ML implementation Tasks 1 and 2. Task 1

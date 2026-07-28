@@ -157,10 +157,23 @@ def fixed_control_scores(frame: pd.DataFrame) -> dict[str, pd.Series]:
     }
     if not required.issubset(frame):
         raise ContractViolation(f"fixed controls lack {sorted(required - set(frame))}")
+    # These are explicitly ranks, not raw-value fills. A missing ranking fact
+    # remains missing in the matrix but receives the lowest finite score so the
+    # economic evaluator can keep the exact eligible pool without treating the
+    # fact as zero or accepting a non-finite score.
+    momentum = frame["adjusted_return_20"].astype(float).rank(
+        method="average", ascending=True, na_option="top"
+    )
+    pullback = (-frame["adjusted_return_5"].astype(float)).rank(
+        method="average", ascending=True, na_option="top"
+    )
+    activity = frame["dollar_volume_to_median_20"].astype(float).rank(
+        method="average", ascending=True, na_option="top"
+    )
     return {
-        "momentum_20_desc": frame["adjusted_return_20"].astype(float),
-        "pullback_5_asc": -frame["adjusted_return_5"].astype(float),
-        "activity_desc": frame["dollar_volume_to_median_20"].astype(float),
+        "momentum_20_desc": momentum,
+        "pullback_5_asc": pullback,
+        "activity_desc": activity,
         "constant_equal": pd.Series(0.0, index=frame.index),
     }
 

@@ -81,6 +81,23 @@ def test_fixed_scores_and_permutations_preserve_date_groups_and_identity():
         )
 
 
+def test_fixed_rank_controls_keep_missing_facts_last_without_zero_fill():
+    frame = _frame()
+    frame.loc[0, "adjusted_return_20"] = float("nan")
+    frame.loc[1, "adjusted_return_5"] = float("nan")
+    frame.loc[2, "dollar_volume_to_median_20"] = float("nan")
+
+    scores = fixed_control_scores(frame)
+
+    assert scores["momentum_20_desc"].notna().all()
+    assert scores["pullback_5_asc"].notna().all()
+    assert scores["activity_desc"].notna().all()
+    assert scores["momentum_20_desc"].idxmin() == 0
+    assert scores["pullback_5_asc"].idxmin() == 1
+    assert scores["activity_desc"].idxmin() == 2
+    assert frame.loc[0, "adjusted_return_20"] != 0
+
+
 def test_track_b_controls_include_same_date_track_a_comparator():
     track_a = _frame()
     track_b = track_a.groupby("signal_session", sort=True).head(4)
