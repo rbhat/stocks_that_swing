@@ -1,8 +1,8 @@
 # Hypotheses — what to try, and why believe any of it
 
 > **Restart note (2026-07-26):** this file is a hypothesis/prior catalog, not an active
-> candidate list or gate. `docs/PLAN.md` governs IS-only discovery and success-v2 bars;
-> no setup below is grandfathered.
+> candidate list or gate. `docs/SWING_PLAN.md` governs the active two-setup practical
+> screen; no setup or result below is grandfathered.
 
 Ranked setup families for Phase 3. Each entry: the setup, the external evidence, the internal
 priors carried from the parent project, a study sketch, and its failure modes. Bars shape at

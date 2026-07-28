@@ -2,6 +2,8 @@
 
 - **Created:** 2026-07-28 (America/Los_Angeles)
 - **Status:** GATE 2 `STOP_INPUT`; GATE 3 NOT AUTHORIZED
+- **Lifecycle:** CLOSED; historical after `swing-v1` scope change
+- **Active successor:** `docs/SWING_PLAN.md`
 - **Study identity:** `ml-v2`
 - **Planning package:** `docs/evidence/ml-v2/`
 - **Archived predecessor plans:** `docs/archive/pre-ml-v2-2026-07-28/`

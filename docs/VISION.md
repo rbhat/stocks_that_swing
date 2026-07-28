@@ -7,6 +7,17 @@ swing-scale volatility, validated by pre-registered studies against history, and
 fast-accruing forward paper book. Paper only; real money never, unless explicitly authorized
 much later.
 
+## Active scope — reaffirmed 2026-07-28
+
+The active project is `swing-v1`: a practical, deterministic swing system
+using the repository's local Yahoo-derived current-roster cache. Institutional
+point-in-time history and ML are out of scope. Retrospective tests are bounded
+screening evidence with explicit survivorship and adjusted-price limitations;
+only preregistered forward paper results can validate continued operation.
+
+The active plan is `docs/SWING_PLAN.md`. ML-v2 ended `STOP_INPUT` and remains
+historical evidence.
+
 **The core bet:** short-horizon edges in equities are real but small and conditional
 (trend-conditioned mean reversion, post-earnings drift, volatility-compression breaks). They
 were invisible to the parent project because it measured them with a long-hold yardstick. Sized
@@ -14,13 +25,14 @@ and judged at their own scale, they compound through turnover: many small resolu
 instead of a few large ones.
 
 **Success looks like:**
-- At least one setup family with **positive out-of-sample net profit after friction** on
-  n ≥ 100 closed events. Every entry must offer **planned reward:risk > 1.5R**, and every
-  initial stop must risk **< 25% of entry** (the charter's existing ≤ 12% stop bound is
-  stricter). These are entry-time geometry bars; realized winners are reported as a
-  distribution, not forced to exceed 1.5R after the fact.
+- At least one fixed setup with **positive preregistered retrospective screening profit after
+  doubled friction** on n ≥ 100 closed trades, followed by a qualifying forward paper test.
+  The current-roster screen is not called untouched OOS. Every entry must offer **planned
+  reward:risk > 1.5R**, and every initial stop must risk **< 25% of entry** (the charter's
+  existing ≤ 12% stop bound is stricter). These are entry-time geometry bars; realized
+  winners are reported as a distribution, not forced to exceed 1.5R after the fact.
 - A forward paper book whose realized net return sits inside the matched-trade-count
-  out-of-sample net-return band after
+  retrospective screening net-return band after
   **≥ 30 closed trades and ≥ 3 months** — swing velocity makes this cheap; forward evidence is
   the arbiter, and here it arrives in months, not years.
 - Median hold ≤ 15 sessions; every trade carries its setup, trigger, stop, target, and time
@@ -30,9 +42,9 @@ instead of a few large ones.
   backtest only counts as a real read at **≥ 10% average deployed** over its window
   (amended 2026-07-26) — a book that sits in cash proves nothing.
 
-**The honest kill criterion:** if no hypothesis family survives its pre-registered Phase-3
-bars (HYPOTHESES.md) after H1–H3 and one exploratory round, the project records a well-earned
-STOP.
+**The honest kill criterion:** if neither fixed Swing-v1 setup clears every retrospective
+screening gate, or if the selected setup fails its preregistered forward paper gate, the
+active study records STOP. Historical H1–H3 and ML verdicts remain unchanged.
 
 **Principles:**
 - **Swing-native geometry.** Risk is anchored to the instrument's own volatility (ATR) and
@@ -52,8 +64,9 @@ STOP.
   and the forward book exists. The parent built world-class operations around an unproven
   edge; this project inverts the order.
 - **Evidence discipline inherited whole** (LESSONS §5): pre-registration before any script,
-  immutable OOS wall, append-only decision ledger, event-level judging on a wide roster,
-  independent review before promotions, distributions over lucky paths.
+  explicit retrospective cutoffs and prospective walls, append-only decision ledger,
+  event-level judging on a wide roster, independent review before promotions, distributions
+  over lucky paths. Historical current-roster screens are never mislabeled untouched OOS.
 - **Friction is first-class.** Swing turns over ~5–10× a long-hold book; every verdict is also
   run at 2× assumed costs, and a family that dies at 2× is reported as fragile.
 - **Multi-timeframe, small and readable.** A handful of setups a human can narrate, each with
@@ -106,9 +119,11 @@ Universe & data:
   truth; atomic writes (temp + fsync + replace); validate-before-write quality gate;
   split- and dividend-adjusted total-return basis, never mixed; incomplete bars never cached;
   jobs idempotent and resumable with ETA.
-- **OOS wall: 2024-01-01, immutable** (re-ratified 2026-07-12, see decisions.md). Nothing
-  fits on or past it. (H3's entry families partially consumed 2025+ in the parent — caveat
-  carried in HYPOTHESES.)
+- The historical **2024-01-01 OOS wall** remains immutable for predecessor studies. Swing-v1
+  may screen fixed, non-fitted rules through 2025 only because it explicitly makes no
+  untouched-OOS claim. Its decisive wall will be a future session committed after setup and
+  code freeze. (H3's entry families partially consumed 2025+ in the parent — caveat carried
+  in HYPOTHESES.)
 
 Process:
 - decisions.md append-only, newest first; every study pre-registered (bars locked before the

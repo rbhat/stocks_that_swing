@@ -4,6 +4,28 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-28 — Scope changed to practical deterministic Swing-v1
+
+The user explicitly rejected institutional point-in-time data as unnecessary
+for this swing-trading project and authorized changing scope. Swing-v1 is now
+the active study: a practical, deterministic, long-only 3–15-session paper
+swing system using the repository's Yahoo-derived current-roster adjusted
+cache.
+
+The scope accepts survivorship, symbol-history, delisting, adjustment-vintage,
+and historical earnings-calendar limitations for retrospective screening.
+Those results cannot prove a deployable edge or authorize live money. At most
+one of two fixed readable setups may advance, and only a newly preregistered
+forward paper book can validate continued paper operation.
+
+ML and institutional data certification are out of active scope. ML-v2's
+`STOP_INPUT`, manifests, code, and predecessor verdicts remain unchanged
+historical evidence. Swing-v1 Gate 0 planning is complete; no price values
+were read for Swing-v1, no implementation or retrospective screen ran, and
+Gate 1 is not authorized. Governing plan: `docs/SWING_PLAN.md`.
+
+---
+
 ## 2026-07-28 — ML-v2 Gate 2 source certification: STOP_INPUT
 
 The user authorized the next sequential step after Gate 1. Gate 2 performed

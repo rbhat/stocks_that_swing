@@ -2,7 +2,8 @@
 
 > **RESTART FREEZE — 2026-07-26:** this runbook describes the legacy Phase-5 book.
 > Manage existing open paper positions to exit, but do not generate or fill new legacy
-> entries. `docs/PLAN.md` is the sole authority for any new versioned collection.
+> entries. `docs/SWING_PLAN.md` is the sole authority for any new versioned collection;
+> Swing-v1 has not yet authorized a forward book.
 >
 > Production was inspected and frozen on 2026-07-26. It had no open positions and no
 > queued candidates, so the `eod` and `fill` crontab entries were removed; only the
@@ -12,7 +13,8 @@
 
 Phase-5 forward-paper pipeline: nightly EOD signal generation, morning fill
 capture, hourly advisory monitoring, and daily Drive sync. This doc is the
-day-2 operational reference — see `docs/PLAN.md` (Phase-5 section) and
+legacy day-2 operational reference — see
+`docs/preregs/2026-07-12_phase5-forward-paper.md` and
 `.superpowers/sdd/task-*-brief.md` for design rationale.
 
 ## Schedule (launchd, weekdays, assumes machine tz = America/Los_Angeles)

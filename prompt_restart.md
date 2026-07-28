@@ -1,14 +1,14 @@
-Resume from the ML-v2 Gate 2 `STOP_INPUT`. Read `docs/PLAN.md`,
-`decisions.md`, `docs/evidence/ml-v2/README.md`, and
-`docs/evidence/ml-v2/gate-2.md`.
+Resume from Swing-v1 Gate 0. Read `docs/SWING_PLAN.md`, `docs/VISION.md`,
+`decisions.md`, and `docs/evidence/swing-v1/README.md`.
 
-Preserve Gate 1's completed pure contracts and synthetic simulator, Gate 2's
-content-addressed failure record, every predecessor STOP, append-only history,
-and all data walls. The local Yahoo/current-roster cache is explicitly
-rejected and cannot feed ML-v2.
+The active scope is a practical deterministic 3–15-session paper swing system
+using the local Yahoo/current-roster cache. Preserve its declared
+survivorship/adjustment limitations, two-setup roster, retrospective cutoff,
+forward-paper authority, append-only history, and all predecessor verdicts.
 
-Do not start Gate 3, materialize development rows, build features, fit a
-model, simulate development, select or freeze a setup, set a prospective
-wall, collect forward evidence, or deploy. If licensed point-in-time source
-extracts become available, require a new explicit Gate 2 authorization and
-fresh certification before any later gate.
+ML-v2 remains historical at `STOP_INPUT`; do not reopen or relabel it.
+
+Do not start Swing-v1 Gate 1, read cache price values for Swing-v1, implement
+the adapter/detectors/simulator, run retrospective performance, select a
+setup, set a prospective wall, start a forward book, or deploy without the
+corresponding explicit authorization.

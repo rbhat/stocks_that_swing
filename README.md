@@ -4,14 +4,16 @@ Systematic swing-trading research and forward-paper trading pipeline.
 
 ## Current status
 
-[`docs/PLAN.md`](docs/PLAN.md) is the sole governing plan for the independent
-`ml-v2` study. Gate 1's pure contracts and synthetic portfolio simulator are
-complete. Gate 2 source acquisition and point-in-time certification ended
-`STOP_INPUT`: the local Yahoo cache is survivor-oriented and mutable, and the
-required licensed CRSP/LSEG-style extracts are unavailable.
+[`docs/SWING_PLAN.md`](docs/SWING_PLAN.md) is the active governing plan for
+`swing-v1`: a practical, deterministic 3–15-session paper swing system using
+the repository's existing Yahoo-derived current-roster cache.
 
-Gate 3 is not authorized. No ML-v2 development dataset, feature matrix, model
-fit, simulation, selection, prospective wall, collector, or deployment
-exists. Earlier Success-v2 and ML Task 5 STOP verdicts remain unchanged.
+Gate 0 scope and preregistration are complete. Gate 1 implementation is not
+authorized. No Swing-v1 cache freeze, detector, simulator adaptation,
+retrospective screen, selected setup, prospective wall, or forward book
+exists.
+
+ML-v2 remains historical at `STOP_INPUT`; earlier Success-v2 and ML Task 5
+STOP verdicts are unchanged.
 
 Start the next execution session with [`prompt_restart.md`](prompt_restart.md).
