@@ -4,6 +4,60 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-28 — ML-v2 Gate 1 pure contracts and synthetic simulator complete
+
+The user explicitly authorized ML-v2 Gate 1. The authorization is a narrow
+research-development exception to `docs/VISION.md`'s legacy paper-book
+`No ML` principle and charter sizing: ML-v2 uses its preregistered
+$1,000,000 fresh-fold cash, 0.50% risk, 10% position, and Ridge/HGB setup
+identities only inside the independent development study. It does not change
+the $100,000 paper-book charter, authorize model fitting, or qualify any setup
+for a forward book.
+
+Gate 1 added pure fail-closed point-in-time interfaces, the six canonical
+setup identities, permanent-ID hash ties, exact accounting metrics, fixed and
+seeded controls, and a deterministic cash/slot/capacity simulator with an
+append-only hash-chained ledger. Synthetic checks cover leakage, cash and slot
+contention, daily throttle, capital reuse, gaps, ambiguous bars, entry-day and
+time exits, terminal liquidation, splits, distributions, delistings, rejected
+fills, doubled friction, control parity, and crash/retry.
+
+All 29 focused tests and all 488 repository tests passed; `ruff check --fix`
+passed. Two independent fixed synthetic canary invocations produced result
+identity `f06b558e739b1078419ba3491df28fec823409a117ca070844603d7173df5f2d`
+and byte hash
+`5d33857b80d8f722b65a434108839ee5298496ac925786ccfc9fe2cf85d6f39d`.
+No market or vendor dataset was opened, no model or transform was fitted, and
+no run directory was created. Gate 2 remains unauthorized. Evidence:
+`docs/evidence/ml-v2/gate-1.md`.
+
+---
+
+## 2026-07-28 — ML-v2 profitability-first planning package locked; implementation not authorized
+
+The predecessor Success-v2/ML-restart planning authorities were archived
+byte-for-byte under `docs/archive/pre-ml-v2-2026-07-28/`. The new independent
+governing plan is `docs/PLAN.md`, with its preregistration package under
+`docs/evidence/ml-v2/`.
+
+ML-v2 judges six preregistered complete portfolio setups through a
+cash-, slot-, and capacity-constrained simulator. Its primary measure is
+doubled-friction net return on committed capital across all accepted trades.
+Selection requires positive absolute and same-date-control-relative
+profitability, a positive pooled 95% lower bound, drawdown and adequacy gates,
+zero credible local permutations, a preregistered Westfall–Young family rule,
+and byte-identical rerun identity. At most three all-gate-clearing setups may
+be frozen; fewer or none is valid and no least-bad promotion is allowed.
+
+This decision records planning and preregistration only. It does not read or
+authorize new market data, implementation, model fitting, data collection, a
+development run, a prospective wall, a forward test, deployment, or a change
+to the locked ML Task 5 **STOP**. The next proposed action is Gate 1 synthetic
+contract and portfolio-simulator implementation, pending explicit user
+authorization.
+
+---
+
 ## 2026-07-28 — ML Task 5 post-STOP diagnostic: profitable signal, invalid equal baseline
 
 Exact pre-2024 reconstruction found that Task 5 did not lack profitable

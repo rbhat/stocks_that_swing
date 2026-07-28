@@ -1,0 +1,3 @@
+- Use `Decimal` and one canonical serializer; reject floats, missing facts, and implicit defaults.
+- Rank and identify by permanent ID with the locked SHA-256 tie-break; never sort or deduplicate by symbol.
+- Emit every outcome through one event-sourced simulator: one durable rejection, no deferred order, no alternate control path.

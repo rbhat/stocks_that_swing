@@ -1,34 +1,34 @@
-# stocks_that_swing — restart index
+# stocks_that_swing — ML-v2 research index
 
-The project entered a full strategic restart on 2026-07-26 after the definition of success
-changed. Existing research and forward-paper records remain historical evidence; none is an
-active promotion authority.
+The active research line is the independent profitability-first `ml-v2` study
+created on 2026-07-28. Predecessor studies, preregistrations, reports, and
+verdicts remain historical evidence; ML Task 5 remains STOP.
 
 ## Read order
 
-1. `VISION.md` — amended success definition and charter.
-2. `PLAN.md` — sole governing restart plan and phase gates.
-3. `SUCCESS_GATE.md` — success-v2 metrics and new study-artifact contract.
-4. `superpowers/plans/2026-07-26-ml-restart.md` — locked ML implementation
-   sequence; completed through Task 2 and paused before Task 3.
-5. `preregs/2026-07-26_ml-restart-development.md` — locked development
-   matrix, controls, walls, and selection rubric.
-6. `../decisions.md` — append-only decisions, newest first.
-7. `HYPOTHESES.md` and `LESSONS.md` — hypothesis priors and transferable lessons only.
-8. `FORWARD_OPS.md` — legacy operations reference; new entries remain frozen until the
-   restart plan permits versioned shadow collection.
+1. `PLAN.md` — sole active plan and sequential authorization gates.
+2. `evidence/ml-v2/README.md` — ML-v2 planning-package index.
+3. `evidence/ml-v2/setup-matrix.md` — six complete executable setup cells.
+4. `evidence/ml-v2/development-preregistration.md` — locked development
+   question, folds, controls, gates, permutations, and top-three rule.
+5. `evidence/ml-v2/research-contract.md` — formulas, inputs, fail-closed
+   checks, portfolio simulator, audit, estimates, and STOP conditions.
+6. `evidence/ml-v2/forward-test-preregistration-template.md` — inactive
+   forward template; setup roster and wall are intentionally unset.
+7. `evidence/ml-v2/gate-1.md` — pure-contract and synthetic-simulator
+   implementation evidence.
+8. `../decisions.md` — append-only decisions, newest first.
+9. `reports/ml-task5-diagnostics/report.html` and
+   `evidence/ml-restart/phase-4.md` — predecessor evidence and lessons only.
 
-Use `../prompt_restart.md` to start the next execution session.
+The byte-preserved predecessor planning archive is
+`archive/pre-ml-v2-2026-07-28/`.
 
 ## Current status
 
-- Strategic state: success-v2 Phase 3 STOP; ML Tasks 1–2 complete and
-  paused before Task 3 data construction.
-- Clean evidence lower bound: 2026-07-27; the actual ML event wall will be
-  a later future session set only after candidate/code/config lock.
-- Legacy research/forward book: historical and fail-closed; production had no open
-  positions or queued candidates when frozen.
-- Dependency lock and pure causal ML wall/unit/feature/label contracts:
-  implemented and synthetically verified without reading real ML data.
-- Next action: wait for explicit user authorization before starting
-  `superpowers/plans/2026-07-26-ml-restart.md` Task 3.
+- Gate 1 pure contracts and synthetic simulator complete.
+- No new market/source data read.
+- No model fitting, development run, prospective wall, forward test,
+  collection, deployment, or Task 5 verdict change.
+- Gate 2 source acquisition and point-in-time certification is not
+  authorized.
