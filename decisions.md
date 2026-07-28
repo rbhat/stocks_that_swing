@@ -4,6 +4,30 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-28 — ML Task 5 post-STOP diagnostic: profitable signal, invalid equal baseline
+
+Exact pre-2024 reconstruction found that Task 5 did not lack profitable
+patterns. All 13 real arms had positive doubled-friction mean net R. A-T1-M3
+added 0.0900R versus the same-date random control with a positive 90% lower
+bound, was profitable in six of eight validation years, and had zero credible
+local permutations out of 20.
+
+The locked `constant_equal` comparison was not an equal-weight baseline:
+equal scores fell through to alphabetical symbol ordering. It selected only
+11 symbols, and AAPL, A, and ABBV supplied 98.9% of its rows. Its higher
+incremental result is therefore a symbol-order/survivor-cohort artifact. The
+eight family-level permutation clears were all Track B arms; none belonged to
+A-T1-M3. With 260 controls, the global any-clear STOP is also highly sensitive
+to multiplicity.
+
+This post-hoc finding does not amend the locked Task 5 **STOP**, create a
+candidate, or authorize Task 6. The 15-session results remain overlapping
+event simulations rather than a slot- or capital-constrained portfolio.
+Evidence: `docs/reports/ml-task5-diagnostics/report.html` and
+`runs/ml-restart/development/task5-diagnostics.json`.
+
+---
+
 ## 2026-07-27 — ML restart Task 5 development: STOP
 
 The complete locked pre-2024 matrix evaluated 13 arms and 1,092 fold attempts

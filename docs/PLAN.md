@@ -251,6 +251,14 @@ backtest, or a successful deployment is not success by itself.
   report's embedded reviewer omitted that required permutation check. No
   candidate prereg was created and ML Task 6 is not authorized. Evidence:
   `docs/evidence/ml-restart/phase-4.md`.
+- 2026-07-28 — ML Task 5 post-STOP diagnostic completed. Exact hash-matched
+  reconstruction showed profitable real-arm outcomes and positive A-T1-M3
+  incremental evidence versus same-date random. It also showed that
+  `constant_equal` deterministically selected alphabetical symbols (98.9% of
+  rows were AAPL, A, or ABBV) and that all eight family-level permutation
+  clears were Track B, while A-T1-M3 had zero of 20. This does not amend STOP,
+  create a candidate, or authorize Task 6. Evidence:
+  `docs/reports/ml-task5-diagnostics/report.html`.
 
 ## Proposed ML restart exploration (not authorized)
 
