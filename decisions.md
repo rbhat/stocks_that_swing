@@ -4,6 +4,31 @@ Append-only. Newest first.
 
 ---
 
+## 2026-07-28 — ML-v2 Gate 2 source certification: STOP_INPUT
+
+The user authorized the next sequential step after Gate 1. Gate 2 performed
+source discovery, read the local source inventory, implemented fail-closed
+source-certification contracts, and produced content-addressed source and
+data-quality manifests.
+
+All eight required source kinds failed certification. The local 240-file,
+1,908,689-row Yahoo cache is a mutable, adjusted, current-symbol survivor
+sample without permanent IDs, historical membership/security types,
+delistings, itemized corporate actions, source vintages, or earnings
+publication history. Every file crosses the development cutoff and every
+current file hash differs from the tracked roster manifest. The earnings
+cache is absent, and there is no licensed institutional extract or
+authoritative exchange calendar in the workspace.
+
+The result is the preregistered `STOP_INPUT`, with source-manifest identity
+`9d911d826e7de4d9eaf78bf07625f595a80046d8af38434163537c6168d04ec7`.
+This is not a profitability result. No development dataset, feature, model,
+simulation, selection, prospective wall, forward evidence, or deployment was
+created. Gate 3 is not authorized. Evidence:
+`docs/evidence/ml-v2/gate-2.md`.
+
+---
+
 ## 2026-07-28 — ML-v2 Gate 1 pure contracts and synthetic simulator complete
 
 The user explicitly authorized ML-v2 Gate 1. The authorization is a narrow

@@ -1,0 +1,40 @@
+{
+  "authorized_end_exclusive": "2026-01-01",
+  "authorized_start": "2002-01-01",
+  "fatal_checks": {
+    "authoritative_exchange_calendar": "FAIL_INPUT",
+    "certified_corporate_action_timing": "FAIL_INPUT",
+    "certified_delisting_treatment": "FAIL_INPUT",
+    "certified_earnings_publication_timing": "FAIL_INPUT",
+    "certified_permanent_ids_and_symbol_history": "FAIL_INPUT",
+    "certified_point_in_time_membership": "FAIL_INPUT",
+    "certified_security_type_history": "FAIL_INPUT",
+    "content_addressed_extraction": "FAIL_INPUT"
+  },
+  "local_inventory": {
+    "aggregate_definition": "sha256(canonical sorted array of path, file sha256, row count, first session, and last session)",
+    "aggregate_sha256": "cc2d7129c6ade8f25a3695fe8ccb7a3100c7e97e838eee4b5eb28cdb6f1f9a3e",
+    "earnings_cache_exists": false,
+    "files": 240,
+    "files_crossing_development_cutoff": 240,
+    "first_session": "1972-06-01",
+    "last_session": "2026-07-23",
+    "manifest_hash_matches": 0,
+    "manifest_hash_mismatches_or_missing": 240,
+    "manifest_symbols": 250,
+    "parquet_schema_variants": 1,
+    "rows": 1908689
+  },
+  "row_level_checks": {
+    "coverage_thresholds": "NOT_RUN_FATAL_SOURCE_FAILURE",
+    "duplicate_permanent_id_session": "NOT_RUN_FATAL_SOURCE_FAILURE",
+    "join_cardinality": "NOT_RUN_FATAL_SOURCE_FAILURE",
+    "ohlcv_invariants": "NOT_RUN_FATAL_SOURCE_FAILURE",
+    "revision_canary": "NOT_RUN_FATAL_SOURCE_FAILURE",
+    "wall_and_future_feature_canaries": "NOT_RUN_FATAL_SOURCE_FAILURE"
+  },
+  "schema_version": "ml-v2-gate-2-data-quality-v1",
+  "source_manifest_identity": "9d911d826e7de4d9eaf78bf07625f595a80046d8af38434163537c6168d04ec7",
+  "status": "STOP_INPUT",
+  "study_id": "ml-v2"
+}

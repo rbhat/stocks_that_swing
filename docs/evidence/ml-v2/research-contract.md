@@ -1,6 +1,6 @@
 # ML-v2 Research, Simulator, and Audit Contract
 
-- **Status:** PREREGISTERED; GATE 1 IMPLEMENTED; DATA ACCESS NOT AUTHORIZED
+- **Status:** PREREGISTERED; GATE 1 IMPLEMENTED; GATE 2 `STOP_INPUT`
 - **Applies to:** all six development setups and all their controls
 
 ## Exact accounting and diagnostics

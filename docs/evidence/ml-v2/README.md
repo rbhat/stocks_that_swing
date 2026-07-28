@@ -16,13 +16,15 @@ evidence for the independent profitability-first study created on 2026-07-28.
 6. `review.md` — planning review and authority check.
 7. `gate-1.md` — pure-contract and synthetic-simulator implementation
    evidence.
+8. `gate-2.md` — source acquisition and certification `STOP_INPUT` evidence.
+9. `gate-2-source-manifest.json` and `gate-2-data-quality.json` —
+   deterministic Gate 2 machine-readable evidence.
 
 ## Current authority
 
-Gate 1 pure contracts and synthetic simulator implementation is complete. No
-market/source dataset was opened, no model was fit, no development simulation
-was run, no prospective wall was set, and no forward process or deployment
-exists. The ML Task 5 verdict remains STOP.
-
-Gate 2 source acquisition and point-in-time certification requires separate
-explicit user authorization.
+Gate 1 pure contracts and synthetic simulator implementation is complete.
+Gate 2 was authorized and ended `STOP_INPUT`: every required source was
+unavailable or rejected for leakage risk, and the local Yahoo/current-roster
+cache cannot be substituted. No model was fit, no development simulation was
+run, no prospective wall was set, and no forward process or deployment
+exists. The ML Task 5 verdict remains STOP. Gate 3 is not authorized.

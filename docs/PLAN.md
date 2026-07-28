@@ -1,7 +1,7 @@
 # ML-v2 Profitability-First Research Plan
 
 - **Created:** 2026-07-28 (America/Los_Angeles)
-- **Status:** GATE 1 COMPLETE; GATE 2 NOT AUTHORIZED
+- **Status:** GATE 2 `STOP_INPUT`; GATE 3 NOT AUTHORIZED
 - **Study identity:** `ml-v2`
 - **Planning package:** `docs/evidence/ml-v2/`
 - **Archived predecessor plans:** `docs/archive/pre-ml-v2-2026-07-28/`
@@ -89,14 +89,19 @@ Evidence: `docs/evidence/ml-v2/gate-1.md`.
 
 ### Gate 2 — Source acquisition and point-in-time certification
 
-Requires separate explicit authorization because it permits source discovery,
-procurement, and data reads. Build a manifest for the required point-in-time
-security master, membership, security type, symbol mapping, delistings,
-corporate actions, OHLCV, earnings schedule, benchmark, and exchange calendar.
-Run only the locked fail-closed quality checks.
+Authorized by the 2026-07-28 user request, “Do the next step,” because it
+permits source discovery, procurement, and data reads. A manifest was built
+for the required point-in-time security master, membership, security type,
+symbol mapping, delistings, corporate actions, OHLCV, earnings schedule,
+benchmark, and exchange calendar. Only the locked fail-closed quality checks
+were run.
 
 **Gate:** every critical source is certified, content-addressed, and adequate,
 or record `STOP_INPUT`. A survivor-only substitute cannot pass.
+
+**Result:** `STOP_INPUT`. The local Yahoo/current-roster cache was rejected,
+and no licensed CRSP/LSEG-style extracts or authoritative calendar were
+available. Evidence: `docs/evidence/ml-v2/gate-2.md`.
 
 ### Gate 3 — Walled development dataset
 
@@ -206,3 +211,9 @@ Stop the active gate immediately and write an immutable failure record if:
   byte-identity checks. No market or vendor dataset was opened, no transform
   or model was fitted, and no run directory was created. Gate 2 remains
   unauthorized.
+- 2026-07-28 — The user authorized the next sequential step, Gate 2. Source
+  discovery and fail-closed certification ended `STOP_INPUT`: all eight
+  critical source kinds were unavailable or rejected for leakage risk. The
+  survivor-oriented Yahoo cache was not substituted. No development dataset,
+  feature, model, simulation, selection, prospective wall, or deployment was
+  created. Gate 3 remains unauthorized.

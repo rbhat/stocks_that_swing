@@ -1,0 +1,148 @@
+{
+  "authorized_end_exclusive": "2026-01-01",
+  "authorized_start": "2002-01-01",
+  "failed_kinds": [
+    "security_master",
+    "universe_history",
+    "delistings",
+    "corporate_actions",
+    "daily_market_data",
+    "earnings_schedule",
+    "benchmark",
+    "exchange_calendar"
+  ],
+  "identity": "9d911d826e7de4d9eaf78bf07625f595a80046d8af38434163537c6168d04ec7",
+  "schema_version": "ml-v2-gate-2-source-manifest-v1",
+  "sources": [
+    {
+      "as_of_semantics": "2026 current-symbol snapshot; no effective/as-of history",
+      "content_hash": "85e3fe4cdaf66ce052de0e82fee0d9b96185d1b74ccd109a8be0d54a4a22943e",
+      "covered_end_exclusive": null,
+      "covered_start": null,
+      "disposition": "rejected_leakage_risk",
+      "failures": [
+        "No permanent security IDs, listing intervals, primary-listing history, security-type history, symbol mapping history, or fact publication timestamps."
+      ],
+      "kind": "security_master",
+      "license_use_constraint": "Unofficial mutable feed; no licensed point-in-time research extract",
+      "provider": "Yahoo Finance current-roster cache",
+      "revision_policy": "Files are overwritten on refresh; vintages are not retained",
+      "row_count": 250,
+      "schema_version": "study-roster-manifest-v1"
+    },
+    {
+      "as_of_semantics": "Roster assembled from current S&P 500 and Nasdaq-100 constituents",
+      "content_hash": "85e3fe4cdaf66ce052de0e82fee0d9b96185d1b74ccd109a8be0d54a4a22943e",
+      "covered_end_exclusive": null,
+      "covered_start": null,
+      "disposition": "rejected_leakage_risk",
+      "failures": [
+        "Current survivors cannot reconstruct the eligible US common-share universe on historical signal dates."
+      ],
+      "kind": "universe_history",
+      "license_use_constraint": "Unofficial mutable feed; no licensed point-in-time research extract",
+      "provider": "Yahoo Finance current-roster cache",
+      "revision_policy": "Files are overwritten on refresh; vintages are not retained",
+      "row_count": 250,
+      "schema_version": "study-roster-manifest-v1"
+    },
+    {
+      "as_of_semantics": null,
+      "content_hash": null,
+      "covered_end_exclusive": null,
+      "covered_start": null,
+      "disposition": "not_run_input_failure",
+      "failures": [
+        "No licensed delisting extract with permanent IDs, reason, executable last print, recovery/distribution, and availability timestamps."
+      ],
+      "kind": "delistings",
+      "license_use_constraint": "No licensed extract or credentials available",
+      "provider": "No accessible source (CRSP US Stock is the acquisition candidate)",
+      "revision_policy": null,
+      "row_count": null,
+      "schema_version": null
+    },
+    {
+      "as_of_semantics": "Only revised adjusted OHLCV is retained; action announcement/effective/pay timestamps are absent",
+      "content_hash": "cc2d7129c6ade8f25a3695fe8ccb7a3100c7e97e838eee4b5eb28cdb6f1f9a3e",
+      "covered_end_exclusive": "2026-07-24",
+      "covered_start": "1972-06-01",
+      "disposition": "rejected_leakage_risk",
+      "failures": [
+        "Raw prices/shares and itemized split/dividend events are absent, so execution units and causal adjustment factors cannot be certified."
+      ],
+      "kind": "corporate_actions",
+      "license_use_constraint": "Unofficial mutable feed; no licensed point-in-time research extract",
+      "provider": "Yahoo Finance auto-adjusted parquet cache",
+      "revision_policy": "Historical adjusted values can be revised and files are overwritten",
+      "row_count": 1908689,
+      "schema_version": "yfinance-auto-adjust-parquet-v1"
+    },
+    {
+      "as_of_semantics": "Current-symbol adjusted histories without permanent IDs or source vintages",
+      "content_hash": "cc2d7129c6ade8f25a3695fe8ccb7a3100c7e97e838eee4b5eb28cdb6f1f9a3e",
+      "covered_end_exclusive": "2026-07-24",
+      "covered_start": "1972-06-01",
+      "disposition": "rejected_leakage_risk",
+      "failures": [
+        "The 240 files are survivor-oriented, adjusted rather than raw, cross the development cutoff, and all 240 differ from the tracked roster-manifest hashes."
+      ],
+      "kind": "daily_market_data",
+      "license_use_constraint": "Unofficial mutable feed; no licensed point-in-time research extract",
+      "provider": "Yahoo Finance auto-adjusted parquet cache",
+      "revision_policy": "Historical values can be revised and files are overwritten",
+      "row_count": 1908689,
+      "schema_version": "yfinance-auto-adjust-parquet-v1"
+    },
+    {
+      "as_of_semantics": null,
+      "content_hash": null,
+      "covered_end_exclusive": null,
+      "covered_start": null,
+      "disposition": "not_run_input_failure",
+      "failures": [
+        "The earnings cache is absent and no licensed event history retains announced schedule, original publication/as-of timestamp, status, and revision lifecycle."
+      ],
+      "kind": "earnings_schedule",
+      "license_use_constraint": "No licensed extract or credentials available",
+      "provider": "No accessible source (LSEG Company Events is the acquisition candidate)",
+      "revision_policy": null,
+      "row_count": null,
+      "schema_version": null
+    },
+    {
+      "as_of_semantics": "Revised adjusted history without a retained source vintage",
+      "content_hash": "38e158d4d6484dcef8f0bb53f0daab0eb8426bc68e18116bf49d1a873e44a2c5",
+      "covered_end_exclusive": "2026-07-24",
+      "covered_start": "1993-01-29",
+      "disposition": "rejected_leakage_risk",
+      "failures": [
+        "SPY history is adjusted, mutable, extends beyond the authorized development cutoff, and lacks a certified extraction identity."
+      ],
+      "kind": "benchmark",
+      "license_use_constraint": "Unofficial mutable feed; no licensed point-in-time research extract",
+      "provider": "Yahoo Finance SPY auto-adjusted parquet cache",
+      "revision_policy": "Historical values can be revised and the file is overwritten",
+      "row_count": 8427,
+      "schema_version": "yfinance-auto-adjust-parquet-v1"
+    },
+    {
+      "as_of_semantics": null,
+      "content_hash": null,
+      "covered_end_exclusive": null,
+      "covered_start": null,
+      "disposition": "not_run_input_failure",
+      "failures": [
+        "No authoritative, content-addressed exchange calendar extract with closure and revision provenance is available."
+      ],
+      "kind": "exchange_calendar",
+      "license_use_constraint": "Open-source generated calendar is installed; no authoritative exchange-source extract is present",
+      "provider": "exchange_calendars 4.13.2 package only",
+      "revision_policy": null,
+      "row_count": null,
+      "schema_version": null
+    }
+  ],
+  "status": "STOP_INPUT",
+  "study_id": "ml-v2"
+}

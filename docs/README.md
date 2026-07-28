@@ -17,8 +17,9 @@ verdicts remain historical evidence; ML Task 5 remains STOP.
    forward template; setup roster and wall are intentionally unset.
 7. `evidence/ml-v2/gate-1.md` — pure-contract and synthetic-simulator
    implementation evidence.
-8. `../decisions.md` — append-only decisions, newest first.
-9. `reports/ml-task5-diagnostics/report.html` and
+8. `evidence/ml-v2/gate-2.md` — source-certification `STOP_INPUT` evidence.
+9. `../decisions.md` — append-only decisions, newest first.
+10. `reports/ml-task5-diagnostics/report.html` and
    `evidence/ml-restart/phase-4.md` — predecessor evidence and lessons only.
 
 The byte-preserved predecessor planning archive is
@@ -27,8 +28,8 @@ The byte-preserved predecessor planning archive is
 ## Current status
 
 - Gate 1 pure contracts and synthetic simulator complete.
-- No new market/source data read.
+- Gate 2 source certification ended `STOP_INPUT`; the local Yahoo cache is
+  explicitly rejected.
 - No model fitting, development run, prospective wall, forward test,
   collection, deployment, or Task 5 verdict change.
-- Gate 2 source acquisition and point-in-time certification is not
-  authorized.
+- Gate 3 is not authorized.
