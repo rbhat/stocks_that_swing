@@ -7,3 +7,6 @@
 - Count the entry bar as session 1 and time-exit at the 21st session close.
 - Include starting capital in drawdown; cost diagnostics never change equity, profit, or rankings.
 - Reject planned reward/risk equal to 1.5; the charter requires strictly greater than 1.5.
+- Within a session, order candidates by declared priority then permanent-ID SHA tie; never symbol.
+- Require every decision-time signal fact to be available no later than its signal session.
+- Prefix-invariance tests must cover a signal on the truncated frame's final session.

@@ -369,8 +369,29 @@ class StrategyRevision:
 
 
 @dataclass(frozen=True)
+class SignalFact:
+    """One numeric fact used at a completed signal close."""
+
+    value: Decimal
+    available_session: dt.date
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "value", _decimal(self.value, "signal fact value"))
+        object.__setattr__(
+            self,
+            "available_session",
+            _date(self.available_session, "signal fact available_session"),
+        )
+
+
+@dataclass(frozen=True)
 class Candidate:
-    """A point-in-time eligible opportunity, identified by permanent security ID."""
+    """A causal signal identified by permanent security ID.
+
+    ``facts_as_of`` records source-snapshot provenance and may expose the
+    accepted current-roster survivorship limitation. ``signal_facts`` alone
+    carries decision-time values and must be available by the signal close.
+    """
 
     strategy_revision_identity: str
     input_manifest_identity: str
@@ -383,6 +404,8 @@ class Candidate:
     scheduled_earnings_session: dt.date | None
     sessions_before_earnings: int | None
     facts_as_of: Mapping[str, dt.date]
+    signal_facts: Mapping[str, SignalFact]
+    priority_value: Decimal
 
     def __post_init__(self) -> None:
         _sha256(self.strategy_revision_identity, "strategy_revision_identity")
@@ -421,9 +444,21 @@ class Candidate:
         if set(facts) != set(REQUIRED_SOURCE_KINDS):
             raise ContractViolation("facts_as_of must include every required source kind")
         for kind, fact_date in facts.items():
-            if _date(fact_date, f"facts_as_of[{kind}]") > signal:
-                raise ContractViolation(f"future fact {kind} exceeds signal_session")
+            _date(fact_date, f"facts_as_of[{kind}]")
         object.__setattr__(self, "facts_as_of", MappingProxyType(facts))
+        signal_facts = dict(self.signal_facts)
+        if not signal_facts:
+            raise ContractViolation("signal_facts cannot be empty")
+        for name, fact in signal_facts.items():
+            _text(name, "signal_facts key")
+            if not isinstance(fact, SignalFact):
+                raise ContractViolation("signal_facts must contain SignalFact values")
+            if fact.available_session > signal:
+                raise ContractViolation(
+                    f"future signal fact {name} exceeds signal_session"
+                )
+        object.__setattr__(self, "signal_facts", MappingProxyType(signal_facts))
+        object.__setattr__(self, "priority_value", _decimal(self.priority_value, "priority_value"))
 
     @property
     def identity(self) -> str:
@@ -441,6 +476,8 @@ class Candidate:
                 "scheduled_earnings_session": self.scheduled_earnings_session,
                 "sessions_before_earnings": self.sessions_before_earnings,
                 "facts_as_of": self.facts_as_of,
+                "signal_facts": self.signal_facts,
+                "priority_value": self.priority_value,
             },
         )
 
@@ -458,6 +495,8 @@ class Candidate:
             raise ContractViolation("candidate strategy revision identity does not match")
         if self.input_manifest_identity != protocol.input_manifest_identity:
             raise ContractViolation("candidate input manifest identity does not match")
+        if any(as_of > protocol.data_cutoff for as_of in self.facts_as_of.values()):
+            raise ContractViolation("candidate source fact exceeds the protocol cutoff")
         if self.signal_close < protocol.charter.minimum_price:
             raise ContractViolation("candidate signal_close is below the charter minimum price")
         if self.average_dollar_volume < protocol.charter.minimum_average_dollar_volume:

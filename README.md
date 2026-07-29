@@ -20,7 +20,7 @@ promotion. The user chooses the forward-test mix.
 
 The practical Yahoo/current-roster cache is accepted with explicit
 survivorship and adjusted-history limitations. Discovery implementation is in
-progress under `sts.swing_ranking`; the immutable protocol and identity
-contracts are complete.
+progress under `sts.swing_ranking`; immutable contracts and causal
+multi-timeframe candidate generation are complete.
 
 Start the next session with [`prompt_restart.md`](prompt_restart.md).

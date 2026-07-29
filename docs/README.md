@@ -12,7 +12,8 @@ Planning is complete for open discovery within the Vision's explicit charter.
 No strategy family, behavior, indicator, target method, model, parameter
 range, fold design, or composite weighting is preselected.
 
-The immutable protocol, grammar, strategy, candidate, and entry-geometry
-contracts live in `sts.swing_ranking`. Causal candidate generation is the
-current implementation step. Retrospective rankings, user selection, and
-forward paper testing remain incomplete. No live-money trading is authorized.
+The immutable contracts and configuration-driven causal daily/weekly/monthly
+candidate generator live in `sts.swing_ranking`. Zero-cost event and portfolio
+simulation is the current implementation step. Retrospective rankings, user
+selection, and forward paper testing remain incomplete. No live-money trading
+is authorized.

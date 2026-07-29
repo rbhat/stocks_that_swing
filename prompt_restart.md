@@ -7,8 +7,8 @@ Rank the top five independently by gross profit, maximum drawdown, and
 profit/drawdown. Diagnostics never exclude a strategy. The user alone chooses
 the forward mix.
 
-Discovery implementation is isolated under `sts.swing_ranking`. Protocol,
-identity, strategy-revision, candidate, and entry-geometry contracts are
-complete. Continue with causal multi-timeframe candidate generation. Do not
-create a dashboard, alerts, deployment, forward writer, or live-money path
-unless the user explicitly asks.
+Discovery implementation is isolated under `sts.swing_ranking`. Immutable
+contracts and configuration-driven causal daily/weekly/monthly candidate
+generation are complete. Continue with the zero-cost event-sourced portfolio
+simulator. Do not create a dashboard, alerts, deployment, forward writer, or
+live-money path unless the user explicitly asks.

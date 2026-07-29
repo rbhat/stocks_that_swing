@@ -17,6 +17,7 @@ from sts.swing_ranking.contracts import (
     ContractViolation,
     DiscoveryProtocol,
     EntryGeometry,
+    SignalFact,
     SourceFact,
     SourceLimitation,
     StrategyRevision,
@@ -90,6 +91,12 @@ def _candidate(protocol: DiscoveryProtocol, strategy: StrategyRevision) -> Candi
         scheduled_earnings_session=dt.date(2025, 2, 6),
         sessions_before_earnings=4,
         facts_as_of={kind: dt.date(2025, 1, 30) for kind in REQUIRED_SOURCE_KINDS},
+        signal_facts={
+            "daily_close": SignalFact(
+                value=Decimal(100), available_session=dt.date(2025, 1, 30)
+            )
+        },
+        priority_value=Decimal("1.25"),
     )
 
 
@@ -153,11 +160,13 @@ def test_strategy_and_candidate_are_bound_to_protocol_and_permanent_id():
     )
     with pytest.raises(ContractViolation, match="earnings blackout"):
         replace(candidate, sessions_before_earnings=2).validate_against(protocol, strategy)
-    with pytest.raises(ContractViolation, match="future fact"):
+    with pytest.raises(ContractViolation, match="protocol cutoff"):
         replace(
             candidate,
-            facts_as_of={kind: candidate.entry_session for kind in REQUIRED_SOURCE_KINDS},
-        )
+            facts_as_of={
+                kind: protocol.prospective_wall for kind in REQUIRED_SOURCE_KINDS
+            },
+        ).validate_against(protocol, strategy)
 
 
 def test_entry_geometry_rejects_1_5r_and_enforces_stop_and_hold_limits():
