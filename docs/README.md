@@ -4,8 +4,7 @@
 
 1. `VISION.md` — user-owned swing-trading scope and charter.
 2. `PLAN.md` — sole active discovery and ranking plan.
-3. `LESSONS.md` — engineering and research lessons referenced by the Vision.
-4. `../decisions.md` — active decision record.
+3. `../decisions.md` — active decision record.
 
 ## Current authority
 

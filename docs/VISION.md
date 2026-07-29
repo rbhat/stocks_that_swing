@@ -41,10 +41,6 @@ selects a mix. The sole plan is `docs/PLAN.md`.
   reward:risk bar is a prospective entry-quality constraint. The bar must not
   be met by widening stops, extending the 21-session hold, or relabeling old studies.
 - **Edge before ops.** No dashboard, no alerts, till user asks for it.
-- **Evidence discipline inherited whole** (LESSONS §5): pre-registration before any script,
-  explicit retrospective cutoffs and prospective walls, append-only decision ledger,
-  event-level judging on a wide roster, independent review before promotions, distributions
-  over lucky paths. Historical current-roster screens are never mislabeled untouched OOS.
 - **No assumed trading costs.** Rankings use gross simulated P&L. Turnover,
   order count, profit per dollar turned over, and break-even proportional cost
   are reported so the user can judge cost sensitivity without embedding a
