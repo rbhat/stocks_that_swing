@@ -21,7 +21,7 @@ selects a mix. The sole plan is `docs/PLAN.md`.
   profit, drawdown, and profit/drawdown, followed by the user's choice of
   strategies for forward paper testing. No trading cost is assumed or
   deducted. The current-roster screen is not called untouched OOS. Every
-  initial stop must risk **< 25% of entry**.
+  initial stop must risk **<= 12% of entry**.
   These are entry-time geometry bars; realized
   winners are reported as a distribution, not forced to exceed 1.5R after the fact.
 - A forward paper book whose realized gross return is compared with the
