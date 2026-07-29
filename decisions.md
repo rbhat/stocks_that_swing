@@ -3,8 +3,11 @@
 ## 2026-07-29 — Fresh swing discovery
 
 `swing-ranking-v1` discovers readable multi-timeframe swing strategies without
-preselecting strategy families, behaviors, indicators, targets, models,
-parameter ranges or a composite metric.
+a plan-selected winner, model, or composite metric. Before performance was
+read, the first bundle froze a balanced 144-member grammar: weekly/monthly
+context above or below an EMA, three daily triggers, four volatility/structure
+stops, and three risk/structure targets. This is an initial exploration grid,
+not an automatic preference or promotion rule.
 
 The study uses a chronological 60/20/20 split by XNYS session: development,
 validation, then the newest 20% as unseen study OOS. A 21-session purge
@@ -25,5 +28,9 @@ There is no performance kill, qualification gate, automatic promotion, or
 automatic winner. The user chooses the strategies and mix for forward paper
 testing.
 
-`docs/PLAN.md` is the sole active plan. No real-cache preflight or study run
-has started.
+The checked bundle selects development evidence only. Validation remains
+closed for revision selection and study OOS remains closed for its one final
+opening.
+
+`docs/PLAN.md` is the sole active plan. Source preparation is complete. No
+real-cache preflight or study run has started.

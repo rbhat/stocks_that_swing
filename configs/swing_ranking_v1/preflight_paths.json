@@ -1,0 +1,11 @@
+{
+  "corporate_actions": "corporate_actions.json",
+  "earnings_calendar": "earnings_calendar.json",
+  "exchange_calendar": "exchange_calendar.json",
+  "parquet_root": "../../cache/study_frames",
+  "roster": "../study_roster.yaml",
+  "roster_manifest": "../study_roster_manifest.json",
+  "security_master": "security_master.json",
+  "source_manifest": "source_manifest.json",
+  "symbol_history": "symbol_history.json"
+}

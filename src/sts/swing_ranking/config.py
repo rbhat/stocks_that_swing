@@ -17,9 +17,9 @@ from sts.swing_ranking.contracts import (
     DiscoveryProtocol,
     EvaluationSplit,
     GeometryProgram,
-    SplitWindow,
     SourceFact,
     SourceLimitation,
+    SplitWindow,
     StrategyRevision,
 )
 from sts.swing_ranking.geometry import GeometrySpec, PriceFormula
@@ -389,6 +389,17 @@ def load_study_bundle(path: Path) -> ConfiguredStudy:
         definition={
             "program_identities": program_ids,
             "geometry_spec_identities": geometry_ids,
+            "members": tuple(
+                {
+                    "program_identity": program_identity,
+                    "geometry_spec_identity": geometry_identity,
+                }
+                for program_identity, geometry_identity in zip(
+                    program_ids,
+                    geometry_ids,
+                    strict=True,
+                )
+            ),
         },
     )
     source_facts = tuple(

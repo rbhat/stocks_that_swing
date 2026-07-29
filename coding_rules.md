@@ -16,3 +16,6 @@
 - Real-cache preflight fails closed on any missing identity, coverage, inventory, or source hash.
 - Rehash parquet inputs at evaluation time; preflight metadata cannot mask a changed file.
 - Keep synthetic artifacts outside every `runs/` path and keep dry-run separate from execute.
+- Archive each fetched source response before normalization; resume from raw files and fail on ambiguous mappings.
+- Model scheduled events as known/superseded validity intervals; later snapshots never rewrite earlier knowledge.
+- Exclude mutable inventory files from the content set whose identity they record.

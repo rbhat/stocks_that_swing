@@ -308,6 +308,37 @@ class ResolvedInputs:
         return identity_hash(_RESOLVED_INPUT_DOMAIN, self)
 
 
+def parquet_inventory_identity(parquets: Sequence[ResolvedParquet]) -> str:
+    """Return the locked permanent-ID inventory identity used by preflight."""
+    values = tuple(parquets)
+    if not values or not all(isinstance(item, ResolvedParquet) for item in values):
+        _fail("parquet inventory identity requires resolved parquet metadata")
+    return identity_hash(
+        _DATA_HASH_DOMAIN,
+        tuple(sorted(values, key=lambda item: item.permanent_id)),
+    )
+
+
+def security_identity_inputs_hash(
+    security_master_sha256: str,
+    symbol_history_sha256: str,
+) -> str:
+    """Bind the master and history files into one source-fact identity."""
+    return identity_hash(
+        _SECURITY_IDENTITY_DOMAIN,
+        {
+            "security_master_sha256": _sha256(
+                security_master_sha256,
+                "security_master_sha256",
+            ),
+            "symbol_history_sha256": _sha256(
+                symbol_history_sha256,
+                "symbol_history_sha256",
+            ),
+        },
+    )
+
+
 def _roster_symbols(path: Path) -> tuple[str, ...]:
     roster = _read_yaml(path, "roster")
     symbols = _items(roster.get("symbols"), "roster symbols")
@@ -600,16 +631,10 @@ def resolve_inputs(protocol: DiscoveryProtocol, paths: PreflightPaths) -> Resolv
     earnings_events = _resolve_earnings_events(earnings, resolved, protocol)
     exchange = _read_json(paths.exchange_calendar, "exchange calendar")
     _validate_exchange_calendar(exchange, protocol)
-    inventory_hash = identity_hash(
-        _DATA_HASH_DOMAIN,
-        tuple(sorted(parquets, key=lambda item: item.permanent_id)),
-    )
-    security_identity_hash = identity_hash(
-        _SECURITY_IDENTITY_DOMAIN,
-        {
-            "security_master_sha256": security_master_sha,
-            "symbol_history_sha256": symbol_history_sha,
-        },
+    inventory_hash = parquet_inventory_identity(parquets)
+    security_identity_hash = security_identity_inputs_hash(
+        security_master_sha,
+        symbol_history_sha,
     )
     actual_hashes = {
         "security_master": security_identity_hash,
@@ -640,5 +665,7 @@ __all__ = [
     "ResolvedInputs",
     "ResolvedParquet",
     "ResolvedSecurity",
+    "parquet_inventory_identity",
     "resolve_inputs",
+    "security_identity_inputs_hash",
 ]

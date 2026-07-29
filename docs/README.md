@@ -10,16 +10,17 @@
 ## Current authority
 
 Planning is active for open discovery within the Vision's explicit charter.
-No strategy family, behavior, indicator, target method, model, parameter
-range, or composite weighting is preselected. The chronological 60/20/20
-development/validation/OOS split is selected.
+The plan did not preselect a strategy family, behavior, indicator, target
+method, model, parameter range, or composite weighting. The first
+performance-blind candidate grammar and chronological 60/20/20
+development/validation/OOS split are now frozen in the checked bundle.
 
 The isolated `sts.swing_ranking` implementation includes strict configuration,
 causal daily/weekly/monthly candidates, declared entry geometry, the
 Decimal-only zero-cost event simulator, metrics, independent leaderboards,
 fail-closed preflight, and atomic artifacts. See `RUN_REFERENCE.md`.
 
-No real-cache preflight or study run has started. The split contract,
-candidate grammar, and study bundle are the next implementation step, and the
-local source inventory must satisfy preflight. Rankings, user selection, and
+No real-cache preflight or study run has started. The local source inventory,
+permanent IDs, earnings inputs, split contract, and development bundle are
+prepared for the guarded read-only preflight. Rankings, user selection, and
 forward paper testing remain incomplete. No live-money trading is authorized.

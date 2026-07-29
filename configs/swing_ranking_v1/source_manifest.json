@@ -1,0 +1,47 @@
+{
+  "schema_version": "swing-ranking-v1.source-manifest.v1",
+  "sources": {
+    "corporate_actions": {
+      "adjustment_basis": "split_and_dividend_adjusted_total_return",
+      "as_of": "2026-07-09",
+      "content_sha256": "4e966ba1d9a3c05a9ead17356dcd9e27d8cfbafea57ddb5ce609ff2230d804e6",
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28"
+    },
+    "current_roster": {
+      "adjustment_basis": "split_and_dividend_adjusted_total_return",
+      "as_of": "2026-07-09",
+      "content_sha256": "9ad23e9847f746be6f19bbe3157f46e2a29c4ee44cd3912005649de07f45971e",
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28"
+    },
+    "daily_market_data": {
+      "adjustment_basis": "split_and_dividend_adjusted_total_return",
+      "as_of": "2026-07-09",
+      "content_sha256": "ccf5e0c4f38d6b4a5ddd21437e9c2799f5352663e368f55aa5095fee8c44d962",
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28"
+    },
+    "earnings_calendar": {
+      "adjustment_basis": "split_and_dividend_adjusted_total_return",
+      "as_of": "2026-07-09",
+      "content_sha256": "f64d6635a25143e5472a538fb76e5261306c3f4b323c002afb80056af1752f83",
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28"
+    },
+    "exchange_calendar": {
+      "adjustment_basis": "split_and_dividend_adjusted_total_return",
+      "as_of": "2026-07-09",
+      "content_sha256": "e2da033d1f714b6481848c7989cdb6af26ccd2a1f57df7c1666b1983ab398f32",
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28"
+    },
+    "security_master": {
+      "adjustment_basis": "split_and_dividend_adjusted_total_return",
+      "as_of": "2026-07-09",
+      "content_sha256": "f30571a7ac59aae80ebd98f75a022f7f24cf77e8737d959802133792ffb21e4a",
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28"
+    }
+  }
+}

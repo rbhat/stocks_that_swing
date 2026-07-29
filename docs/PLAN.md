@@ -1,7 +1,8 @@
 # Swing Strategy Discovery and Ranking Plan
 
 - **Study:** `swing-ranking-v1`
-- **Status:** fresh-study input and split derivation; no run started
+- **Status:** source identities, split, and development bundle frozen; no
+  preflight or run started
 - **Authority:** `docs/VISION.md` defines the scope; this is the sole active
   execution plan
 
@@ -178,6 +179,6 @@ live money are outside scope unless the user explicitly asks.
 
 ## Next step
 
-Add the split contract, derive the candidate grammar and study bundle, and
-complete the missing real-cache identity and earnings inputs. Then run the
-guarded read-only preflight and stop for review before execution.
+Review the frozen source identities, split, and development bundle. On user
+approval, run the guarded read-only real-cache preflight and stop again before
+execution.

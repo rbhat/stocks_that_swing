@@ -1,0 +1,1262 @@
+{
+  "adjustment_basis": "split_and_dividend_adjusted_total_return",
+  "adjustment_vintage": "2026-07-09",
+  "coverage": [
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5N8V8"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5N9M6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NCQ5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5ND38"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5ND74"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NF24"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NFD2"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NGJ4"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NJG1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NKC2"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NMM7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NN36"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NN54"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NNL6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NPQ6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NRY3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NSB6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NSK6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5NZM8"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5P034"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5P0V3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5P0Y0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5P1K3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5P285"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5P374"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5P3W6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5P4H1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5P6Q6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5P7Q4"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5PHZ2"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5PJ06"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5PL01"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5PQL7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5PR99"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5PTM0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5PVD5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5PVM5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5PX50"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5PXL2"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5PYJ3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5Q1H6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5Q6V9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5Q7Q3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5Q9M3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QBD8"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QCP3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QFF7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QG38"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QGT0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QHF3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QL46"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QM08"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QN88"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QNR7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QRB5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QRL4"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QSK3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QVG1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QVT7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QXJ4"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QXV0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QZ45"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5QZZ1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5R1F7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5R3F3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5R3M5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5R3N4"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5R6S2"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5RC36"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5RHP1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5RKR2"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5RLH1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5RNH7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5RTS2"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5RY83"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5S6N6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5SCD4"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5SF65"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5STN6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5T5C9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5TH79"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5TKX3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5TRL1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5TZ33"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5TZJ6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5TZM2"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5V135"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5V554"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5VG05"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5VRS1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5WRX4"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5XFN0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5XH92"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5XRL6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S5ZB93"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S61J73"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S61NK9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S63L94"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S63VG4"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S65PV8"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S65YK1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S67826"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S67KF5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S67N14"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S67ZC5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S6B1L5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S6CPH6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S6HC62"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S6KBQ8"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S6KCT3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S6PX49"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S6Q5D9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S6T7Q8"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S6Y1X7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S6ZGL6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S723L9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S72SM3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S72ZG4"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S77BL6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S7CRG1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S7FTC8"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S7GXB9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S7H949"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S7J2H8"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S7MTB1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S7MY75"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S7PC34"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S7Q271"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S7QT63"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S7SBP9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S7T223"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S7W5T3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S7YHX0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S81418"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S82KF6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S86547"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S89N72"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S8L5H6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S8M692"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S8N8J6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S8S1L3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S8SWQ0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S8X7P0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S8ZT61"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S90346"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S97MM7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S991Z7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S9B362"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S9B9J5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S9BM06"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S9CFC7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S9GN63"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S9GX43"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S9HZ74"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S9KRQ7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S9TL45"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001S9TWV1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SB10S0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SB1GG8"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SB2HG5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SB5DZ0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SB6KF5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SBJMT2"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SC2D27"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SC5SP6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SCF1B9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SCG0R3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SCP8D1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SCTQY4"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SCXK90"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SD3DY9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SD9DW5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SDD8F0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SDLP09"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SF2288"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SHC7K8"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SJ8KV8"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SJZ2V8"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SK6096"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SKBNS9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SKZG99"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SL3ZH1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SLSXK5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SM0K30"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SM1DK6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SM32G3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SP50B3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SP8VM0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SPHYW3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SPT759"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SQKGD7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001SR7MB9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001T048Z5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001T3TDG2"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001T51KQ0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001T5BM30"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001T5VGH6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001T71BP7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001T8NTY2"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001TX0CB4"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001V18TB6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG001Y2XS16"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG0025Y4RZ3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG002PHSZN7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG002R1CW36"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG003NJHZW5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG003PS7JW0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG0056JW5H5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG005D7QCK1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG0068KVVC7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG006HFPX86"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG006MDLXZ9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG006Q0HZT0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG007DHGNK2"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG009S39JY5"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG009S3NB21"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00B6BFX96"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00BLVZ237"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00BLYKRZ7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00BN961H3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00BN96931"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00BN969D0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00DW3SZT0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00GBVBK60"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00GCTWF71"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00H433CS1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00JHNJX06"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00JHNKKR3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00KHY5SY8"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00KXRCDQ9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00LNJRQ18"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00RP5HZM1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00SSQFPR9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00TDKHWK6"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00YTS96H1"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00Z6DX607"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00ZGF7799"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG00ZNLTFL2"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG011386VG3"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG0113JGQG9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG011ZTRJ49"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG013G17W77"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG014KFRPJ9"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG01BFR8YW0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG01H0DF6H4"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG01J1GY084"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG01JZ8VLC7"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG01KR6BS89"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG01PSW2WR0"
+    },
+    {
+      "coverage_end_exclusive": "2026-07-10",
+      "coverage_start": "2025-03-28",
+      "permanent_id": "BBG01R914M77"
+    }
+  ],
+  "schema_version": "swing-ranking-v1.corporate-actions.v1",
+  "source": {
+    "method": "auto_adjust=True; actions embedded in OHLC history",
+    "provider": "Yahoo adjusted daily history",
+    "roster_manifest_sha256": "8f93902476055534bcca38085b2b1e45a068e24b74ab3cfbe7594b1b3d38ddc9"
+  }
+}

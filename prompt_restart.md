@@ -13,8 +13,9 @@ strict configuration, causal candidate generation, declared geometry, the
 zero-cost event simulator, metrics, independent rankings, fail-closed
 preflight, and atomic artifacts. All synthetic and repository tests pass.
 
-No real-cache preflight or study run has started. Add the split contract,
-derive the candidate grammar/study bundle, and resolve the documented cache
-blockers before running the guarded preflight. Historical earnings come from
-archived Investing.com custom-date calendar queries; upcoming schedules use
-append-only daily snapshots. Pause again before `--execute`.
+The split, permanent IDs, earnings inputs, source facts, and 144-member
+development bundle are frozen under `configs/swing_ranking_v1/`. Historical
+earnings come from archived Investing.com custom-date calendar queries;
+upcoming schedules use append-only daily snapshots. No real-cache preflight or
+study run has started. Review the bundle before the guarded dry-run and pause
+again before `--execute`.

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import itertools
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from decimal import Decimal
@@ -350,7 +351,7 @@ class EvaluationSplit:
             raise ContractViolation("split windows must span the evaluation range")
         if any(
             left.end_exclusive != right.start
-            for left, right in zip(windows, windows[1:])
+            for left, right in itertools.pairwise(windows)
         ):
             raise ContractViolation("split windows must be contiguous")
         if sum(window.session_count for window in windows) != self.session_count:
