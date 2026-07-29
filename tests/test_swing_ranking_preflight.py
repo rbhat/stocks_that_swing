@@ -147,6 +147,7 @@ def cache_inputs(tmp_path: Path) -> tuple[DiscoveryProtocol, PreflightPaths]:
                     "permanent_id": "id-aaa",
                     "earnings_session": CUTOFF.isoformat(),
                     "known_session": START.isoformat(),
+                    "superseded_session": None,
                 }
             ],
         },

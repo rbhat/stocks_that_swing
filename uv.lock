@@ -765,6 +765,7 @@ name = "sts"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "curl-cffi" },
     { name = "exchange-calendars" },
     { name = "numpy" },
     { name = "pandas" },
@@ -785,6 +786,7 @@ ml = [
 
 [package.metadata]
 requires-dist = [
+    { name = "curl-cffi", specifier = ">=0.10" },
     { name = "exchange-calendars", specifier = ">=4.5" },
     { name = "lightgbm", marker = "extra == 'ml'", specifier = ">=4.6,<5" },
     { name = "numpy", specifier = ">=1.26" },

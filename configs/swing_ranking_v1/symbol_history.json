@@ -1,0 +1,1511 @@
+{
+  "history": [
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SCTQY4",
+      "start": "1999-11-18",
+      "symbol": "A"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5N8V8",
+      "start": "1980-12-12",
+      "symbol": "AAPL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG0025Y4RZ3",
+      "start": "2013-01-02",
+      "symbol": "ABBV"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001Y2XS16",
+      "start": "2020-12-10",
+      "symbol": "ABNB"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5N9M6",
+      "start": "1980-03-17",
+      "symbol": "ABT"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S9HZ74",
+      "start": "1995-09-14",
+      "symbol": "ACGL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SCXK90",
+      "start": "2001-07-19",
+      "symbol": "ACN"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NCQ5",
+      "start": "1986-08-13",
+      "symbol": "ADBE"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5ND38",
+      "start": "1980-03-17",
+      "symbol": "ADI"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5ND74",
+      "start": "1980-03-17",
+      "symbol": "ADM"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S82KF6",
+      "start": "1980-03-17",
+      "symbol": "ADP"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5SCD4",
+      "start": "1985-06-28",
+      "symbol": "ADSK"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NF24",
+      "start": "1998-01-02",
+      "symbol": "AEE"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NFD2",
+      "start": "2025-03-28",
+      "symbol": "AEP"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S6B1L5",
+      "start": "1991-06-26",
+      "symbol": "AES"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NGJ4",
+      "start": "1980-03-17",
+      "symbol": "AFL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NJG1",
+      "start": "1973-01-02",
+      "symbol": "AIG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SD9DW5",
+      "start": "2004-02-05",
+      "symbol": "AIZ"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NKC2",
+      "start": "1984-06-20",
+      "symbol": "AJG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S7YHX0",
+      "start": "1999-10-29",
+      "symbol": "AKAM"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00TDKHWK6",
+      "start": "2024-03-20",
+      "symbol": "ALAB"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S7SBP9",
+      "start": "1994-02-22",
+      "symbol": "ALB"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SCF1B9",
+      "start": "2001-01-30",
+      "symbol": "ALGN"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S9BM06",
+      "start": "1993-06-03",
+      "symbol": "ALL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG003PS7JW0",
+      "start": "2013-11-18",
+      "symbol": "ALLE"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S7FTC8",
+      "start": "2004-06-01",
+      "symbol": "ALNY"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NMM7",
+      "start": "1980-03-17",
+      "symbol": "AMAT"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00LNJRQ18",
+      "start": "2012-05-15",
+      "symbol": "AMCR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NN36",
+      "start": "1980-03-17",
+      "symbol": "AMD"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NN54",
+      "start": "1984-07-19",
+      "symbol": "AME"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NNL6",
+      "start": "1983-06-17",
+      "symbol": "AMGN"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SK6096",
+      "start": "2005-09-15",
+      "symbol": "AMP"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NPQ6",
+      "start": "1998-02-27",
+      "symbol": "AMT"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5PQL7",
+      "start": "1997-05-15",
+      "symbol": "AMZN"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001T51KQ0",
+      "start": "2014-06-06",
+      "symbol": "ANET"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00SSQFPR9",
+      "start": "1980-06-02",
+      "symbol": "AON"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NRY3",
+      "start": "1983-09-30",
+      "symbol": "AOS"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00YTS96H1",
+      "start": "1979-05-15",
+      "symbol": "APA"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NSB6",
+      "start": "1980-03-17",
+      "symbol": "APD"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NSK6",
+      "start": "1991-11-08",
+      "symbol": "APH"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00ZNLTFL2",
+      "start": "2011-03-30",
+      "symbol": "APO"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG006HFPX86",
+      "start": "2021-04-15",
+      "symbol": "APP"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG01R914M77",
+      "start": "2011-11-17",
+      "symbol": "APTV"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S6CPH6",
+      "start": "1997-05-28",
+      "symbol": "ARE"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG0068KVVC7",
+      "start": "2014-05-02",
+      "symbol": "ARES"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG01J1GY084",
+      "start": "2023-09-14",
+      "symbol": "ARM"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SCG0R3",
+      "start": "1995-03-15",
+      "symbol": "ASML"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5VG05",
+      "start": "1983-12-28",
+      "symbol": "ATO"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S7J2H8",
+      "start": "1994-03-11",
+      "symbol": "AVB"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00KHY5SY8",
+      "start": "2009-08-06",
+      "symbol": "AVGO"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5NZM8",
+      "start": "1973-02-21",
+      "symbol": "AVY"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SPHYW3",
+      "start": "2008-04-23",
+      "symbol": "AWK"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SB2HG5",
+      "start": "2001-06-19",
+      "symbol": "AXON"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5P034",
+      "start": "1972-06-01",
+      "symbol": "AXP"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S6Q5D9",
+      "start": "1991-04-02",
+      "symbol": "AZO"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5P0V3",
+      "start": "2025-03-28",
+      "symbol": "BA"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5P0Y0",
+      "start": "1973-02-21",
+      "symbol": "BAC"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5P7Q4",
+      "start": "1973-02-21",
+      "symbol": "BALL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5P1K3",
+      "start": "1981-10-27",
+      "symbol": "BAX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5P285",
+      "start": "1985-04-18",
+      "symbol": "BBY"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5P374",
+      "start": "1973-02-21",
+      "symbol": "BDX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5P3W6",
+      "start": "1983-09-23",
+      "symbol": "BEN"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5P4H1",
+      "start": "1980-03-17",
+      "symbol": "BF-B"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG01JZ8VLC7",
+      "start": "2001-08-02",
+      "symbol": "BG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S67826",
+      "start": "1991-09-17",
+      "symbol": "BIIB"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S89N72",
+      "start": "1999-03-31",
+      "symbol": "BKNG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00GBVBK60",
+      "start": "1987-04-06",
+      "symbol": "BKR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S9CFC7",
+      "start": "2005-06-28",
+      "symbol": "BLDR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG01PSW2WR0",
+      "start": "1999-10-01",
+      "symbol": "BLK"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S8N8J6",
+      "start": "1972-06-01",
+      "symbol": "BMY"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5P6Q6",
+      "start": "1973-05-03",
+      "symbol": "BNY"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SR7MB9",
+      "start": "2007-03-22",
+      "symbol": "BR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S90346",
+      "start": "1996-05-09",
+      "symbol": "BRK-B"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5XFN0",
+      "start": "1981-02-11",
+      "symbol": "BRO"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S63L94",
+      "start": "1992-05-19",
+      "symbol": "BSX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S7H949",
+      "start": "2007-06-22",
+      "symbol": "BX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S9TWV1",
+      "start": "1997-06-18",
+      "symbol": "BXP"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S72ZG4",
+      "start": "1977-01-03",
+      "symbol": "C"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S7PC34",
+      "start": "1983-08-04",
+      "symbol": "CAH"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00RP5HZM1",
+      "start": "2020-03-19",
+      "symbol": "CARR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5PHZ2",
+      "start": "1983-10-20",
+      "symbol": "CASY"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5PJ06",
+      "start": "2025-03-28",
+      "symbol": "CAT"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S8S1L3",
+      "start": "1993-03-25",
+      "symbol": "CB"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001T71BP7",
+      "start": "2010-06-15",
+      "symbol": "CBOE"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SC2D27",
+      "start": "2004-06-10",
+      "symbol": "CBRE"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00B6BFX96",
+      "start": "1986-11-24",
+      "symbol": "CCEP"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S7W5T3",
+      "start": "1998-08-18",
+      "symbol": "CCI"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5PL01",
+      "start": "1987-07-24",
+      "symbol": "CCL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S65YK1",
+      "start": "1987-06-10",
+      "symbol": "CDNS"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001V18TB6",
+      "start": "2013-06-27",
+      "symbol": "CDW"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG014KFRPJ9",
+      "start": "2022-01-19",
+      "symbol": "CEG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SJ8KV8",
+      "start": "2005-08-11",
+      "symbol": "CF"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG006Q0HZT0",
+      "start": "2014-09-24",
+      "symbol": "CFG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5PR99",
+      "start": "1980-03-17",
+      "symbol": "CHD"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SB6KF5",
+      "start": "1997-10-16",
+      "symbol": "CHRW"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001T3TDG2",
+      "start": "2010-01-05",
+      "symbol": "CHTR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00KXRCDQ9",
+      "start": "1982-03-31",
+      "symbol": "CI"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S61J73",
+      "start": "1997-02-07",
+      "symbol": "CIEN"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5PTM0",
+      "start": "1980-03-17",
+      "symbol": "CINF"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5PVM5",
+      "start": "1973-05-02",
+      "symbol": "CL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5PX50",
+      "start": "1973-02-21",
+      "symbol": "CLX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5PXL2",
+      "start": "1980-03-17",
+      "symbol": "CMCSA"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S86547",
+      "start": "2002-12-06",
+      "symbol": "CME"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SP50B3",
+      "start": "2006-01-26",
+      "symbol": "CMG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5Q9M3",
+      "start": "1973-02-21",
+      "symbol": "CMI"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5PYJ3",
+      "start": "1973-02-21",
+      "symbol": "CMS"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S6T7Q8",
+      "start": "2001-12-13",
+      "symbol": "CNC"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SB10S0",
+      "start": "2025-03-28",
+      "symbol": "CNP"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S65PV8",
+      "start": "1994-11-16",
+      "symbol": "COF"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5S6N6",
+      "start": "1987-10-02",
+      "symbol": "COHR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00ZGF7799",
+      "start": "2021-04-14",
+      "symbol": "COIN"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5Q1H6",
+      "start": "1983-01-21",
+      "symbol": "COO"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5TZM2",
+      "start": "1981-12-31",
+      "symbol": "COP"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S8X7P0",
+      "start": "1995-04-04",
+      "symbol": "COR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S9KRQ7",
+      "start": "1986-07-09",
+      "symbol": "COST"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SHC7K8",
+      "start": "2010-12-15",
+      "symbol": "CPAY"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S7MTB1",
+      "start": "1994-03-17",
+      "symbol": "CPRT"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5Q6V9",
+      "start": "1993-07-22",
+      "symbol": "CPT"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S61NK9",
+      "start": "1989-07-13",
+      "symbol": "CRH"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S7Q271",
+      "start": "2000-06-23",
+      "symbol": "CRL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SDLP09",
+      "start": "2004-06-23",
+      "symbol": "CRM"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00BLYKRZ7",
+      "start": "2019-06-12",
+      "symbol": "CRWD"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG011ZTRJ49",
+      "start": "2025-03-28",
+      "symbol": "CRWV"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S6HC62",
+      "start": "1990-02-16",
+      "symbol": "CSCO"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SD3DY9",
+      "start": "1998-07-01",
+      "symbol": "CSGP"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5Q7Q3",
+      "start": "1980-11-03",
+      "symbol": "CSX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S7CRG1",
+      "start": "1983-08-19",
+      "symbol": "CTAS"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5STN6",
+      "start": "1998-06-19",
+      "symbol": "CTSH"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00BN969D0",
+      "start": "2019-05-24",
+      "symbol": "CTVA"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00GCTWF71",
+      "start": "2017-04-28",
+      "symbol": "CVNA"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QBD8",
+      "start": "1973-02-21",
+      "symbol": "CVS"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S67ZC5",
+      "start": "2025-03-28",
+      "symbol": "CVX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QCP3",
+      "start": "1980-03-17",
+      "symbol": "D"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SPT759",
+      "start": "2007-05-03",
+      "symbol": "DAL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG005D7QCK1",
+      "start": "2020-12-09",
+      "symbol": "DASH"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00BN961H3",
+      "start": "1972-06-01",
+      "symbol": "DD"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG003NJHZW5",
+      "start": "2019-09-19",
+      "symbol": "DDOG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QFF7",
+      "start": "1972-06-01",
+      "symbol": "DE"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S7GXB9",
+      "start": "1993-10-15",
+      "symbol": "DECK"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00DW3SZT0",
+      "start": "2016-08-17",
+      "symbol": "DELL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001T5BM30",
+      "start": "2009-11-13",
+      "symbol": "DG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S9GX43",
+      "start": "1996-12-17",
+      "symbol": "DGX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S8M692",
+      "start": "1992-06-05",
+      "symbol": "DHI"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QGT0",
+      "start": "1978-12-29",
+      "symbol": "DHR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QHF3",
+      "start": "2025-03-28",
+      "symbol": "DIS"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SM0K30",
+      "start": "2004-10-29",
+      "symbol": "DLR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S6ZGL6",
+      "start": "1995-03-07",
+      "symbol": "DLTR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5RTS2",
+      "start": "1985-05-23",
+      "symbol": "DOC"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QL46",
+      "start": "1980-03-17",
+      "symbol": "DOV"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00BN96931",
+      "start": "2019-03-20",
+      "symbol": "DOW"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SL3ZH1",
+      "start": "2004-07-13",
+      "symbol": "DPZ"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QM08",
+      "start": "1995-05-09",
+      "symbol": "DRI"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QN88",
+      "start": "2025-03-28",
+      "symbol": "DTE"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QNR7",
+      "start": "1980-03-17",
+      "symbol": "DUK"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SB5DZ0",
+      "start": "1995-10-31",
+      "symbol": "DVA"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S63VG4",
+      "start": "1985-07-22",
+      "symbol": "DVN"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SKZG99",
+      "start": "2005-04-14",
+      "symbol": "DXCM"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5T5C9",
+      "start": "1989-09-20",
+      "symbol": "EA"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S9B9J5",
+      "start": "1998-09-24",
+      "symbol": "EBAY"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001T048Z5",
+      "start": "2008-01-02",
+      "symbol": "ECHO"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QRB5",
+      "start": "1973-02-21",
+      "symbol": "ECL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QRL4",
+      "start": "2025-03-28",
+      "symbol": "ED"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QSK3",
+      "start": "1980-03-17",
+      "symbol": "EFX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S7QT63",
+      "start": "1995-10-03",
+      "symbol": "EG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S7MY75",
+      "start": "1973-05-03",
+      "symbol": "EIX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S8L5H6",
+      "start": "1995-11-17",
+      "symbol": "EL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S6KBQ8",
+      "start": "2001-10-30",
+      "symbol": "ELV"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QVG1",
+      "start": "1995-01-10",
+      "symbol": "EME"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QVT7",
+      "start": "1972-06-01",
+      "symbol": "EMR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5ZB93",
+      "start": "1989-10-04",
+      "symbol": "EOG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SKBNS9",
+      "start": "2000-08-11",
+      "symbol": "EQIX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S723L9",
+      "start": "1993-08-12",
+      "symbol": "EQR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QXJ4",
+      "start": "1980-03-17",
+      "symbol": "EQT"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QXV0",
+      "start": "1995-10-02",
+      "symbol": "ERIE"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5TRL1",
+      "start": "1973-02-21",
+      "symbol": "ES"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S81418",
+      "start": "1994-06-07",
+      "symbol": "ESS"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QZ45",
+      "start": "1972-06-01",
+      "symbol": "ETN"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S67KF5",
+      "start": "1972-06-01",
+      "symbol": "ETR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00H433CS1",
+      "start": "1973-02-21",
+      "symbol": "EVRG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SF2288",
+      "start": "2000-03-27",
+      "symbol": "EW"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SBJMT2",
+      "start": "1973-05-02",
+      "symbol": "EXC"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00Z6DX607",
+      "start": "2021-02-10",
+      "symbol": "EXE"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QZZ1",
+      "start": "1984-09-26",
+      "symbol": "EXPD"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SP8VM0",
+      "start": "2005-07-21",
+      "symbol": "EXPE"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SLSXK5",
+      "start": "2004-08-16",
+      "symbol": "EXR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5TZ33",
+      "start": "1972-06-01",
+      "symbol": "F"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG002PHSZN7",
+      "start": "2012-10-12",
+      "symbol": "FANG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5R1F7",
+      "start": "1987-08-20",
+      "symbol": "FAST"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5R3F3",
+      "start": "1995-07-10",
+      "symbol": "FCX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5XRL6",
+      "start": "1996-06-28",
+      "symbol": "FDS"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5R3M5",
+      "start": "1978-04-12",
+      "symbol": "FDX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5R3N4",
+      "start": "1997-11-10",
+      "symbol": "FE"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG01H0DF6H4",
+      "start": "2012-08-13",
+      "symbol": "FER"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SCP8D1",
+      "start": "1999-06-04",
+      "symbol": "FFIV"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S8ZT61",
+      "start": "1987-07-22",
+      "symbol": "FICO"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S8SWQ0",
+      "start": "2001-06-20",
+      "symbol": "FIS"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5R6S2",
+      "start": "1980-03-17",
+      "symbol": "FITB"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SB1GG8",
+      "start": "1997-06-27",
+      "symbol": "FIX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SC5SP6",
+      "start": "1994-03-18",
+      "symbol": "FLEX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00JHNKKR3",
+      "start": "2019-03-13",
+      "symbol": "FOX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00JHNJX06",
+      "start": "2019-03-12",
+      "symbol": "FOXA"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5RC36",
+      "start": "1973-05-03",
+      "symbol": "FRT"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S991Z7",
+      "start": "2006-11-17",
+      "symbol": "FSLR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S77BL6",
+      "start": "2009-11-18",
+      "symbol": "FTNT"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG00BLVZ237",
+      "start": "2016-07-05",
+      "symbol": "FTV"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5RHP1",
+      "start": "2025-03-28",
+      "symbol": "GD"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG006MDLXZ9",
+      "start": "2015-03-31",
+      "symbol": "GDDY"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5PVD5",
+      "start": "2025-03-28",
+      "symbol": "GE"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG01BFR8YW0",
+      "start": "2022-12-15",
+      "symbol": "GEHC"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5QG38",
+      "start": "1989-06-23",
+      "symbol": "GEN"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG013G17W77",
+      "start": "2024-03-27",
+      "symbol": "GEV"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S6Y1X7",
+      "start": "1992-01-22",
+      "symbol": "GILD"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5RKR2",
+      "start": "1980-03-17",
+      "symbol": "GIS"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5WRX4",
+      "start": "1980-10-01",
+      "symbol": "GL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5RLH1",
+      "start": "1981-12-31",
+      "symbol": "GLW"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SM1DK6",
+      "start": "2010-11-18",
+      "symbol": "GM"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001T5VGH6",
+      "start": "2010-02-11",
+      "symbol": "GNRC"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG009S3NB21",
+      "start": "2004-08-19",
+      "symbol": "GOOG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG009S39JY5",
+      "start": "2004-08-19",
+      "symbol": "GOOGL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5RNH7",
+      "start": "1980-03-17",
+      "symbol": "GPC"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001T8NTY2",
+      "start": "2011-03-10",
+      "symbol": "HCA"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5RY83",
+      "start": "1980-03-17",
+      "symbol": "HST"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S67N14",
+      "start": "1989-06-02",
+      "symbol": "IEX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5SF65",
+      "start": "1980-03-17",
+      "symbol": "INTC"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG002R1CW36",
+      "start": "2017-05-12",
+      "symbol": "IR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SM32G3",
+      "start": "2007-08-10",
+      "symbol": "MELI"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5TKX3",
+      "start": "1980-03-17",
+      "symbol": "NEM"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SDD8F0",
+      "start": "2003-12-02",
+      "symbol": "NRG"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5TZJ6",
+      "start": "1999-01-22",
+      "symbol": "NVDA"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5V135",
+      "start": "1983-08-26",
+      "symbol": "PAYX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5V554",
+      "start": "1980-03-17",
+      "symbol": "PH"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S97MM7",
+      "start": "2001-12-13",
+      "symbol": "PRU"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5TH79",
+      "start": "1980-11-18",
+      "symbol": "PSA"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S9GN63",
+      "start": "1999-03-10",
+      "symbol": "QQQ"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S6PX49",
+      "start": "1991-04-02",
+      "symbol": "REGN"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S9TL45",
+      "start": "1997-06-12",
+      "symbol": "RL"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S9B362",
+      "start": "1992-02-13",
+      "symbol": "ROP"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5VRS1",
+      "start": "1985-08-08",
+      "symbol": "ROST"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG007DHGNK2",
+      "start": "2020-09-16",
+      "symbol": "SNOW"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S72SM3",
+      "start": "1993-01-29",
+      "symbol": "SPY"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG0113JGQG9",
+      "start": "2002-12-11",
+      "symbol": "STX"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG01KR6BS89",
+      "start": "2020-01-10",
+      "symbol": "TE"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SQKGD7",
+      "start": "2010-06-29",
+      "symbol": "TSLA"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG0056JW5H5",
+      "start": "2020-09-18",
+      "symbol": "U"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S6KCT3",
+      "start": "1980-03-17",
+      "symbol": "UDR"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001TX0CB4",
+      "start": "2013-10-16",
+      "symbol": "VEEV"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG011386VG3",
+      "start": "2005-07-08",
+      "symbol": "WBD"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S5XH92",
+      "start": "1972-08-25",
+      "symbol": "WMT"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001SJZ2V8",
+      "start": "2002-10-25",
+      "symbol": "WYNN"
+    },
+    {
+      "end_exclusive": "2026-07-10",
+      "permanent_id": "BBG001S7T223",
+      "start": "1998-12-22",
+      "symbol": "XLF"
+    }
+  ],
+  "namespace": "yahoo_current_roster_adjusted_history",
+  "schema_version": "swing-ranking-v1.symbol-history.v1",
+  "source": {
+    "manifest": "configs/study_roster_manifest.json",
+    "openfigi_raw_sha256": "592d0c00ae26c2225bf6530cc7d9811156e4ff48424e017fd66e3913d396e18e",
+    "provider": "local validated parquet cache"
+  }
+}

@@ -1,4 +1,4 @@
-as_of: '2026-07-11'
+as_of: '2026-07-29'
 source: cache/scan/constituents.json (S&P 500 + Nasdaq-100)
 eligibility:
   min_price_usd: 5

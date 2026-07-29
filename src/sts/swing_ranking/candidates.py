@@ -214,6 +214,7 @@ class ScheduledEarnings:
 
     earnings_session: dt.date
     known_session: dt.date
+    superseded_session: dt.date | None
 
     def __post_init__(self) -> None:
         if (
@@ -225,6 +226,17 @@ class ScheduledEarnings:
             raise ContractViolation("earnings sessions must be datetime.date values")
         if self.known_session > self.earnings_session:
             raise ContractViolation("earnings known_session cannot follow the event")
+        superseded = self.superseded_session
+        if superseded is not None:
+            if isinstance(superseded, dt.datetime) or not isinstance(
+                superseded,
+                dt.date,
+            ):
+                raise ContractViolation("earnings superseded_session must be a date")
+            if superseded <= self.known_session:
+                raise ContractViolation(
+                    "earnings superseded_session must follow known_session"
+                )
 
 
 def _validate_frame(frame: pd.DataFrame) -> pd.DataFrame:
@@ -461,6 +473,10 @@ def generate_candidates(
                 item.earnings_session
                 for item in earnings
                 if item.known_session <= session.date()
+                and (
+                    item.superseded_session is None
+                    or session.date() < item.superseded_session
+                )
                 and item.earnings_session >= entry_session
             ),
             None,

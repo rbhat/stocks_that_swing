@@ -50,6 +50,22 @@ def test_fresh_scratch_symbols_uses_last_completed_session(tmp_path, monkeypatch
     assert "STALE" not in fresh
 
 
+def test_cutoff_marks_frozen_frames_fresh_and_truncates_writes(
+    tmp_path,
+    monkeypatch,
+):
+    store = StudyStore(root=tmp_path)
+    monkeypatch.setattr(fsr, "_store", lambda: store)
+    frame = _ohlcv()
+    cutoff = frame.index[-10].date()
+
+    fsr._write_frame("AAA", frame, cutoff=cutoff)
+
+    frozen = store.load("AAA")
+    assert frozen.index[-1].date() == cutoff
+    assert fsr._fresh_scratch_symbols(cutoff) == {"AAA"}
+
+
 def test_write_roster_artifacts_shape(tmp_path, monkeypatch):
     monkeypatch.setattr(fsr, "STUDY_FRAMES_DIR", tmp_path)
     store = StudyStore(root=tmp_path)

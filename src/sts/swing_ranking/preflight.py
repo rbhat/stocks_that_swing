@@ -224,6 +224,7 @@ class ResolvedEarnings:
     permanent_id: str
     earnings_session: dt.date
     known_session: dt.date
+    superseded_session: dt.date | None
 
     def __post_init__(self) -> None:
         object.__setattr__(
@@ -240,6 +241,15 @@ class ResolvedEarnings:
             _fail("earnings sessions must be dates")
         if self.known_session > self.earnings_session:
             _fail("earnings known_session cannot follow the event")
+        superseded = self.superseded_session
+        if superseded is not None:
+            if isinstance(superseded, dt.datetime) or not isinstance(
+                superseded,
+                dt.date,
+            ):
+                _fail("earnings superseded_session must be a date")
+            if superseded <= self.known_session:
+                _fail("earnings superseded_session must follow known_session")
 
 
 @dataclass(frozen=True)
@@ -483,6 +493,14 @@ def _resolve_earnings_events(
             known_session=_date(
                 raw.get("known_session"),
                 "earnings event known_session",
+            ),
+            superseded_session=(
+                None
+                if raw.get("superseded_session") is None
+                else _date(
+                    raw.get("superseded_session"),
+                    "earnings event superseded_session",
+                )
             ),
         )
         if event.permanent_id not in known_ids:

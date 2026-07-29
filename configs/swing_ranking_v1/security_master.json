@@ -1,0 +1,2511 @@
+{
+  "schema_version": "swing-ranking-v1.security-master.v1",
+  "securities": [
+    {
+      "composite_figi": "BBG000B9XRY4",
+      "name": "APPLE INC",
+      "openfigi_ticker": "AAPL",
+      "permanent_id": "BBG001S5N8V8",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AAPL"
+    },
+    {
+      "composite_figi": "BBG000B9ZXB4",
+      "name": "ABBOTT LABORATORIES",
+      "openfigi_ticker": "ABT",
+      "permanent_id": "BBG001S5N9M6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ABT"
+    },
+    {
+      "composite_figi": "BBG000BB5006",
+      "name": "ADOBE INC",
+      "openfigi_ticker": "ADBE",
+      "permanent_id": "BBG001S5NCQ5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ADBE"
+    },
+    {
+      "composite_figi": "BBG000BB6G37",
+      "name": "ANALOG DEVICES INC",
+      "openfigi_ticker": "ADI",
+      "permanent_id": "BBG001S5ND38",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ADI"
+    },
+    {
+      "composite_figi": "BBG000BB6WG8",
+      "name": "ARCHER-DANIELS-MIDLAND CO",
+      "openfigi_ticker": "ADM",
+      "permanent_id": "BBG001S5ND74",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ADM"
+    },
+    {
+      "composite_figi": "BBG000B9X8C0",
+      "name": "AMEREN CORPORATION",
+      "openfigi_ticker": "AEE",
+      "permanent_id": "BBG001S5NF24",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AEE"
+    },
+    {
+      "composite_figi": "BBG000BB9KF2",
+      "name": "AMERICAN ELECTRIC POWER",
+      "openfigi_ticker": "AEP",
+      "permanent_id": "BBG001S5NFD2",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AEP"
+    },
+    {
+      "composite_figi": "BBG000BBBNC6",
+      "name": "AFLAC INC",
+      "openfigi_ticker": "AFL",
+      "permanent_id": "BBG001S5NGJ4",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AFL"
+    },
+    {
+      "composite_figi": "BBG000BBDZG3",
+      "name": "AMERICAN INTERNATIONAL GROUP",
+      "openfigi_ticker": "AIG",
+      "permanent_id": "BBG001S5NJG1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AIG"
+    },
+    {
+      "composite_figi": "BBG000BBHXQ3",
+      "name": "ARTHUR J GALLAGHER & CO",
+      "openfigi_ticker": "AJG",
+      "permanent_id": "BBG001S5NKC2",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AJG"
+    },
+    {
+      "composite_figi": "BBG000BBPFB9",
+      "name": "APPLIED MATERIALS INC",
+      "openfigi_ticker": "AMAT",
+      "permanent_id": "BBG001S5NMM7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AMAT"
+    },
+    {
+      "composite_figi": "BBG000BBQCY0",
+      "name": "ADVANCED MICRO DEVICES",
+      "openfigi_ticker": "AMD",
+      "permanent_id": "BBG001S5NN36",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AMD"
+    },
+    {
+      "composite_figi": "BBG000B9XG87",
+      "name": "AMETEK INC",
+      "openfigi_ticker": "AME",
+      "permanent_id": "BBG001S5NN54",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AME"
+    },
+    {
+      "composite_figi": "BBG000BBS2Y0",
+      "name": "AMGEN INC",
+      "openfigi_ticker": "AMGN",
+      "permanent_id": "BBG001S5NNL6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AMGN"
+    },
+    {
+      "composite_figi": "BBG000B9XYV2",
+      "name": "AMERICAN TOWER CORP",
+      "openfigi_ticker": "AMT",
+      "permanent_id": "BBG001S5NPQ6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "AMT"
+    },
+    {
+      "composite_figi": "BBG000BC1L02",
+      "name": "SMITH (A.O.) CORP",
+      "openfigi_ticker": "AOS",
+      "permanent_id": "BBG001S5NRY3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AOS"
+    },
+    {
+      "composite_figi": "BBG000BC4JJ4",
+      "name": "AIR PRODUCTS & CHEMICALS INC",
+      "openfigi_ticker": "APD",
+      "permanent_id": "BBG001S5NSB6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "APD"
+    },
+    {
+      "composite_figi": "BBG000B9YJ35",
+      "name": "AMPHENOL CORP-CL A",
+      "openfigi_ticker": "APH",
+      "permanent_id": "BBG001S5NSK6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "APH"
+    },
+    {
+      "composite_figi": "BBG000BCQ4P6",
+      "name": "AVERY DENNISON CORP",
+      "openfigi_ticker": "AVY",
+      "permanent_id": "BBG001S5NZM8",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AVY"
+    },
+    {
+      "composite_figi": "BBG000BCQZS4",
+      "name": "AMERICAN EXPRESS CO",
+      "openfigi_ticker": "AXP",
+      "permanent_id": "BBG001S5P034",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AXP"
+    },
+    {
+      "composite_figi": "BBG000BCSST7",
+      "name": "BOEING CO/THE",
+      "openfigi_ticker": "BA",
+      "permanent_id": "BBG001S5P0V3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BA"
+    },
+    {
+      "composite_figi": "BBG000BCTLF6",
+      "name": "BANK OF AMERICA CORP",
+      "openfigi_ticker": "BAC",
+      "permanent_id": "BBG001S5P0Y0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BAC"
+    },
+    {
+      "composite_figi": "BBG000BCVJ77",
+      "name": "BAXTER INTERNATIONAL INC",
+      "openfigi_ticker": "BAX",
+      "permanent_id": "BBG001S5P1K3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BAX"
+    },
+    {
+      "composite_figi": "BBG000BCWCG1",
+      "name": "BEST BUY CO INC",
+      "openfigi_ticker": "BBY",
+      "permanent_id": "BBG001S5P285",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BBY"
+    },
+    {
+      "composite_figi": "BBG000BCZYD3",
+      "name": "BECTON DICKINSON AND CO",
+      "openfigi_ticker": "BDX",
+      "permanent_id": "BBG001S5P374",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BDX"
+    },
+    {
+      "composite_figi": "BBG000BD0TF8",
+      "name": "FRANKLIN RESOURCES INC",
+      "openfigi_ticker": "BEN",
+      "permanent_id": "BBG001S5P3W6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BEN"
+    },
+    {
+      "composite_figi": "BBG000BD2NY8",
+      "name": "BROWN-FORMAN CORP-CLASS B",
+      "openfigi_ticker": "BF/B",
+      "permanent_id": "BBG001S5P4H1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BF-B"
+    },
+    {
+      "composite_figi": "BBG000BD8PN9",
+      "name": "BANK OF NEW YORK MELLON CORP",
+      "openfigi_ticker": "BNY",
+      "permanent_id": "BBG001S5P6Q6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BNY"
+    },
+    {
+      "composite_figi": "BBG000BDDNH5",
+      "name": "BALL CORP",
+      "openfigi_ticker": "BALL",
+      "permanent_id": "BBG001S5P7Q4",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BALL"
+    },
+    {
+      "composite_figi": "BBG000BF0672",
+      "name": "CASEY'S GENERAL STORES INC",
+      "openfigi_ticker": "CASY",
+      "permanent_id": "BBG001S5PHZ2",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CASY"
+    },
+    {
+      "composite_figi": "BBG000BF0K17",
+      "name": "CATERPILLAR INC",
+      "openfigi_ticker": "CAT",
+      "permanent_id": "BBG001S5PJ06",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CAT"
+    },
+    {
+      "composite_figi": "BBG000BF6LY3",
+      "name": "CARNIVAL CORP LTD",
+      "openfigi_ticker": "CCL",
+      "permanent_id": "BBG001S5PL01",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CCL"
+    },
+    {
+      "composite_figi": "BBG000BVPV84",
+      "name": "AMAZON.COM INC",
+      "openfigi_ticker": "AMZN",
+      "permanent_id": "BBG001S5PQL7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AMZN"
+    },
+    {
+      "composite_figi": "BBG000BFJT36",
+      "name": "CHURCH & DWIGHT CO INC",
+      "openfigi_ticker": "CHD",
+      "permanent_id": "BBG001S5PR99",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CHD"
+    },
+    {
+      "composite_figi": "BBG000BFPK65",
+      "name": "CINCINNATI FINANCIAL CORP",
+      "openfigi_ticker": "CINF",
+      "permanent_id": "BBG001S5PTM0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CINF"
+    },
+    {
+      "composite_figi": "BBG000BK6MB5",
+      "name": "GENERAL ELECTRIC",
+      "openfigi_ticker": "GE",
+      "permanent_id": "BBG001S5PVD5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GE"
+    },
+    {
+      "composite_figi": "BBG000BFQYY3",
+      "name": "COLGATE-PALMOLIVE CO",
+      "openfigi_ticker": "CL",
+      "permanent_id": "BBG001S5PVM5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CL"
+    },
+    {
+      "composite_figi": "BBG000BFS7D3",
+      "name": "CLOROX COMPANY",
+      "openfigi_ticker": "CLX",
+      "permanent_id": "BBG001S5PX50",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CLX"
+    },
+    {
+      "composite_figi": "BBG000BFT2L4",
+      "name": "COMCAST CORP-CLASS A",
+      "openfigi_ticker": "CMCSA",
+      "permanent_id": "BBG001S5PXL2",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CMCSA"
+    },
+    {
+      "composite_figi": "BBG000BFVXX0",
+      "name": "CMS ENERGY CORP",
+      "openfigi_ticker": "CMS",
+      "permanent_id": "BBG001S5PYJ3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CMS"
+    },
+    {
+      "composite_figi": "BBG000BG3445",
+      "name": "COOPER COS INC/THE",
+      "openfigi_ticker": "COO",
+      "permanent_id": "BBG001S5Q1H6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "COO"
+    },
+    {
+      "composite_figi": "BBG000BB0V03",
+      "name": "CAMDEN PROPERTY TRUST",
+      "openfigi_ticker": "CPT",
+      "permanent_id": "BBG001S5Q6V9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "CPT"
+    },
+    {
+      "composite_figi": "BBG000BGJRC8",
+      "name": "CSX CORP",
+      "openfigi_ticker": "CSX",
+      "permanent_id": "BBG001S5Q7Q3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CSX"
+    },
+    {
+      "composite_figi": "BBG000BGPTV6",
+      "name": "CUMMINS INC",
+      "openfigi_ticker": "CMI",
+      "permanent_id": "BBG001S5Q9M3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CMI"
+    },
+    {
+      "composite_figi": "BBG000BGRY34",
+      "name": "CVS HEALTH CORP",
+      "openfigi_ticker": "CVS",
+      "permanent_id": "BBG001S5QBD8",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CVS"
+    },
+    {
+      "composite_figi": "BBG000BGVW60",
+      "name": "DOMINION ENERGY INC",
+      "openfigi_ticker": "D",
+      "permanent_id": "BBG001S5QCP3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "D"
+    },
+    {
+      "composite_figi": "BBG000BH1NH9",
+      "name": "DEERE & CO",
+      "openfigi_ticker": "DE",
+      "permanent_id": "BBG001S5QFF7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DE"
+    },
+    {
+      "composite_figi": "BBG000BH2JM1",
+      "name": "GEN DIGITAL INC",
+      "openfigi_ticker": "GEN",
+      "permanent_id": "BBG001S5QG38",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GEN"
+    },
+    {
+      "composite_figi": "BBG000BH3JF8",
+      "name": "DANAHER CORP",
+      "openfigi_ticker": "DHR",
+      "permanent_id": "BBG001S5QGT0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DHR"
+    },
+    {
+      "composite_figi": "BBG000BH4R78",
+      "name": "WALT DISNEY CO/THE",
+      "openfigi_ticker": "DIS",
+      "permanent_id": "BBG001S5QHF3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DIS"
+    },
+    {
+      "composite_figi": "BBG000BHB3M6",
+      "name": "DOVER CORP",
+      "openfigi_ticker": "DOV",
+      "permanent_id": "BBG001S5QL46",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DOV"
+    },
+    {
+      "composite_figi": "BBG000BBNYF6",
+      "name": "DARDEN RESTAURANTS INC",
+      "openfigi_ticker": "DRI",
+      "permanent_id": "BBG001S5QM08",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DRI"
+    },
+    {
+      "composite_figi": "BBG000BB29X4",
+      "name": "DTE ENERGY COMPANY",
+      "openfigi_ticker": "DTE",
+      "permanent_id": "BBG001S5QN88",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DTE"
+    },
+    {
+      "composite_figi": "BBG000BHGDH5",
+      "name": "DUKE ENERGY CORP",
+      "openfigi_ticker": "DUK",
+      "permanent_id": "BBG001S5QNR7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DUK"
+    },
+    {
+      "composite_figi": "BBG000BHKYH4",
+      "name": "ECOLAB INC",
+      "openfigi_ticker": "ECL",
+      "permanent_id": "BBG001S5QRB5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ECL"
+    },
+    {
+      "composite_figi": "BBG000BHLYS1",
+      "name": "CONSOLIDATED EDISON INC",
+      "openfigi_ticker": "ED",
+      "permanent_id": "BBG001S5QRL4",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ED"
+    },
+    {
+      "composite_figi": "BBG000BHPL78",
+      "name": "EQUIFAX INC",
+      "openfigi_ticker": "EFX",
+      "permanent_id": "BBG001S5QSK3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EFX"
+    },
+    {
+      "composite_figi": "BBG000BBRPL4",
+      "name": "EMCOR GROUP INC",
+      "openfigi_ticker": "EME",
+      "permanent_id": "BBG001S5QVG1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EME"
+    },
+    {
+      "composite_figi": "BBG000BHX7N2",
+      "name": "EMERSON ELECTRIC CO",
+      "openfigi_ticker": "EMR",
+      "permanent_id": "BBG001S5QVT7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EMR"
+    },
+    {
+      "composite_figi": "BBG000BHZ5J9",
+      "name": "EQT CORP",
+      "openfigi_ticker": "EQT",
+      "permanent_id": "BBG001S5QXJ4",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EQT"
+    },
+    {
+      "composite_figi": "BBG000BBTJZ1",
+      "name": "ERIE INDEMNITY COMPANY-CL A",
+      "openfigi_ticker": "ERIE",
+      "permanent_id": "BBG001S5QXV0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ERIE"
+    },
+    {
+      "composite_figi": "BBG000BJ3PD2",
+      "name": "EATON CORP PLC",
+      "openfigi_ticker": "ETN",
+      "permanent_id": "BBG001S5QZ45",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ETN"
+    },
+    {
+      "composite_figi": "BBG000BJ5GK2",
+      "name": "EXPEDITORS INTL WASH INC",
+      "openfigi_ticker": "EXPD",
+      "permanent_id": "BBG001S5QZZ1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EXPD"
+    },
+    {
+      "composite_figi": "BBG000BJ8YN7",
+      "name": "FASTENAL CO",
+      "openfigi_ticker": "FAST",
+      "permanent_id": "BBG001S5R1F7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FAST"
+    },
+    {
+      "composite_figi": "BBG000BJDB15",
+      "name": "FREEPORT-MCMORAN INC",
+      "openfigi_ticker": "FCX",
+      "permanent_id": "BBG001S5R3F3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FCX"
+    },
+    {
+      "composite_figi": "BBG000BJF1Z8",
+      "name": "FEDEX CORP",
+      "openfigi_ticker": "FDX",
+      "permanent_id": "BBG001S5R3M5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FDX"
+    },
+    {
+      "composite_figi": "BBG000BB6M98",
+      "name": "FIRSTENERGY CORP",
+      "openfigi_ticker": "FE",
+      "permanent_id": "BBG001S5R3N4",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FE"
+    },
+    {
+      "composite_figi": "BBG000BJL3N0",
+      "name": "FIFTH THIRD BANCORP",
+      "openfigi_ticker": "FITB",
+      "permanent_id": "BBG001S5R6S2",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FITB"
+    },
+    {
+      "composite_figi": "BBG000BJVN28",
+      "name": "FEDERAL REALTY INVS TRUST",
+      "openfigi_ticker": "FRT",
+      "permanent_id": "BBG001S5RC36",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "FRT"
+    },
+    {
+      "composite_figi": "BBG000BK67C7",
+      "name": "GENERAL DYNAMICS CORP",
+      "openfigi_ticker": "GD",
+      "permanent_id": "BBG001S5RHP1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GD"
+    },
+    {
+      "composite_figi": "BBG000BKCFC2",
+      "name": "GENERAL MILLS INC",
+      "openfigi_ticker": "GIS",
+      "permanent_id": "BBG001S5RKR2",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GIS"
+    },
+    {
+      "composite_figi": "BBG000BKFZM4",
+      "name": "CORNING INC",
+      "openfigi_ticker": "GLW",
+      "permanent_id": "BBG001S5RLH1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GLW"
+    },
+    {
+      "composite_figi": "BBG000BKL348",
+      "name": "GENUINE PARTS CO",
+      "openfigi_ticker": "GPC",
+      "permanent_id": "BBG001S5RNH7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GPC"
+    },
+    {
+      "composite_figi": "BBG000BKYDP9",
+      "name": "HEALTHPEAK PROPERTIES INC",
+      "openfigi_ticker": "DOC",
+      "permanent_id": "BBG001S5RTS2",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "DOC"
+    },
+    {
+      "composite_figi": "BBG000BL8804",
+      "name": "HOST HOTELS & RESORTS INC",
+      "openfigi_ticker": "HST",
+      "permanent_id": "BBG001S5RY83",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "HST"
+    },
+    {
+      "composite_figi": "BBG000BLW102",
+      "name": "COHERENT CORP",
+      "openfigi_ticker": "COHR",
+      "permanent_id": "BBG001S5S6N6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "COHR"
+    },
+    {
+      "composite_figi": "BBG000BM7HL0",
+      "name": "AUTODESK INC",
+      "openfigi_ticker": "ADSK",
+      "permanent_id": "BBG001S5SCD4",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ADSK"
+    },
+    {
+      "composite_figi": "BBG000C0G1D1",
+      "name": "INTEL CORP",
+      "openfigi_ticker": "INTC",
+      "permanent_id": "BBG001S5SF65",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "INTC"
+    },
+    {
+      "composite_figi": "BBG000BBDV81",
+      "name": "COGNIZANT TECH SOLUTIONS-A",
+      "openfigi_ticker": "CTSH",
+      "permanent_id": "BBG001S5STN6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CTSH"
+    },
+    {
+      "composite_figi": "BBG000BP0KQ8",
+      "name": "ELECTRONIC ARTS INC",
+      "openfigi_ticker": "EA",
+      "permanent_id": "BBG001S5T5C9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EA"
+    },
+    {
+      "composite_figi": "BBG000BPPN67",
+      "name": "PUBLIC STORAGE",
+      "openfigi_ticker": "PSA",
+      "permanent_id": "BBG001S5TH79",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "PSA"
+    },
+    {
+      "composite_figi": "BBG000BPWXK1",
+      "name": "NEWMONT CORP",
+      "openfigi_ticker": "NEM",
+      "permanent_id": "BBG001S5TKX3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "NEM"
+    },
+    {
+      "composite_figi": "BBG000BQ87N0",
+      "name": "EVERSOURCE ENERGY",
+      "openfigi_ticker": "ES",
+      "permanent_id": "BBG001S5TRL1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ES"
+    },
+    {
+      "composite_figi": "BBG000BQPC32",
+      "name": "FORD MOTOR CO",
+      "openfigi_ticker": "F",
+      "permanent_id": "BBG001S5TZ33",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "F"
+    },
+    {
+      "composite_figi": "BBG000BBJQV0",
+      "name": "NVIDIA CORP",
+      "openfigi_ticker": "NVDA",
+      "permanent_id": "BBG001S5TZJ6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "NVDA"
+    },
+    {
+      "composite_figi": "BBG000BQQH30",
+      "name": "CONOCOPHILLIPS",
+      "openfigi_ticker": "COP",
+      "permanent_id": "BBG001S5TZM2",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "COP"
+    },
+    {
+      "composite_figi": "BBG000BQSQ38",
+      "name": "PAYCHEX INC",
+      "openfigi_ticker": "PAYX",
+      "permanent_id": "BBG001S5V135",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "PAYX"
+    },
+    {
+      "composite_figi": "BBG000BR3KL6",
+      "name": "PARKER HANNIFIN CORP",
+      "openfigi_ticker": "PH",
+      "permanent_id": "BBG001S5V554",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "PH"
+    },
+    {
+      "composite_figi": "BBG000BRNGM2",
+      "name": "ATMOS ENERGY CORP",
+      "openfigi_ticker": "ATO",
+      "permanent_id": "BBG001S5VG05",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ATO"
+    },
+    {
+      "composite_figi": "BBG000BSBZH7",
+      "name": "ROSS STORES INC",
+      "openfigi_ticker": "ROST",
+      "permanent_id": "BBG001S5VRS1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ROST"
+    },
+    {
+      "composite_figi": "BBG000BVD6X4",
+      "name": "GLOBE LIFE INC",
+      "openfigi_ticker": "GL",
+      "permanent_id": "BBG001S5WRX4",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GL"
+    },
+    {
+      "composite_figi": "BBG000BWSGF4",
+      "name": "BROWN & BROWN INC",
+      "openfigi_ticker": "BRO",
+      "permanent_id": "BBG001S5XFN0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BRO"
+    },
+    {
+      "composite_figi": "BBG000BWXBC2",
+      "name": "WALMART INC",
+      "openfigi_ticker": "WMT",
+      "permanent_id": "BBG001S5XH92",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "WMT"
+    },
+    {
+      "composite_figi": "BBG000BDJL83",
+      "name": "FACTSET RESEARCH SYSTEMS INC",
+      "openfigi_ticker": "FDS",
+      "permanent_id": "BBG001S5XRL6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FDS"
+    },
+    {
+      "composite_figi": "BBG000BZ9223",
+      "name": "EOG RESOURCES INC",
+      "openfigi_ticker": "EOG",
+      "permanent_id": "BBG001S5ZB93",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EOG"
+    },
+    {
+      "composite_figi": "BBG000BP1152",
+      "name": "CIENA CORP",
+      "openfigi_ticker": "CIEN",
+      "permanent_id": "BBG001S61J73",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CIEN"
+    },
+    {
+      "composite_figi": "BBG000D3JXM1",
+      "name": "CRH PLC",
+      "openfigi_ticker": "CRH",
+      "permanent_id": "BBG001S61NK9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CRH"
+    },
+    {
+      "composite_figi": "BBG000C0LW92",
+      "name": "BOSTON SCIENTIFIC CORP",
+      "openfigi_ticker": "BSX",
+      "permanent_id": "BBG001S63L94",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BSX"
+    },
+    {
+      "composite_figi": "BBG000BBVJZ8",
+      "name": "DEVON ENERGY CORP",
+      "openfigi_ticker": "DVN",
+      "permanent_id": "BBG001S63VG4",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DVN"
+    },
+    {
+      "composite_figi": "BBG000BGKTF9",
+      "name": "CAPITAL ONE FINANCIAL CORP",
+      "openfigi_ticker": "COF",
+      "permanent_id": "BBG001S65PV8",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "COF"
+    },
+    {
+      "composite_figi": "BBG000C13CD9",
+      "name": "CADENCE DESIGN SYS INC",
+      "openfigi_ticker": "CDNS",
+      "permanent_id": "BBG001S65YK1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CDNS"
+    },
+    {
+      "composite_figi": "BBG000C17X76",
+      "name": "BIOGEN INC",
+      "openfigi_ticker": "BIIB",
+      "permanent_id": "BBG001S67826",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BIIB"
+    },
+    {
+      "composite_figi": "BBG000C1FQS9",
+      "name": "ENTERGY CORP",
+      "openfigi_ticker": "ETR",
+      "permanent_id": "BBG001S67KF5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ETR"
+    },
+    {
+      "composite_figi": "BBG000C1HN22",
+      "name": "IDEX CORP",
+      "openfigi_ticker": "IEX",
+      "permanent_id": "BBG001S67N14",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "IEX"
+    },
+    {
+      "composite_figi": "BBG000K4ND22",
+      "name": "CHEVRON CORP",
+      "openfigi_ticker": "CVX",
+      "permanent_id": "BBG001S67ZC5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CVX"
+    },
+    {
+      "composite_figi": "BBG000C23KJ3",
+      "name": "AES CORP",
+      "openfigi_ticker": "AES",
+      "permanent_id": "BBG001S6B1L5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AES"
+    },
+    {
+      "composite_figi": "BBG000BC33T9",
+      "name": "ALEXANDRIA REAL ESTATE EQUIT",
+      "openfigi_ticker": "ARE",
+      "permanent_id": "BBG001S6CPH6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "ARE"
+    },
+    {
+      "composite_figi": "BBG000C3J3C9",
+      "name": "CISCO SYSTEMS INC",
+      "openfigi_ticker": "CSCO",
+      "permanent_id": "BBG001S6HC62",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CSCO"
+    },
+    {
+      "composite_figi": "BBG000BCG930",
+      "name": "ELEVANCE HEALTH INC",
+      "openfigi_ticker": "ELV",
+      "permanent_id": "BBG001S6KBQ8",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ELV"
+    },
+    {
+      "composite_figi": "BBG000C41023",
+      "name": "UDR INC",
+      "openfigi_ticker": "UDR",
+      "permanent_id": "BBG001S6KCT3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "UDR"
+    },
+    {
+      "composite_figi": "BBG000C734W3",
+      "name": "REGENERON PHARMACEUTICALS",
+      "openfigi_ticker": "REGN",
+      "permanent_id": "BBG001S6PX49",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "REGN"
+    },
+    {
+      "composite_figi": "BBG000C7LMS8",
+      "name": "AUTOZONE INC",
+      "openfigi_ticker": "AZO",
+      "permanent_id": "BBG001S6Q5D9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AZO"
+    },
+    {
+      "composite_figi": "BBG000BDXCJ5",
+      "name": "CENTENE CORP",
+      "openfigi_ticker": "CNC",
+      "permanent_id": "BBG001S6T7Q8",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CNC"
+    },
+    {
+      "composite_figi": "BBG000CKGBP2",
+      "name": "GILEAD SCIENCES INC",
+      "openfigi_ticker": "GILD",
+      "permanent_id": "BBG001S6Y1X7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GILD"
+    },
+    {
+      "composite_figi": "BBG000BSC0K9",
+      "name": "DOLLAR TREE INC",
+      "openfigi_ticker": "DLTR",
+      "permanent_id": "BBG001S6ZGL6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DLTR"
+    },
+    {
+      "composite_figi": "BBG000BG8M31",
+      "name": "EQUITY RESIDENTIAL",
+      "openfigi_ticker": "EQR",
+      "permanent_id": "BBG001S723L9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "EQR"
+    },
+    {
+      "composite_figi": "BBG000BDTBL9",
+      "name": "SS SPDR S&P 500 ETF TRUST-US",
+      "openfigi_ticker": "SPY",
+      "permanent_id": "BBG001S72SM3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "ETP",
+      "security_type_2": "Mutual Fund",
+      "symbol": "SPY"
+    },
+    {
+      "composite_figi": "BBG000FY4S11",
+      "name": "CITIGROUP INC",
+      "openfigi_ticker": "C",
+      "permanent_id": "BBG001S72ZG4",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "C"
+    },
+    {
+      "composite_figi": "BBG000BCMBG4",
+      "name": "FORTINET INC",
+      "openfigi_ticker": "FTNT",
+      "permanent_id": "BBG001S77BL6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FTNT"
+    },
+    {
+      "composite_figi": "BBG000H3YXF8",
+      "name": "CINTAS CORP",
+      "openfigi_ticker": "CTAS",
+      "permanent_id": "BBG001S7CRG1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CTAS"
+    },
+    {
+      "composite_figi": "BBG000BFGNJ5",
+      "name": "ALNYLAM PHARMACEUTICALS INC",
+      "openfigi_ticker": "ALNY",
+      "permanent_id": "BBG001S7FTC8",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ALNY"
+    },
+    {
+      "composite_figi": "BBG000BKXYX5",
+      "name": "DECKERS OUTDOOR CORP",
+      "openfigi_ticker": "DECK",
+      "permanent_id": "BBG001S7GXB9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DECK"
+    },
+    {
+      "composite_figi": "BBG000BH0106",
+      "name": "BLACKSTONE INC",
+      "openfigi_ticker": "BX",
+      "permanent_id": "BBG001S7H949",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BX"
+    },
+    {
+      "composite_figi": "BBG000BLPBL5",
+      "name": "AVALONBAY COMMUNITIES INC",
+      "openfigi_ticker": "AVB",
+      "permanent_id": "BBG001S7J2H8",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "AVB"
+    },
+    {
+      "composite_figi": "BBG000BM9RH1",
+      "name": "COPART INC",
+      "openfigi_ticker": "CPRT",
+      "permanent_id": "BBG001S7MTB1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CPRT"
+    },
+    {
+      "composite_figi": "BBG000D7RKJ5",
+      "name": "EDISON INTERNATIONAL",
+      "openfigi_ticker": "EIX",
+      "permanent_id": "BBG001S7MY75",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EIX"
+    },
+    {
+      "composite_figi": "BBG000D898T9",
+      "name": "CARDINAL HEALTH INC",
+      "openfigi_ticker": "CAH",
+      "permanent_id": "BBG001S7PC34",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CAH"
+    },
+    {
+      "composite_figi": "BBG000BG5BL8",
+      "name": "CHARLES RIVER LABORATORIES",
+      "openfigi_ticker": "CRL",
+      "permanent_id": "BBG001S7Q271",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CRL"
+    },
+    {
+      "composite_figi": "BBG000C1XVK6",
+      "name": "EVEREST GROUP LTD",
+      "openfigi_ticker": "EG",
+      "permanent_id": "BBG001S7QT63",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EG"
+    },
+    {
+      "composite_figi": "BBG000BJ26K7",
+      "name": "ALBEMARLE CORP",
+      "openfigi_ticker": "ALB",
+      "permanent_id": "BBG001S7SBP9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ALB"
+    },
+    {
+      "composite_figi": "BBG000BJ29X7",
+      "name": "SS FINANCIAL SELECT SECTOR",
+      "openfigi_ticker": "XLF",
+      "permanent_id": "BBG001S7T223",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "ETP",
+      "security_type_2": "Mutual Fund",
+      "symbol": "XLF"
+    },
+    {
+      "composite_figi": "BBG000FV1Z23",
+      "name": "CROWN CASTLE INC",
+      "openfigi_ticker": "CCI",
+      "permanent_id": "BBG001S7W5T3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "CCI"
+    },
+    {
+      "composite_figi": "BBG000BJQWD2",
+      "name": "AKAMAI TECHNOLOGIES INC",
+      "openfigi_ticker": "AKAM",
+      "permanent_id": "BBG001S7YHX0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AKAM"
+    },
+    {
+      "composite_figi": "BBG000CGJMB9",
+      "name": "ESSEX PROPERTY TRUST INC",
+      "openfigi_ticker": "ESS",
+      "permanent_id": "BBG001S81418",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "ESS"
+    },
+    {
+      "composite_figi": "BBG000JG0547",
+      "name": "AUTOMATIC DATA PROCESSING",
+      "openfigi_ticker": "ADP",
+      "permanent_id": "BBG001S82KF6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ADP"
+    },
+    {
+      "composite_figi": "BBG000BHLYP4",
+      "name": "CME GROUP INC",
+      "openfigi_ticker": "CME",
+      "permanent_id": "BBG001S86547",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CME"
+    },
+    {
+      "composite_figi": "BBG000BLBVN4",
+      "name": "BOOKING HOLDINGS INC",
+      "openfigi_ticker": "BKNG",
+      "permanent_id": "BBG001S89N72",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BKNG"
+    },
+    {
+      "composite_figi": "BBG000FKJRC5",
+      "name": "ESTEE LAUDER COMPANIES-CL A",
+      "openfigi_ticker": "EL",
+      "permanent_id": "BBG001S8L5H6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EL"
+    },
+    {
+      "composite_figi": "BBG000DQTXY6",
+      "name": "DR HORTON INC",
+      "openfigi_ticker": "DHI",
+      "permanent_id": "BBG001S8M692",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DHI"
+    },
+    {
+      "composite_figi": "BBG000DQLV23",
+      "name": "BRISTOL-MYERS SQUIBB CO",
+      "openfigi_ticker": "BMY",
+      "permanent_id": "BBG001S8N8J6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BMY"
+    },
+    {
+      "composite_figi": "BBG000BR14K5",
+      "name": "CHUBB LTD",
+      "openfigi_ticker": "CB",
+      "permanent_id": "BBG001S8S1L3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CB"
+    },
+    {
+      "composite_figi": "BBG000BK2F42",
+      "name": "FIDELITY NATIONAL INFO SERV",
+      "openfigi_ticker": "FIS",
+      "permanent_id": "BBG001S8SWQ0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FIS"
+    },
+    {
+      "composite_figi": "BBG000MDCQC2",
+      "name": "CENCORA INC",
+      "openfigi_ticker": "COR",
+      "permanent_id": "BBG001S8X7P0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "COR"
+    },
+    {
+      "composite_figi": "BBG000DW76Y6",
+      "name": "FAIR ISAAC CORP",
+      "openfigi_ticker": "FICO",
+      "permanent_id": "BBG001S8ZT61",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FICO"
+    },
+    {
+      "composite_figi": "BBG000DWG505",
+      "name": "BERKSHIRE HATHAWAY INC-CL B",
+      "openfigi_ticker": "BRK/B",
+      "permanent_id": "BBG001S90346",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BRK-B"
+    },
+    {
+      "composite_figi": "BBG000HCJMF9",
+      "name": "PRUDENTIAL FINANCIAL INC",
+      "openfigi_ticker": "PRU",
+      "permanent_id": "BBG001S97MM7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "PRU"
+    },
+    {
+      "composite_figi": "BBG000BFL116",
+      "name": "FIRST SOLAR INC",
+      "openfigi_ticker": "FSLR",
+      "permanent_id": "BBG001S991Z7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FSLR"
+    },
+    {
+      "composite_figi": "BBG000F1ZSN5",
+      "name": "ROPER TECHNOLOGIES INC",
+      "openfigi_ticker": "ROP",
+      "permanent_id": "BBG001S9B362",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ROP"
+    },
+    {
+      "composite_figi": "BBG000C43RR5",
+      "name": "EBAY INC",
+      "openfigi_ticker": "EBAY",
+      "permanent_id": "BBG001S9B9J5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EBAY"
+    },
+    {
+      "composite_figi": "BBG000BVMGF2",
+      "name": "ALLSTATE CORP",
+      "openfigi_ticker": "ALL",
+      "permanent_id": "BBG001S9BM06",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ALL"
+    },
+    {
+      "composite_figi": "BBG000BKD3K9",
+      "name": "BUILDERS FIRSTSOURCE INC",
+      "openfigi_ticker": "BLDR",
+      "permanent_id": "BBG001S9CFC7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BLDR"
+    },
+    {
+      "composite_figi": "BBG000BSWKH7",
+      "name": "INVESCO QQQ TRUST SERIES 1",
+      "openfigi_ticker": "QQQ",
+      "permanent_id": "BBG001S9GN63",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "ETP",
+      "security_type_2": "Mutual Fund",
+      "symbol": "QQQ"
+    },
+    {
+      "composite_figi": "BBG000BN84F3",
+      "name": "QUEST DIAGNOSTICS INC",
+      "openfigi_ticker": "DGX",
+      "permanent_id": "BBG001S9GX43",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DGX"
+    },
+    {
+      "composite_figi": "BBG000HXNN20",
+      "name": "ARCH CAPITAL GROUP LTD",
+      "openfigi_ticker": "ACGL",
+      "permanent_id": "BBG001S9HZ74",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ACGL"
+    },
+    {
+      "composite_figi": "BBG000F6H8W8",
+      "name": "COSTCO WHOLESALE CORP",
+      "openfigi_ticker": "COST",
+      "permanent_id": "BBG001S9KRQ7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "COST"
+    },
+    {
+      "composite_figi": "BBG000BS0ZF1",
+      "name": "RALPH LAUREN CORP",
+      "openfigi_ticker": "RL",
+      "permanent_id": "BBG001S9TL45",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "RL"
+    },
+    {
+      "composite_figi": "BBG000BS5CM9",
+      "name": "BXP INC",
+      "openfigi_ticker": "BXP",
+      "permanent_id": "BBG001S9TWV1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "BXP"
+    },
+    {
+      "composite_figi": "BBG000FDBX90",
+      "name": "CENTERPOINT ENERGY INC",
+      "openfigi_ticker": "CNP",
+      "permanent_id": "BBG001SB10S0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CNP"
+    },
+    {
+      "composite_figi": "BBG000BWN2Y9",
+      "name": "COMFORT SYSTEMS USA INC",
+      "openfigi_ticker": "FIX",
+      "permanent_id": "BBG001SB1GG8",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FIX"
+    },
+    {
+      "composite_figi": "BBG000BHJWG1",
+      "name": "AXON ENTERPRISE INC",
+      "openfigi_ticker": "AXON",
+      "permanent_id": "BBG001SB2HG5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AXON"
+    },
+    {
+      "composite_figi": "BBG000MQ1SN9",
+      "name": "DAVITA INC",
+      "openfigi_ticker": "DVA",
+      "permanent_id": "BBG001SB5DZ0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DVA"
+    },
+    {
+      "composite_figi": "BBG000BTCH57",
+      "name": "C.H. ROBINSON WORLDWIDE INC",
+      "openfigi_ticker": "CHRW",
+      "permanent_id": "BBG001SB6KF5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CHRW"
+    },
+    {
+      "composite_figi": "BBG000J6XT05",
+      "name": "EXELON CORP",
+      "openfigi_ticker": "EXC",
+      "permanent_id": "BBG001SBJMT2",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EXC"
+    },
+    {
+      "composite_figi": "BBG000C04224",
+      "name": "CBRE GROUP INC - A",
+      "openfigi_ticker": "CBRE",
+      "permanent_id": "BBG001SC2D27",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CBRE"
+    },
+    {
+      "composite_figi": "BBG000BP5YT0",
+      "name": "FLEX LTD",
+      "openfigi_ticker": "FLEX",
+      "permanent_id": "BBG001SC5SP6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FLEX"
+    },
+    {
+      "composite_figi": "BBG000BRNLL2",
+      "name": "ALIGN TECHNOLOGY INC",
+      "openfigi_ticker": "ALGN",
+      "permanent_id": "BBG001SCF1B9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ALGN"
+    },
+    {
+      "composite_figi": "BBG000K6MRN4",
+      "name": "ASML HOLDING NV-NY REG SHS",
+      "openfigi_ticker": "ASML",
+      "permanent_id": "BBG001SCG0R3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "NY Reg Shrs",
+      "security_type_2": "Depositary Receipt",
+      "symbol": "ASML"
+    },
+    {
+      "composite_figi": "BBG000CXYSZ6",
+      "name": "F5 INC",
+      "openfigi_ticker": "FFIV",
+      "permanent_id": "BBG001SCP8D1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FFIV"
+    },
+    {
+      "composite_figi": "BBG000C2V3D6",
+      "name": "AGILENT TECHNOLOGIES INC",
+      "openfigi_ticker": "A",
+      "permanent_id": "BBG001SCTQY4",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "A"
+    },
+    {
+      "composite_figi": "BBG000D9D830",
+      "name": "ACCENTURE PLC-CL A",
+      "openfigi_ticker": "ACN",
+      "permanent_id": "BBG001SCXK90",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ACN"
+    },
+    {
+      "composite_figi": "BBG000D7JKW9",
+      "name": "COSTAR GROUP INC",
+      "openfigi_ticker": "CSGP",
+      "permanent_id": "BBG001SD3DY9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CSGP"
+    },
+    {
+      "composite_figi": "BBG000BZX1N5",
+      "name": "ASSURANT INC",
+      "openfigi_ticker": "AIZ",
+      "permanent_id": "BBG001SD9DW5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AIZ"
+    },
+    {
+      "composite_figi": "BBG000D8RG11",
+      "name": "NRG ENERGY INC",
+      "openfigi_ticker": "NRG",
+      "permanent_id": "BBG001SDD8F0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "NRG"
+    },
+    {
+      "composite_figi": "BBG000BN2DC2",
+      "name": "SALESFORCE INC",
+      "openfigi_ticker": "CRM",
+      "permanent_id": "BBG001SDLP09",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CRM"
+    },
+    {
+      "composite_figi": "BBG000BRXP69",
+      "name": "EDWARDS LIFESCIENCES CORP",
+      "openfigi_ticker": "EW",
+      "permanent_id": "BBG001SF2288",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EW"
+    },
+    {
+      "composite_figi": "BBG000GPXKX9",
+      "name": "CORPAY INC",
+      "openfigi_ticker": "CPAY",
+      "permanent_id": "BBG001SHC7K8",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CPAY"
+    },
+    {
+      "composite_figi": "BBG000BWJFZ4",
+      "name": "CF INDUSTRIES HOLDINGS INC",
+      "openfigi_ticker": "CF",
+      "permanent_id": "BBG001SJ8KV8",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CF"
+    },
+    {
+      "composite_figi": "BBG000LD9JQ8",
+      "name": "WYNN RESORTS LTD",
+      "openfigi_ticker": "WYNN",
+      "permanent_id": "BBG001SJZ2V8",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "WYNN"
+    },
+    {
+      "composite_figi": "BBG000G3QLY3",
+      "name": "AMERIPRISE FINANCIAL INC",
+      "openfigi_ticker": "AMP",
+      "permanent_id": "BBG001SK6096",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AMP"
+    },
+    {
+      "composite_figi": "BBG000MBDGM6",
+      "name": "EQUINIX INC",
+      "openfigi_ticker": "EQIX",
+      "permanent_id": "BBG001SKBNS9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "EQIX"
+    },
+    {
+      "composite_figi": "BBG000QTF8K1",
+      "name": "DEXCOM INC",
+      "openfigi_ticker": "DXCM",
+      "permanent_id": "BBG001SKZG99",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DXCM"
+    },
+    {
+      "composite_figi": "BBG000P458P3",
+      "name": "DOMINO'S PIZZA INC",
+      "openfigi_ticker": "DPZ",
+      "permanent_id": "BBG001SL3ZH1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DPZ"
+    },
+    {
+      "composite_figi": "BBG000PV27K3",
+      "name": "EXTRA SPACE STORAGE INC",
+      "openfigi_ticker": "EXR",
+      "permanent_id": "BBG001SLSXK5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "EXR"
+    },
+    {
+      "composite_figi": "BBG000Q5ZRM7",
+      "name": "DIGITAL REALTY TRUST INC",
+      "openfigi_ticker": "DLR",
+      "permanent_id": "BBG001SM0K30",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "REIT",
+      "security_type_2": "REIT",
+      "symbol": "DLR"
+    },
+    {
+      "composite_figi": "BBG000NDYB67",
+      "name": "GENERAL MOTORS CO",
+      "openfigi_ticker": "GM",
+      "permanent_id": "BBG001SM1DK6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GM"
+    },
+    {
+      "composite_figi": "BBG000GQPB11",
+      "name": "MERCADOLIBRE INC",
+      "openfigi_ticker": "MELI",
+      "permanent_id": "BBG001SM32G3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "MELI"
+    },
+    {
+      "composite_figi": "BBG000QX74T1",
+      "name": "CHIPOTLE MEXICAN GRILL INC",
+      "openfigi_ticker": "CMG",
+      "permanent_id": "BBG001SP50B3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CMG"
+    },
+    {
+      "composite_figi": "BBG000QY3XZ2",
+      "name": "EXPEDIA GROUP INC",
+      "openfigi_ticker": "EXPE",
+      "permanent_id": "BBG001SP8VM0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EXPE"
+    },
+    {
+      "composite_figi": "BBG000TRJ294",
+      "name": "AMERICAN WATER WORKS CO INC",
+      "openfigi_ticker": "AWK",
+      "permanent_id": "BBG001SPHYW3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AWK"
+    },
+    {
+      "composite_figi": "BBG000R7Z112",
+      "name": "DELTA AIR LINES INC",
+      "openfigi_ticker": "DAL",
+      "permanent_id": "BBG001SPT759",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DAL"
+    },
+    {
+      "composite_figi": "BBG000N9MNX3",
+      "name": "TESLA INC",
+      "openfigi_ticker": "TSLA",
+      "permanent_id": "BBG001SQKGD7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "TSLA"
+    },
+    {
+      "composite_figi": "BBG000PPFKQ7",
+      "name": "BROADRIDGE FINANCIAL SOLUTIO",
+      "openfigi_ticker": "BR",
+      "permanent_id": "BBG001SR7MB9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BR"
+    },
+    {
+      "composite_figi": "BBG000TGLV00",
+      "name": "ECHOSTAR CORP-A",
+      "openfigi_ticker": "ECHO",
+      "permanent_id": "BBG001T048Z5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ECHO"
+    },
+    {
+      "composite_figi": "BBG000VPGNR2",
+      "name": "CHARTER COMMUNICATIONS INC-A",
+      "openfigi_ticker": "CHTR",
+      "permanent_id": "BBG001T3TDG2",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CHTR"
+    },
+    {
+      "composite_figi": "BBG000N2HDY5",
+      "name": "ARISTA NETWORKS INC",
+      "openfigi_ticker": "ANET",
+      "permanent_id": "BBG001T51KQ0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ANET"
+    },
+    {
+      "composite_figi": "BBG000NV1KK7",
+      "name": "DOLLAR GENERAL CORP",
+      "openfigi_ticker": "DG",
+      "permanent_id": "BBG001T5BM30",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DG"
+    },
+    {
+      "composite_figi": "BBG000PQ4W72",
+      "name": "GENERAC HOLDINGS INC",
+      "openfigi_ticker": "GNRC",
+      "permanent_id": "BBG001T5VGH6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GNRC"
+    },
+    {
+      "composite_figi": "BBG000QH56C1",
+      "name": "CBOE GLOBAL MARKETS INC",
+      "openfigi_ticker": "CBOE",
+      "permanent_id": "BBG001T71BP7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CBOE"
+    },
+    {
+      "composite_figi": "BBG000QW7VC1",
+      "name": "HCA HEALTHCARE INC",
+      "openfigi_ticker": "HCA",
+      "permanent_id": "BBG001T8NTY2",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "HCA"
+    },
+    {
+      "composite_figi": "BBG001CGB489",
+      "name": "VEEVA SYSTEMS INC-CLASS A",
+      "openfigi_ticker": "VEEV",
+      "permanent_id": "BBG001TX0CB4",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "VEEV"
+    },
+    {
+      "composite_figi": "BBG001P63B80",
+      "name": "CDW CORP/DE",
+      "openfigi_ticker": "CDW",
+      "permanent_id": "BBG001V18TB6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CDW"
+    },
+    {
+      "composite_figi": "BBG001Y2XS07",
+      "name": "AIRBNB INC-CLASS A",
+      "openfigi_ticker": "ABNB",
+      "permanent_id": "BBG001Y2XS16",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ABNB"
+    },
+    {
+      "composite_figi": "BBG0025Y4RY4",
+      "name": "ABBVIE INC",
+      "openfigi_ticker": "ABBV",
+      "permanent_id": "BBG0025Y4RZ3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ABBV"
+    },
+    {
+      "composite_figi": "BBG002PHSYX9",
+      "name": "DIAMONDBACK ENERGY INC",
+      "openfigi_ticker": "FANG",
+      "permanent_id": "BBG002PHSZN7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FANG"
+    },
+    {
+      "composite_figi": "BBG002R1CW27",
+      "name": "INGERSOLL-RAND INC",
+      "openfigi_ticker": "IR",
+      "permanent_id": "BBG002R1CW36",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "IR"
+    },
+    {
+      "composite_figi": "BBG003NJHZT9",
+      "name": "DATADOG INC - CLASS A",
+      "openfigi_ticker": "DDOG",
+      "permanent_id": "BBG003NJHZW5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DDOG"
+    },
+    {
+      "composite_figi": "BBG003PS7JV1",
+      "name": "ALLEGION PLC",
+      "openfigi_ticker": "ALLE",
+      "permanent_id": "BBG003PS7JW0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ALLE"
+    },
+    {
+      "composite_figi": "BBG0056JW5G6",
+      "name": "UNITY SOFTWARE INC",
+      "openfigi_ticker": "U",
+      "permanent_id": "BBG0056JW5H5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "U"
+    },
+    {
+      "composite_figi": "BBG005D7QCJ3",
+      "name": "DOORDASH INC - A",
+      "openfigi_ticker": "DASH",
+      "permanent_id": "BBG005D7QCK1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DASH"
+    },
+    {
+      "composite_figi": "BBG0068KVV91",
+      "name": "ARES MANAGEMENT CORP - A",
+      "openfigi_ticker": "ARES",
+      "permanent_id": "BBG0068KVVC7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ARES"
+    },
+    {
+      "composite_figi": "BBG006HFPX77",
+      "name": "APPLOVIN CORP-CLASS A",
+      "openfigi_ticker": "APP",
+      "permanent_id": "BBG006HFPX86",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "APP"
+    },
+    {
+      "composite_figi": "BBG006MDLY05",
+      "name": "GODADDY INC - CLASS A",
+      "openfigi_ticker": "GDDY",
+      "permanent_id": "BBG006MDLXZ9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GDDY"
+    },
+    {
+      "composite_figi": "BBG006Q0HY77",
+      "name": "CITIZENS FINANCIAL GROUP",
+      "openfigi_ticker": "CFG",
+      "permanent_id": "BBG006Q0HZT0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CFG"
+    },
+    {
+      "composite_figi": "BBG007DHGNJ4",
+      "name": "SNOWFLAKE INC",
+      "openfigi_ticker": "SNOW",
+      "permanent_id": "BBG007DHGNK2",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "SNOW"
+    },
+    {
+      "composite_figi": "BBG009S39JX6",
+      "name": "ALPHABET INC-CL A",
+      "openfigi_ticker": "GOOGL",
+      "permanent_id": "BBG009S39JY5",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GOOGL"
+    },
+    {
+      "composite_figi": "BBG009S3NB30",
+      "name": "ALPHABET INC-CL C",
+      "openfigi_ticker": "GOOG",
+      "permanent_id": "BBG009S3NB21",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GOOG"
+    },
+    {
+      "composite_figi": "BBG00B6BFWH9",
+      "name": "COCA-COLA EUROPACIFIC PARTNE",
+      "openfigi_ticker": "CCEP",
+      "permanent_id": "BBG00B6BFX96",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CCEP"
+    },
+    {
+      "composite_figi": "BBG00BLVZ228",
+      "name": "FORTIVE CORP",
+      "openfigi_ticker": "FTV",
+      "permanent_id": "BBG00BLVZ237",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FTV"
+    },
+    {
+      "composite_figi": "BBG00BLYKS03",
+      "name": "CROWDSTRIKE HOLDINGS INC - A",
+      "openfigi_ticker": "CRWD",
+      "permanent_id": "BBG00BLYKRZ7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CRWD"
+    },
+    {
+      "composite_figi": "BBG00BN961G4",
+      "name": "DUPONT DE NEMOURS INC",
+      "openfigi_ticker": "DD",
+      "permanent_id": "BBG00BN961H3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DD"
+    },
+    {
+      "composite_figi": "BBG00BN96922",
+      "name": "DOW INC",
+      "openfigi_ticker": "DOW",
+      "permanent_id": "BBG00BN96931",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DOW"
+    },
+    {
+      "composite_figi": "BBG00BN969C1",
+      "name": "CORTEVA INC",
+      "openfigi_ticker": "CTVA",
+      "permanent_id": "BBG00BN969D0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CTVA"
+    },
+    {
+      "composite_figi": "BBG00DW3SZS1",
+      "name": "DELL TECHNOLOGIES -C",
+      "openfigi_ticker": "DELL",
+      "permanent_id": "BBG00DW3SZT0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "DELL"
+    },
+    {
+      "composite_figi": "BBG00GBVBK51",
+      "name": "BAKER HUGHES CO",
+      "openfigi_ticker": "BKR",
+      "permanent_id": "BBG00GBVBK60",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BKR"
+    },
+    {
+      "composite_figi": "BBG00GCTWDJ3",
+      "name": "CARVANA CO",
+      "openfigi_ticker": "CVNA",
+      "permanent_id": "BBG00GCTWF71",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CVNA"
+    },
+    {
+      "composite_figi": "BBG00H433CR2",
+      "name": "EVERGY INC",
+      "openfigi_ticker": "EVRG",
+      "permanent_id": "BBG00H433CS1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EVRG"
+    },
+    {
+      "composite_figi": "BBG00JHNJW99",
+      "name": "FOX CORP - CLASS A",
+      "openfigi_ticker": "FOXA",
+      "permanent_id": "BBG00JHNJX06",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FOXA"
+    },
+    {
+      "composite_figi": "BBG00JHNKJY8",
+      "name": "FOX CORP - CLASS B",
+      "openfigi_ticker": "FOX",
+      "permanent_id": "BBG00JHNKKR3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FOX"
+    },
+    {
+      "composite_figi": "BBG00KHY5S69",
+      "name": "BROADCOM INC",
+      "openfigi_ticker": "AVGO",
+      "permanent_id": "BBG00KHY5SY8",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AVGO"
+    },
+    {
+      "composite_figi": "BBG00KXRCDP0",
+      "name": "THE CIGNA GROUP",
+      "openfigi_ticker": "CI",
+      "permanent_id": "BBG00KXRCDQ9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CI"
+    },
+    {
+      "composite_figi": "BBG00LNJRQ09",
+      "name": "AMCOR PLC",
+      "openfigi_ticker": "AMCR",
+      "permanent_id": "BBG00LNJRQ18",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AMCR"
+    },
+    {
+      "composite_figi": "BBG00RP5HYS8",
+      "name": "CARRIER GLOBAL CORP",
+      "openfigi_ticker": "CARR",
+      "permanent_id": "BBG00RP5HZM1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CARR"
+    },
+    {
+      "composite_figi": "BBG00SSQFPK6",
+      "name": "AON PLC-CLASS A",
+      "openfigi_ticker": "AON",
+      "permanent_id": "BBG00SSQFPR9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "AON"
+    },
+    {
+      "composite_figi": "BBG00TDKHW99",
+      "name": "ASTERA LABS INC",
+      "openfigi_ticker": "ALAB",
+      "permanent_id": "BBG00TDKHWK6",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "ALAB"
+    },
+    {
+      "composite_figi": "BBG00YTS96G2",
+      "name": "APA CORP",
+      "openfigi_ticker": "APA",
+      "permanent_id": "BBG00YTS96H1",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "APA"
+    },
+    {
+      "composite_figi": "BBG00Z6DX554",
+      "name": "EXPAND ENERGY CORP",
+      "openfigi_ticker": "EXE",
+      "permanent_id": "BBG00Z6DX607",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "EXE"
+    },
+    {
+      "composite_figi": "BBG00ZGF7771",
+      "name": "COINBASE GLOBAL INC -CLASS A",
+      "openfigi_ticker": "COIN",
+      "permanent_id": "BBG00ZGF7799",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "COIN"
+    },
+    {
+      "composite_figi": "BBG00ZNLTFK3",
+      "name": "APOLLO GLOBAL MANAGEMENT INC",
+      "openfigi_ticker": "APO",
+      "permanent_id": "BBG00ZNLTFL2",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "APO"
+    },
+    {
+      "composite_figi": "BBG011386VF4",
+      "name": "WARNER BROS DISCOVERY INC",
+      "openfigi_ticker": "WBD",
+      "permanent_id": "BBG011386VG3",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "WBD"
+    },
+    {
+      "composite_figi": "BBG0113JGQF0",
+      "name": "SEAGATE TECHNOLOGY HOLDINGS",
+      "openfigi_ticker": "STX",
+      "permanent_id": "BBG0113JGQG9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "STX"
+    },
+    {
+      "composite_figi": "BBG011ZTRJ21",
+      "name": "COREWEAVE INC-CL A",
+      "openfigi_ticker": "CRWV",
+      "permanent_id": "BBG011ZTRJ49",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CRWV"
+    },
+    {
+      "composite_figi": "BBG013G17W31",
+      "name": "GE VERNOVA INC",
+      "openfigi_ticker": "GEV",
+      "permanent_id": "BBG013G17W77",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GEV"
+    },
+    {
+      "composite_figi": "BBG014KFRNP7",
+      "name": "CONSTELLATION ENERGY",
+      "openfigi_ticker": "CEG",
+      "permanent_id": "BBG014KFRPJ9",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "CEG"
+    },
+    {
+      "composite_figi": "BBG01BFR8YV1",
+      "name": "GE HEALTHCARE TECHNOLOGY",
+      "openfigi_ticker": "GEHC",
+      "permanent_id": "BBG01BFR8YW0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "GEHC"
+    },
+    {
+      "composite_figi": "BBG01H7CZ9S9",
+      "name": "FERROVIAL NV",
+      "openfigi_ticker": "FER",
+      "permanent_id": "BBG01H0DF6H4",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "FER"
+    },
+    {
+      "composite_figi": "BBG01J1GXZF0",
+      "name": "ARM HOLDINGS PLC-ADR",
+      "openfigi_ticker": "ARM",
+      "permanent_id": "BBG01J1GY084",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "ADR",
+      "security_type_2": "Depositary Receipt",
+      "symbol": "ARM"
+    },
+    {
+      "composite_figi": "BBG01JZ8VL91",
+      "name": "BUNGE GLOBAL SA",
+      "openfigi_ticker": "BG",
+      "permanent_id": "BBG01JZ8VLC7",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BG"
+    },
+    {
+      "composite_figi": "BBG01KR6BS70",
+      "name": "T1 ENERGY INC",
+      "openfigi_ticker": "TE",
+      "permanent_id": "BBG01KR6BS89",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "TE"
+    },
+    {
+      "composite_figi": "BBG01PSW2WN4",
+      "name": "BLACKROCK INC",
+      "openfigi_ticker": "BLK",
+      "permanent_id": "BBG01PSW2WR0",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "BLK"
+    },
+    {
+      "composite_figi": "BBG01R914LT5",
+      "name": "APTIV PLC",
+      "openfigi_ticker": "APTV",
+      "permanent_id": "BBG01R914M77",
+      "permanent_id_type": "ID_BB_GLOBAL_SHARE_CLASS_LEVEL",
+      "security_type": "Common Stock",
+      "security_type_2": "Common Stock",
+      "symbol": "APTV"
+    }
+  ],
+  "source": {
+    "endpoint": "https://api.openfigi.com/v3/mapping",
+    "provider": "OpenFIGI",
+    "raw_sha256": "592d0c00ae26c2225bf6530cc7d9811156e4ff48424e017fd66e3913d396e18e",
+    "retrieved_at": "2026-07-29T22:27:56.515734+00:00"
+  }
+}

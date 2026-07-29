@@ -241,6 +241,7 @@ def test_candidate_captures_available_facts_and_symbol_is_not_identity():
             ScheduledEarnings(
                 earnings_session=dt.date(2024, 3, 15),
                 known_session=dt.date(2024, 1, 2),
+                superseded_session=None,
             ),
         ),
     )

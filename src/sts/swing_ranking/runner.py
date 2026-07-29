@@ -113,7 +113,11 @@ def evaluate_study(
     earnings_by_id: defaultdict[str, list[ScheduledEarnings]] = defaultdict(list)
     for event in resolved.earnings_events:
         earnings_by_id[event.permanent_id].append(
-            ScheduledEarnings(event.earnings_session, event.known_session)
+            ScheduledEarnings(
+                event.earnings_session,
+                event.known_session,
+                event.superseded_session,
+            )
         )
     facts_as_of = {fact.kind: fact.as_of for fact in resolved.source_facts}
     evaluations: list[StrategyEvaluation] = []

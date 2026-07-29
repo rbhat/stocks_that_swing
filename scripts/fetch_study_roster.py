@@ -46,9 +46,14 @@ def _store() -> StudyStore:
     return _STORE
 
 
-def _write_frame(symbol: str, df: pd.DataFrame) -> None:
+def _write_frame(
+    symbol: str,
+    df: pd.DataFrame,
+    start: dt.date | None = None,
+    cutoff: dt.date | None = None,
+) -> None:
     """Clean, then route through StudyStore.write (quality gate + truncate + atomic+fsync)."""
-    _store().write(symbol, _clean(df))
+    _store().write(symbol, _clean(df, start, cutoff))
 
 # Regime/market anchors the study loaders expect present (regime_by_year reads SPY).
 ANCHORS = ["SPY", "QQQ"]
@@ -66,13 +71,16 @@ STALENESS_SESSIONS = 5  # a frame up to 5 sessions behind "today" still counts a
                          # research roster, unlike the trade-facing PriceStore)
 
 
-def _fresh_scratch_symbols() -> set[str]:
+def _fresh_scratch_symbols(cutoff: dt.date | None = None) -> set[str]:
     """Frames within STALENESS_SESSIONS of the last completed session."""
-    cutoff = calendar.last_completed_session() - dt.timedelta(days=STALENESS_SESSIONS * 2)
+    required = cutoff or (
+        calendar.last_completed_session()
+        - dt.timedelta(days=STALENESS_SESSIONS * 2)
+    )
     fresh: set[str] = set()
     for sym in _store().symbols():
         last = _store().last_date(sym)
-        if last is not None and last >= cutoff:
+        if last is not None and last >= required:
             fresh.add(sym)
     return fresh
 
@@ -92,12 +100,31 @@ def _save_failures(failures: set[str]) -> None:
     os.replace(tmp, FAILURES_SIDECAR)
 
 
-def _clean(df: pd.DataFrame) -> pd.DataFrame:
+def _clean(
+    df: pd.DataFrame,
+    start: dt.date | None = None,
+    cutoff: dt.date | None = None,
+) -> pd.DataFrame:
     """Drop rows with NaN or non-positive OHLC — the same light hygiene the study
     loaders apply before use (NOT the full store quality gate, which is tuned for the
     source-of-truth store, not a deep-history research frame)."""
     ohlc = df[OHLC]
-    return df[~(ohlc.isna().any(axis=1) | (ohlc <= 0).any(axis=1))]
+    cleaned = df[~(ohlc.isna().any(axis=1) | (ohlc <= 0).any(axis=1))]
+    if start is not None:
+        cleaned = cleaned[cleaned.index.date >= start]
+    if cutoff is not None:
+        cleaned = cleaned[cleaned.index.date <= cutoff]
+    return cleaned
+
+
+def _freeze_existing(cutoff: dt.date) -> None:
+    for symbol in _store().symbols():
+        frame = _store().load(symbol)
+        frozen = _clean(frame, cutoff=cutoff)
+        if frozen.empty:
+            raise ValueError(f"{symbol} has no bars through cutoff {cutoff}")
+        if len(frozen) != len(frame):
+            _store().write(symbol, frozen)
 
 
 def _fmt_eta(seconds: float) -> str:
@@ -130,10 +157,25 @@ def _write_roster_artifacts(anchors: list[str]) -> None:
     CONFIGS_DIR.mkdir(parents=True, exist_ok=True)
     symbols = _store().symbols()
 
+    prior: dict = {}
+    if ROSTER_YAML.is_file():
+        loaded = yaml.safe_load(ROSTER_YAML.read_text(encoding="utf-8"))
+        if isinstance(loaded, dict):
+            prior = loaded
     roster = {
         "as_of": dt.datetime.now(dt.UTC).date().isoformat(),
-        "source": "cache/scan/constituents.json (S&P 500 + Nasdaq-100)",
-        "eligibility": {"min_price_usd": 5, "min_avg_dollar_vol_usd": 20_000_000},
+        "source": prior.get(
+            "source",
+            "cache/scan/constituents.json (S&P 500 + Nasdaq-100)",
+        ),
+        "eligibility": prior.get(
+            "eligibility",
+            {
+                "min_price_usd": 5,
+                "min_avg_dollar_vol_usd": 20_000_000,
+            },
+        ),
+        **({"seeds": prior["seeds"]} if "seeds" in prior else {}),
         "anchors": sorted(anchors),
         "symbols": symbols,
         "count": len(symbols),
@@ -173,6 +215,16 @@ def main() -> None:
                     help="re-attempt symbols recorded in the dead-symbol sidecar")
     ap.add_argument("--dry-run", action="store_true",
                     help="print the plan and exit without fetching")
+    ap.add_argument(
+        "--start",
+        type=dt.date.fromisoformat,
+        help="earliest session retained in newly fetched frames",
+    )
+    ap.add_argument(
+        "--cutoff",
+        type=dt.date.fromisoformat,
+        help="freeze every frame at this completed XNYS session",
+    )
     args = ap.parse_args()
 
     # Progress must be visible when redirected to a log: Python block-buffers a
@@ -191,7 +243,13 @@ def main() -> None:
         stale.unlink(missing_ok=True)  # leftover temp from a killed prior run
     constituents = json.loads(CONSTITUENTS.read_text()).get("symbols", [])
     configured = _configured_symbols()
-    fresh_scratch = set() if args.refresh else _fresh_scratch_symbols()
+    if args.cutoff is not None and not calendar.is_session(args.cutoff):
+        ap.error("--cutoff must be an XNYS session")
+    fresh_scratch = (
+        set()
+        if args.refresh
+        else _fresh_scratch_symbols(args.cutoff)
+    )
     have = fresh_scratch
     failures = _load_failures()
     skip_failed = failures if not args.retry_failed else set()
@@ -220,6 +278,8 @@ def main() -> None:
         if args.dry_run:
             print("  DRY RUN — skipping artifact write.")
             return
+        if args.cutoff is not None:
+            _freeze_existing(args.cutoff)
         _write_roster_artifacts(anchors=ANCHORS)
         print(f"  wrote {ROSTER_YAML.relative_to(ROOT)} + {ROSTER_MANIFEST.relative_to(ROOT)}")
         return
@@ -244,13 +304,13 @@ def main() -> None:
         attempts += 1
         tag = "seed/anchor" if kind == "must" else "fill"
         try:
-            df = _clean(fetch_daily(sym))
+            df = _clean(fetch_daily(sym), args.start, args.cutoff)
             if len(df) < MIN_BARS:
                 print(f"  [{attempts}] {sym:<6} ({tag}) too short ({len(df)} bars) — skipped")
                 failures.add(sym)
                 _save_failures(failures)
             else:
-                _write_frame(sym, df)
+                _write_frame(sym, df, args.start, args.cutoff)
                 fetched += 1
                 y0, y1 = df.index.min().year, df.index.max().year
                 elapsed = time.time() - t0
@@ -271,7 +331,7 @@ def main() -> None:
             time.sleep(args.sleep * random.uniform(0.75, 1.25))
 
     total_now = len(have) + fetched
-    current = _fresh_scratch_symbols()
+    current = _fresh_scratch_symbols(args.cutoff)
     missing_required = [symbol for symbol in must_have if symbol not in current]
     print(f"\ndone: fetched {fetched} new ({attempts} attempted), roster now {total_now} symbols.")
     if missing_required:
@@ -285,6 +345,11 @@ def main() -> None:
     print(f"  dead-symbol sidecar: {FAILURES_SIDECAR} ({len(failures)} names)")
     print("  re-running this script now is a no-op (idempotent).")
 
+    if missing_required or total_now < args.target_total:
+        print("  input contract remains incomplete; roster artifacts were not replaced.")
+        return
+    if args.cutoff is not None:
+        _freeze_existing(args.cutoff)
     _write_roster_artifacts(anchors=ANCHORS)
     print(f"  wrote {ROSTER_YAML.relative_to(ROOT)} + {ROSTER_MANIFEST.relative_to(ROOT)}")
 
