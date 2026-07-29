@@ -3,10 +3,8 @@ cost model, since the general per-event evidence contract (codex_review.md
 #2 -- audited gross/base-cost/2x-cost R, right-censoring treatment,
 slippage-vs-fee definition) is still deferred. This module's cost-in-R is a
 disclosed approximation against a charter risk-budgeted reference position
-(`risk.position_size` at `risk.START_CAPITAL`), not the audited contract --
-see docs/preregs/2026-07-11_h1-trend-pullback.md "Known caveats", which
-explicitly permits stating this limitation rather than blocking the study on
-it.
+(`risk.position_size` at `risk.START_CAPITAL`), not the audited contract.
+This limitation is reported rather than silently treated as exact.
 
 The event walk below mirrors `sts.eventsim`'s ATR-mode walk (risk starts at
 the entry bar itself, per the Fix-1 convention) rather than importing that

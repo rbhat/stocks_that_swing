@@ -1,6 +1,7 @@
-"""H2 event collection: earnings-reaction drift (PEAD price-proxy), per
-docs/preregs/2026-07-12_h2-pead.md. The surprise is proxied from price/volume
-alone (no fundamentals): the first post-report session whose volume expands
+"""H2 event collection: earnings-reaction drift (PEAD price-proxy).
+
+The surprise is proxied from price/volume alone (no fundamentals): the first
+post-report session whose volume expands
 >= 1.5x its trailing 20-session median is the reaction session R; its total
 return close(R)/close(R-1) - 1 is the score. Events scoring in the causal
 trailing-252-session top decile are traded long, entered after R (never

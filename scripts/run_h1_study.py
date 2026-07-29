@@ -1,6 +1,5 @@
-"""H1 study runner -- executes the LOCKED primary cell of
-docs/preregs/2026-07-11_h1-trend-pullback.md against the study roster and
-reports the prereg's locked bars as PASS/FAIL/N/A.
+"""H1 study runner -- executes the historical locked primary cell against
+the study roster and reports its locked bars as PASS/FAIL/N/A.
 
 This script REPORTS; it never writes a decisions.md verdict and never acts
 on a PROCEED. Per the prereg's sign-off section, an independent review is
@@ -26,12 +25,12 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from sts import calendar  # noqa: E402
-from sts.catalyst import CatalystCalendar  # noqa: E402
-from sts.data.study_store import StudyStore  # noqa: E402
-from sts.eventsim import raw_forward_returns  # noqa: E402
-from sts.signals.trend_pullback import DEFAULTS as TREND_PULLBACK_DEFAULTS  # noqa: E402
-from sts.study.h1_events import collect_events, slice_by, summarize  # noqa: E402
+from sts import calendar
+from sts.catalyst import CatalystCalendar
+from sts.data.study_store import StudyStore
+from sts.eventsim import raw_forward_returns
+from sts.signals.trend_pullback import DEFAULTS as TREND_PULLBACK_DEFAULTS
+from sts.study.h1_events import collect_events, slice_by, summarize
 
 DEFAULT_OOS_START = dt.date(2024, 1, 1)
 COST_ARMS = {"base": (5.0, 1.0), "2x": (10.0, 2.0)}
@@ -159,7 +158,7 @@ def build_report(prices: dict, oos_start: dt.date, oos_end: dt.date) -> dict:
     return {
         "oos_start": oos_start.isoformat(),
         "oos_end": oos_end.isoformat(),
-        "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "generated_at": dt.datetime.now(dt.UTC).isoformat(),
         "layer_a": layer_a,
         "layer_b": layer_b,
         "slices": slices,
@@ -195,7 +194,7 @@ def main() -> None:
         "decisions.md requires independent review first (prereg sign-off section)."
     )
 
-    run_dir = ROOT / "runs" / "h1" / dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    run_dir = ROOT / "runs" / "h1" / dt.datetime.now(dt.UTC).strftime("%Y%m%dT%H%M%SZ")
     run_dir.mkdir(parents=True, exist_ok=True)
     out_path = run_dir / "report.json"
     out_path.write_text(json.dumps(report, indent=2, sort_keys=True, default=str))

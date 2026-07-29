@@ -1,6 +1,6 @@
 """H3 event collection: the H1 per-event walk generalized to any registered
-detector family, for the re-geometried breakout/squeeze study
-(docs/HYPOTHESES.md §H3). Detectors run verbatim on their studied DEFAULTS —
+detector family, for the historical re-geometried breakout/squeeze study.
+Detectors run verbatim on their studied DEFAULTS —
 zero re-tuning is the study's premise — and every event is managed
 swing-native exactly as in `sts.study.h1_events` (ATR stop/target,
 `risk.manage_bar` walk, charter cost-in-R approximation, 2-session

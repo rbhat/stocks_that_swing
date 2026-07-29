@@ -1,19 +1,25 @@
 # stocks_that_swing
 
-Systematic swing-trading research and forward-paper trading pipeline.
+Systematic 3–21-session swing-trading research and forward-paper engine.
 
 ## Current status
 
-[`docs/SWING_PLAN.md`](docs/SWING_PLAN.md) is the active governing plan for
-`swing-v1`: a practical, deterministic 3–15-session paper swing system using
-the repository's existing Yahoo-derived current-roster cache.
+[`docs/PLAN.md`](docs/PLAN.md) is the sole governing plan.
 
-Gate 0 scope and preregistration are complete. Gate 1 implementation is not
-authorized. No Swing-v1 cache freeze, detector, simulator adaptation,
-retrospective screen, selected setup, prospective wall, or forward book
-exists.
+The active `swing-ranking-v1` study will discover readable multi-timeframe
+swing strategies without preselecting strategy families, behaviors,
+indicators, targets, models, or parameter ranges. It will publish:
 
-ML-v2 remains historical at `STOP_INPUT`; earlier Success-v2 and ML Task 5
-STOP verdicts are unchanged.
+- gross profit with no assumed trading costs;
+- maximum drawdown;
+- profit/drawdown ratio; and
+- the top five for each metric.
 
-Start the next execution session with [`prompt_restart.md`](prompt_restart.md).
+There is no composite weighting, performance kill criterion, or automatic
+promotion. The user chooses the forward-test mix.
+
+The practical Yahoo/current-roster cache is accepted with explicit
+survivorship and adjusted-history limitations. Planning is complete; discovery
+implementation is next.
+
+Start the next session with [`prompt_restart.md`](prompt_restart.md).

@@ -1,5 +1,4 @@
-"""H2 study runner -- earnings-reaction drift / PEAD price-proxy
-(docs/preregs/2026-07-12_h2-pead.md).
+"""H2 study runner -- earnings-reaction drift / PEAD price-proxy.
 
 Builds reaction events once over the full roster history (no OOS filtering
 yet), assigns causal deciles once over that full history, then per cell
@@ -31,11 +30,11 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from sts import calendar  # noqa: E402
-from sts.catalyst import EARNINGS_PATH, CatalystCalendar  # noqa: E402
-from sts.data.study_store import StudyStore  # noqa: E402
-from sts.study.h1_events import slice_by, summarize  # noqa: E402
-from sts.study.h2_events import (  # noqa: E402
+from sts import calendar
+from sts.catalyst import EARNINGS_PATH, CatalystCalendar
+from sts.data.study_store import StudyStore
+from sts.study.h1_events import slice_by, summarize
+from sts.study.h2_events import (
     _PARAM_DEFAULTS,
     assign_deciles,
     build_reaction_events,
@@ -177,7 +176,7 @@ def build_cell_report(
         "entry_mode": entry_mode,
         "oos_start": oos_start.isoformat(),
         "oos_end": oos_end.isoformat(),
-        "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "generated_at": dt.datetime.now(dt.UTC).isoformat(),
         "n_candidate_events": len(windowed_events),
         "layer_a": layer_a,
         "layer_b": layer_b,
@@ -287,15 +286,15 @@ def main() -> None:
     combined = {
         "oos_start": oos_start.isoformat(),
         "oos_end": oos_end.isoformat(),
-        "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "generated_at": dt.datetime.now(dt.UTC).isoformat(),
         "event_funnel": event_funnel,
         "cells": reports,
     }
     out_path = run_dir / "report.json"
     out_path.write_text(json.dumps(combined, indent=2, sort_keys=True, default=str))
     print(
-        "\nThis is a REPORT, not a verdict -- primary cell = top_decile_day2_open per "
-        "docs/preregs/2026-07-12_h2-pead.md; the other cells are descriptive only. Any "
+        "\nThis is a REPORT, not a verdict -- primary cell = top_decile_day2_open; "
+        "the other cells are descriptive only. Any "
         "PROCEED needs independent review."
     )
     print(f"\nwrote {out_path}")

@@ -1,76 +1,57 @@
+CRITICAL: THIS FILE IS ONLY USER EDITABLE. AGENTS SUGGEST CHANGES IF NEEDED.
+
 # Vision
 
-Build a daily-data swing-trading engine that finds and paper-trades **3–15 session moves** in
+Build a daily-data swing-trading engine that finds and paper-trades **3–21 session moves** in
 liquid US stocks using multi-timeframe technical setups — higher-timeframe trend and levels
 choosing *where* to look, daily-timeframe triggers choosing *when* to act — with risk sized to
 swing-scale volatility, validated by pre-registered studies against history, and proven by a
 fast-accruing forward paper book. Paper only; real money never, unless explicitly authorized
 much later.
+The idea is to have many small resolutions per year instead of a few large ones.
 
-## Active scope — reaffirmed 2026-07-28
+The repository's Yahoo-derived current-roster cache is accepted for bounded
+historical screening with explicit survivorship and adjusted-history
+limitations. Forward paper results provide the next evidence after the user
+selects a mix. The sole plan is `docs/PLAN.md`.
 
-The active project is `swing-v1`: a practical, deterministic swing system
-using the repository's local Yahoo-derived current-roster cache. Institutional
-point-in-time history and ML are out of scope. Retrospective tests are bounded
-screening evidence with explicit survivorship and adjusted-price limitations;
-only preregistered forward paper results can validate continued operation.
-
-The active plan is `docs/SWING_PLAN.md`. ML-v2 ended `STOP_INPUT` and remains
-historical evidence.
-
-**The core bet:** short-horizon edges in equities are real but small and conditional
-(trend-conditioned mean reversion, post-earnings drift, volatility-compression breaks). They
-were invisible to the parent project because it measured them with a long-hold yardstick. Sized
-and judged at their own scale, they compound through turnover: many small resolutions per year
-instead of a few large ones.
 
 **Success looks like:**
-- At least one fixed setup with **positive preregistered retrospective screening profit after
-  doubled friction** on n ≥ 100 closed trades, followed by a qualifying forward paper test.
-  The current-roster screen is not called untouched OOS. Every entry must offer **planned
-  reward:risk > 1.5R**, and every initial stop must risk **< 25% of entry** (the charter's
-  existing ≤ 12% stop bound is stricter). These are entry-time geometry bars; realized
+- Retrospective screening produces a reproducible top-five ranking by gross
+  profit, drawdown, and profit/drawdown, followed by the user's choice of
+  strategies for forward paper testing. No trading cost is assumed or
+  deducted. The current-roster screen is not called untouched OOS. Every
+  initial stop must risk **< 25% of entry**.
+  These are entry-time geometry bars; realized
   winners are reported as a distribution, not forced to exceed 1.5R after the fact.
-- A forward paper book whose realized net return sits inside the matched-trade-count
-  retrospective screening net-return band after
-  **≥ 30 closed trades and ≥ 3 months** — swing velocity makes this cheap; forward evidence is
+- A forward paper book whose realized gross return is compared with the
+  matched-trade-count retrospective screening gross-return band after
+  **≥ 30 closed trades** — swing velocity makes this cheap; forward evidence is
   the arbiter, and here it arrives in months, not years.
-- Median hold ≤ 15 sessions; every trade carries its setup, trigger, stop, target, and time
+- Median hold ≤ 21 sessions; every trade carries its setup, trigger, stop, target, and time
   stop at entry — nothing is a black box.
-- Drawdown inside the charter cap — **40% max peak-to-trough on net portfolio equity**
-  (amended 2026-07-26); friction share of gross P&L tracked on every report. A portfolio
-  backtest only counts as a real read at **≥ 10% average deployed** over its window
-  (amended 2026-07-26) — a book that sits in cash proves nothing.
+- Drawdown reported against the charter reference — Turnover and break-even cost are
+  reported without assuming a commission, spread, fee, or slippage. 
 
-**The honest kill criterion:** if neither fixed Swing-v1 setup clears every retrospective
-screening gate, or if the selected setup fails its preregistered forward paper gate, the
-active study records STOP. Historical H1–H3 and ML verdicts remain unchanged.
+**The honest kill criterion - User Override:** None. Rank top 5 setups in terms of Profit, Drawdown and Profit/Drawdown ratio. Let the user decide the mix of strategies to use for forward testing.
 
 **Principles:**
 - **Swing-native geometry.** Risk is anchored to the instrument's own volatility (ATR) and
   structure, never to a fixed percent designed for multi-year holds. The >1.5R planned
-  reward:risk bar is a prospective entry-quality constraint; net profit after friction is
-  still the outcome that governs. The bar must not be met by widening stops, extending the
-  15-session hold, or relabeling old studies.
-- **No shared surface with the parent.** Code, data, decisions, and configuration are never
-  copied wholesale from `stocks_that_move`. LESSONS §7 names a short list of infrastructure
-  files (calendar, fetch, store, quality gate, atomic-write plumbing) ported near-verbatim
-  because they're horizon-agnostic; everything that encodes a risk, sizing, stop, target, or
-  exit *decision* is designed fresh from this charter. The parent's specific numbers and
-  geometry (30% stops, Fibonacci extension targets, fixed-% position sizing, the ≥2R floor)
-  are never carried over — not even by accident of copy-paste from a ported file. Only
-  LESSONS.md crosses the boundary as prior, never as design.
-- **Edge before ops.** No dashboard, no alerts, no cloud VM until a study survives its gates
-  and the forward book exists. The parent built world-class operations around an unproven
-  edge; this project inverts the order.
+  reward:risk bar is a prospective entry-quality constraint. The bar must not
+  be met by widening stops, extending the 21-session hold, or relabeling old studies.
+- **Edge before ops.** No dashboard, no alerts, till user asks for it.
 - **Evidence discipline inherited whole** (LESSONS §5): pre-registration before any script,
   explicit retrospective cutoffs and prospective walls, append-only decision ledger,
   event-level judging on a wide roster, independent review before promotions, distributions
   over lucky paths. Historical current-roster screens are never mislabeled untouched OOS.
-- **Friction is first-class.** Swing turns over ~5–10× a long-hold book; every verdict is also
-  run at 2× assumed costs, and a family that dies at 2× is reported as fragile.
-- **Multi-timeframe, small and readable.** A handful of setups a human can narrate, each with
-  a stated mechanism (who is on the wrong side and why they pay us). No indicator soup, no ML.
+- **No assumed trading costs.** Rankings use gross simulated P&L. Turnover,
+  order count, profit per dollar turned over, and break-even proportional cost
+  are reported so the user can judge cost sensitivity without embedding a
+  commission, spread, fee, or slippage assumption.
+- **Multi-timeframe, small and readable.** Signal and execution rules remain human-readable.
+  ML may rank an already-fixed candidate pool; it cannot invent signals, change geometry,
+  override risk. It can only use the available backtest data and can use it fully.
 
 ---
 
@@ -79,9 +60,10 @@ Common: You're a technical-analysis trader with 20 years of experience, and a st
 Tell implementation subagents to give upto top 3 common errors and lets this to the coding rules to avoid. Add to coding_rules.md and point to it for agent runs. Keep it bullet point, clear and concise. Dont add explanation, history, reasoning or anything else to it.
 Always use ruff --fix, not bare ruff. 
 Use .scratch/ folder to create and execute temporary files and scripts. DO NOT ASK PERMISSIONS IN THIS REPO FOR BASH COMMANDS - YOU ARE AUTHORIZED.
+DO NOT ADD CHANGELOG TO PLANS, DOCS, STRATEGIES and REPORTS. Keep them focused and concise. p[]
 
-Claude: Top level agent will think, deisgn, plan, architect and close the loop. Top level agent will use Opus 5.0 subagent to orchestrate, coordinate and audit the completed tasks. Opus 5.0 will use Sonnet subagents to exceute the tasks.  Minimize expensive token usage, use SendMessage as needed.
-Codex: Top level agent will run autonomously, it will think, deisgn, plan, architect, alignment and close the loop. Use Terra subagents for focused implementation, testing, and bounded research tasks, independent quality and audit. 
+****Claude****: Top level agent will think, deisgn, plan, architect and close the loop. Top level agent will use Opus 5.0 subagent to orchestrate, coordinate and audit the completed tasks. Opus 5.0 will use Sonnet subagents to exceute the tasks.  Minimize expensive token usage, use SendMessage as needed.
+****Codex****: Top level agent will run autonomously, it will think, deisgn, plan, architect, alignment and close the loop. Use Terra subagents for focused implementation, testing, and bounded research tasks, independent quality and audit.
 
 ---
 
@@ -95,21 +77,15 @@ Capital & sizing:
   project, not merely phase-gated).
 
 Stops & exits:
-- Every position has a hard stop at entry: ATR-anchored (~2×ATR14) or structure-anchored
-  (below the pullback low / gap base), study-determined; stop distance sanity-bounded to
+- Every position has a hard stop at entry study-determined; stop distance sanity-bounded to
   ≤ 12% of entry. Never widened. Never average down.
-- **Time stop: 15 sessions, hard** (user constraint, 2026-07-11 — swing trades resolve in 2–3
-  weeks or they are wrong).
+- **Time stop: 21 sessions, hard**
 - Targets are study-determined (structure: prior swing high / measured move / mean touch; or
-  ATR multiples). Every new entry must have **planned reward:risk > 1.5R** at the actual
-  fill, using the immutable initial stop as the R denominator. Planned R:R is reported on
-  every trade and every study. Geometry locked before this 2026-07-26 amendment remains
-  historical evidence only; it is never silently rewritten or promoted under the new bar.
+  ATR multiples).
 
 Entries & catalysts:
 - No new entries within **2 sessions before** a scheduled earnings date; holding through
-  earnings is allowed — no pre-event forced exits (user constraint, 2026-07-11). The
-  earnings-drift family (H2) enters *after* the event by design and is embargo-compatible.
+  earnings is allowed — no pre-event forced exits (user constraint, 2026-07-11). 
 
 Universe & data:
 - Liquid US common stocks/ETFs: price ≥ $5, average dollar volume ≥ $20M; roster ~150–250
@@ -119,18 +95,14 @@ Universe & data:
   truth; atomic writes (temp + fsync + replace); validate-before-write quality gate;
   split- and dividend-adjusted total-return basis, never mixed; incomplete bars never cached;
   jobs idempotent and resumable with ETA.
-- The historical **2024-01-01 OOS wall** remains immutable for predecessor studies. Swing-v1
-  may screen fixed, non-fitted rules through 2025 only because it explicitly makes no
-  untouched-OOS claim. Its decisive wall will be a future session committed after setup and
-  code freeze. (H3's entry families partially consumed 2025+ in the parent — caveat carried
-  in HYPOTHESES.)
 
 Process:
-- decisions.md append-only, newest first; every study pre-registered (bars locked before the
-  script exists); PROCEED/PARK/STOP verdicts; independent review for promotions, risk-rule
-  changes, and method changes; long-running scripts resumable with elapsed/ETA.
+- decisions.md records the active decision; every study fixes its research
+  protocol and candidate grammar before performance is read. Strategy rules
+  may be explored inside that grammar. The user decides the forward mix;
+  independent review is required for integrity, risk-rule, and method changes.
+  Long-running scripts are resumable with elapsed/ETA.
 - trades.jsonl append-only when the forward book exists; alerts (if ever) are trade events
   only.
-- The 2026-07-26 success amendment applies prospectively. Existing preregs, reports, and
-  verdicts remain immutable historical records, but no pre-amendment setup advances to a
-  new forward entry unless it is requalified under a fresh prereg and untouched data.
+- Historical evidence remains historical. No earlier setup enters the active
+  top five or forward mix unless it is evaluated under `docs/PLAN.md`.

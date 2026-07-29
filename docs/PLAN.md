@@ -1,221 +1,173 @@
-# ML-v2 Profitability-First Research Plan
+# Swing Strategy Discovery and Ranking Plan
 
-- **Created:** 2026-07-28 (America/Los_Angeles)
-- **Status:** GATE 2 `STOP_INPUT`; GATE 3 NOT AUTHORIZED
-- **Lifecycle:** CLOSED; historical after `swing-v1` scope change
-- **Active successor:** `docs/SWING_PLAN.md`
-- **Study identity:** `ml-v2`
-- **Planning package:** `docs/evidence/ml-v2/`
-- **Archived predecessor plans:** `docs/archive/pre-ml-v2-2026-07-28/`
+- **Study:** `swing-ranking-v1`
+- **Status:** ready for implementation
+- **Authority:** `docs/VISION.md` defines the scope; this is the sole active
+  execution plan
 
-This is a new, independent study. It does not continue the stopped
-`ml-restart` line, reopen Success-v2 Phase 3, amend the locked ML Task 5
-**STOP**, promote A-T1-M3, or authorize Task 6. Prior results are design
-evidence only.
+## Objective
 
-## Objective and success unit
+Discover daily-data, long-only swing strategies for liquid US stocks and rank
+the results by:
 
-The objective is realizable long-only portfolio profitability after
-conservative doubled friction. Development evaluates complete executable
-setups through one cash-, slot-, and capacity-constrained simulator. It may
-freeze zero to three setups for a later genuinely prospective forward test.
+1. gross profit;
+2. maximum drawdown; and
+3. profit/drawdown ratio.
 
-A setup is indivisible: point-in-time universe, signal, score, entry, stop,
-target, time and exit rules, sizing, allocation, concurrency, daily throttle,
-liquidity, capacity, costs, gaps, and rejected fills all share one canonical
-identity. A score or model without the rest of that specification cannot be
-selected.
+Publish the top five for each ranking with one comparison table containing all
+three raw metrics and ranks. Do not combine the metrics with an assumed
+weighting. The user decides which strategies and mix, if any, proceed to
+forward paper testing.
 
-The primary measure is `NROCC_2x`, net return on committed capital at doubled
-friction:
+There is no performance kill criterion, qualification gate, or automatic
+promotion.
 
-`NROCC_2x = sum(closed_trade_net_pnl_2x) / sum(entry_fill_notional)`.
+## Discovery scope
 
-The numerator includes every accepted trade in the simulated portfolio,
-including forced terminal liquidations and conservative delisting treatment.
-The denominator is the sum of executed entry notional (`shares × entry fill`)
-for those trades; rejected or unfilled orders contribute zero to both. Capital
-may be reused only after it is released by the simulator.
+Explore multi-timeframe technical strategies that use higher-timeframe trend
+or levels to define where to look and daily triggers to define when to act.
 
-Exact setup cells, metrics, gates, controls, inputs, and simulator behavior are
-locked in:
+The plan does not preselect:
 
-- `docs/evidence/ml-v2/setup-matrix.md`;
-- `docs/evidence/ml-v2/development-preregistration.md`;
-- `docs/evidence/ml-v2/research-contract.md`.
+- strategy families or market behaviors;
+- indicators, lookbacks, thresholds, or features;
+- entry or exit patterns;
+- stop or target formulas;
+- ranking models;
+- parameter ranges;
+- the number of candidates;
+- data folds or optimization method; or
+- a preferred balance among profit, drawdown, and profit/drawdown.
 
-## Authorization model
+Signals and execution rules must remain human-readable. ML may rank a
+candidate pool but cannot invent signals, change geometry, size positions, or
+override risk.
 
-Only the current gate may be authorized. Passing a gate does not authorize the
-next gate. Every gate ends with evidence, deterministic hashes, review, and an
-append-only entry below.
+Exploration may iterate. Each tested strategy version must be retained with
+its exact rules, parameters, data range, inputs, and results. A strategy may
+change during discovery; an old result may not be attributed to a revised
+strategy.
 
-### Gate 0 — Planning and preregistration
+Before performance is read, each study run records its research protocol,
+candidate grammar, data cutoff, and prospective wall. The historical screen
+may use all available backtest data and is labeled screening, never untouched
+out-of-sample evidence.
 
-Authorized by the 2026-07-28 request:
+## Charter constraints
 
-- archive the predecessor governing plan, ML implementation plan, and ML
-  development preregistration;
-- create the independent `ml-v2` package;
-- lock the six-cell candidate matrix, metrics, controls, gates, input
-  contract, simulator contract, artifact contract, estimates, forward
-  template, and STOP conditions;
-- review documentation only.
+Every candidate must follow `docs/VISION.md`:
 
-**Prohibited:** reading any new market or source data, collecting data,
-implementing research code, fitting a transform or model, executing a
-development simulation, setting a prospective wall, starting a forward test,
-deploying, or changing any earlier verdict.
+- daily data and 3–21-session swing trades;
+- liquid US common stocks/ETFs from the accepted current-roster cache;
+- price at least `$5` and average dollar volume at least `$20M`;
+- long only and paper only;
+- `$100,000` starting capital;
+- 0.75% of equity risked per trade;
+- 15% maximum position notional;
+- eight concurrent positions and 80% maximum deployment;
+- a study-determined hard stop present at entry and no more than 12% below
+  entry;
+- planned reward/risk greater than 1.5;
+- a study-determined target present at entry;
+- a hard time stop no later than 21 sessions;
+- no stop widening or averaging down; and
+- no new entry within two sessions before scheduled earnings.
 
-**Gate:** the documents are internally consistent and reviewable. End and ask
-for explicit Gate 1 authorization.
+The plan adds no other strategy, target, or portfolio constraint.
 
-### Gate 1 — Pure contracts and synthetic simulator
+## Data and evidence
 
-Authorized by the 2026-07-28 user request and completed:
+The local validated parquet cache is the source of truth. Use one adjustment
+basis consistently and exclude incomplete bars. Every artifact states the
+current-roster survivorship, symbol-history, delisting, adjustment-vintage,
+and historical earnings-calendar limitations.
 
-- implement canonical setup/config identities;
-- implement the cash/slot/capacity simulator and exact metric/control
-  contracts against hand-calculated and synthetic fixtures only;
-- implement fail-closed interfaces for point-in-time inputs without opening
-  market datasets;
-- implement leakage, capital-reuse, tie, gap, delisting, rejected-fill,
-  crash/retry, and doubled-friction tests;
-- prove byte-identical synthetic reruns.
+All features, signals, and decisions must use information available at the
+decision time. Data quality, causal ordering, accounting, and reproducibility
+are validity requirements, not performance gates.
 
-**Gate:** all hand calculations, property tests, synthetic canaries, focused
-tests, full tests, lint, and diff checks pass. No market or vendor dataset was
-opened.
+Each evaluated strategy must produce:
 
-Evidence: `docs/evidence/ml-v2/gate-1.md`.
+- its complete readable specification;
+- its data identity and evaluation range;
+- candidate, order, trade, and daily-equity records;
+- entry trigger, fill, stop, target, time stop, and exit reason for every
+  trade;
+- yearly and full-period results;
+- trade count, hold-time distribution, exposure, turnover, and order count;
+- winner and loser distributions;
+- profit per dollar turned over and break-even proportional cost;
+- concentration by time and symbol; and
+- limitations and reproducibility identity.
 
-### Gate 2 — Source acquisition and point-in-time certification
+## Trading costs
 
-Authorized by the 2026-07-28 user request, “Do the next step,” because it
-permits source discovery, procurement, and data reads. A manifest was built
-for the required point-in-time security master, membership, security type,
-symbol mapping, delistings, corporate actions, OHLCV, earnings schedule,
-benchmark, and exchange calendar. Only the locked fail-closed quality checks
-were run.
+Assume no commission, fee, spread, or slippage. Do not deduct any trading cost
+from profit or equity.
 
-**Gate:** every critical source is certified, content-addressed, and adequate,
-or record `STOP_INPUT`. A survivor-only substitute cannot pass.
+Turnover, order count, profit per dollar turned over, and break-even
+proportional cost are diagnostics only. They do not affect rankings.
 
-**Result:** `STOP_INPUT`. The local Yahoo/current-roster cache was rejected,
-and no licensed CRSP/LSEG-style extracts or authoritative calendar were
-available. Evidence: `docs/evidence/ml-v2/gate-2.md`.
+## Ranking definitions
 
-### Gate 3 — Walled development dataset
+### Profit
 
-Requires separate authorization. Materialize only the preregistered
-development interval and folds, using the Gate 2 manifest. Build causal
-features, fixed outcomes, event pools, controls, and deterministic row
-identities. Do not fit models.
+`profit = ending_equity - starting_equity`
 
-**Gate:** wall, as-of, membership, delisting, coverage, leakage, join,
-missingness, and deterministic rebuild checks pass, or STOP.
+Use gross realized portfolio P&L with no assumed trading costs. Higher is
+better.
 
-### Gate 4 — Bounded development execution
+### Drawdown
 
-Requires separate authorization. Fit and evaluate exactly the six locked
-setups, their fixed same-date baselines, 200 random-ranking controls per fold,
-and 999 synchronized local permutations. Run the slot/capital simulator for
-every real and control arm. No cell, feature, threshold, model, fold, or
-simulator rule may be added or changed.
+`drawdown = max(1 - equity / running_peak_equity)`
 
-**Gate:** apply all preregistered gates mechanically. Produce the full
-development record and an independent methodology review.
+Use maximum peak-to-trough drawdown on the strategy's portfolio equity. Lower
+is better.
 
-### Gate 5 — Deterministic top-three freeze
+### Profit/drawdown
 
-This is part of Gate 4 only if at least one setup clears every gate. Rank only
-clearing setups by the locked rule and freeze at most three. If none clear,
-record STOP. If fewer than three clear, freeze only those. Never promote a
-least-bad setup.
+`profit_drawdown = gross_portfolio_return / maximum_drawdown`
 
-For each selected setup freeze:
+Higher is better. A positive return with zero drawdown is reported as
+`positive_return_no_drawdown` and ranks first. Zero return with zero drawdown
+is `undefined` and ranks last.
 
-- source commit and clean-tree patch hash;
-- canonical setup/config;
-- data manifest and source hashes;
-- feature schema and fold definitions;
-- fitted preprocessing/model artifact, if any;
-- simulator version;
-- selected identities and reviewed report;
-- one root identity hash over all preceding hashes.
+### Output
 
-No substitution, retuning, replacement, or refit is allowed after freeze.
+Produce three independent leaderboards:
 
-### Gate 6 — Prospective preregistration completion and wall lock
+- top five by profit;
+- top five by lowest drawdown; and
+- top five by profit/drawdown.
 
-Requires new explicit authorization after Gate 5. Instantiate
-`docs/evidence/ml-v2/forward-test-preregistration-template.md` for the frozen
-roster, implement and rehearse only with synthetic and development-period
-inputs, independently review exact code/config/data/model hashes, then set the
-first eligible future exchange session as the prospective wall. The wall is
-deliberately unset now.
+Also produce one cross-metric table for every strategy appearing in any top
+five. Do not create a composite score or select a single winner. Include
+strategy similarity and overlapping trades so the user can judge a useful
+forward mix.
 
-**Gate:** preregistration, collector, simulator, artifacts, hashes, and wall are
-committed before any on/after-wall row is read.
+No strategy is removed because of profitability, drawdown, sample size,
+uncertainty, exposure, stability, controls, or model type. Report those facts
+where available and leave the decision to the user.
 
-### Gate 7 — Prospective forward test
+## Work sequence
 
-Requires separate authorization. The scheduled prospective process is the
-first reader/writer of on/after-wall evidence. No backfill, retuning,
-substitution, or candidate replacement. Development artifacts and forward
-evidence remain in disjoint namespaces.
+1. Define and record the discovery protocol and candidate grammar without
+   reading performance.
+2. Implement the exploration, portfolio simulation, artifacts, and tests.
+3. Explore strategy versions and retain every evaluated specification.
+4. Produce the three rankings and top-five comparison.
+5. Ask the user to select the forward-paper mix.
+6. Version the selected strategies and start a prospective wall only after
+   that selection.
+7. Compare forward gross return with retrospective screening after at least
+   30 closed trades per selected strategy.
 
-**Gate:** the locked minimum observation floors are met or the maximum
-observation window expires. Produce the preregistered result without changing
-the roster or rubric.
+The sequence is not a set of performance gates. The user may change direction
+or request additional work at any point. Dashboard, alerts, deployment, and
+live money are outside scope unless the user explicitly asks.
 
-### Gate 8 — Forward verdict
+## Next step
 
-Independently reproduce identities and metrics, then record each frozen
-setup's rubric result. A portfolio can proceed only under the forward
-preregistration; development success alone is not promotion authority.
-Deployment or live-money work would require a separate plan and authorization.
-
-## Global STOP conditions
-
-Stop the active gate immediately and write an immutable failure record if:
-
-- work begins without explicit authorization for that gate;
-- any new market/source data is opened during Gate 0 or 1;
-- a critical input lacks certified point-in-time membership, security type,
-  delisting, or corporate-action history;
-- a survivor-only roster is silently substituted;
-- any row crosses a locked development or prospective wall;
-- a feature, transform, rank, order, or outcome uses unavailable future facts;
-- overlapping positions reuse cash, risk, a slot, or notional;
-- an equal-score path falls through to symbol or alphabetical order;
-- geometry, sizing, costs, gaps, rejected-fill handling, folds, controls,
-  gates, or candidates change after evidence is read;
-- a non-preregistered arm or open-ended search is attempted;
-- any selected setup fails a required gate or a credible local permutation
-  exists;
-- family multiplicity is reinterpreted after results;
-- a rerun identity differs without an explained, reviewed input change;
-- evidence is backfilled, overwritten, omitted, or mixed with predecessor or
-  forward namespaces;
-- a frozen setup is substituted, retuned, refit, or replaced;
-- a failed result is relabeled or a least-bad setup is promoted.
-
-## Append-only execution log
-
-- 2026-07-28 — Gate 0 planning package created and reviewed under planning-only
-  authority. No new market data was read, no implementation or fitting
-  occurred, no prospective wall was set, and the ML Task 5 STOP remains
-  unchanged. Gate 1 is proposed but not authorized.
-- 2026-07-28 — Gate 1 explicitly authorized and completed. Pure contracts,
-  canonical identities, metrics, controls, and the synthetic portfolio
-  simulator passed focused, full-suite, lint, property, crash/retry, and
-  byte-identity checks. No market or vendor dataset was opened, no transform
-  or model was fitted, and no run directory was created. Gate 2 remains
-  unauthorized.
-- 2026-07-28 — The user authorized the next sequential step, Gate 2. Source
-  discovery and fail-closed certification ended `STOP_INPUT`: all eight
-  critical source kinds were unavailable or rejected for leakage risk. The
-  survivor-oriented Yahoo cache was not substituted. No development dataset,
-  feature, model, simulation, selection, prospective wall, or deployment was
-  created. Gate 3 remains unauthorized.
+Implement the discovery protocol, candidate grammar, evaluator, and ranking
+artifacts described here. Do not preselect strategies or targets while doing
+so.

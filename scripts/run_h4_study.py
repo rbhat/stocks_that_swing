@@ -2,7 +2,7 @@
 trend-pullback, H3 re-geometried breakout, H2 PEAD) into real portfolio
 backtests via `sts.portfolio.simulate_portfolio`, judged against the
 Phase-4 absolute bars (net_return>0 base-arm, max_drawdown<=25%,
-avg_deployed>=20%; see docs/superpowers/plans/2026-07-12-phase4-portfolio.md).
+avg_deployed>=20%).
 
 This script REPORTS; it never writes a decisions.md verdict, and per Phase-3
 convention, an independent review is required before anything acts on a
@@ -32,12 +32,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from sts import calendar  # noqa: E402
-from sts.catalyst import CatalystCalendar  # noqa: E402
-from sts.data.study_store import StudyStore  # noqa: E402
-from sts.portfolio import simulate_portfolio  # noqa: E402
-from sts.study.h4_candidates import FAMILY_PARAMS, candidates_for  # noqa: E402
-from sts.study.h4_gate import bootstrap_expectancy, jitter_grid, year_stability  # noqa: E402
+from sts import calendar
+from sts.catalyst import CatalystCalendar
+from sts.data.study_store import StudyStore
+from sts.portfolio import simulate_portfolio
+from sts.study.h4_candidates import FAMILY_PARAMS, candidates_for
+from sts.study.h4_gate import (
+    bootstrap_expectancy,
+    jitter_grid,
+    year_stability,
+)
 
 DEFAULT_OOS_START = dt.date(2024, 1, 1)
 COST_ARMS = {"base": (5.0, 1.0), "2x": (10.0, 2.0)}
@@ -208,7 +212,7 @@ def build_report(
         "members": list(members) if family == "combined" else None,
         "oos_start": oos_start.isoformat(),
         "oos_end": oos_end.isoformat(),
-        "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "generated_at": dt.datetime.now(dt.UTC).isoformat(),
         "n_trades_base_arm": base_summary["n_trades"],
         "bars": bars,
         "slices": slices,

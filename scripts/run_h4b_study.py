@@ -1,6 +1,5 @@
 """Phase-4b portfolio study runner -- H1 re-expressed with ranked selection
-+ burst throttle, per the locked prereg
-docs/preregs/2026-07-12_h4b-h1-ranked-expression.md. Same signal as Phase-4
++ burst throttle under its historical locked specification. Same signal as Phase-4
 H1 (no detector/geometry retest); only the entry-priority ordering and a
 new-entries throttle change, via `sts.portfolio.simulate_portfolio`'s
 `entry_rank_key` / `max_new_entries_per_window` kwargs.
@@ -31,12 +30,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from sts import calendar, risk  # noqa: E402
-from sts.catalyst import CatalystCalendar  # noqa: E402
-from sts.data.study_store import StudyStore  # noqa: E402
-from sts.portfolio import simulate_portfolio  # noqa: E402
-from sts.study.h4_candidates import FAMILY_PARAMS, candidates_for  # noqa: E402
-from sts.study.h4_gate import bootstrap_expectancy, year_stability  # noqa: E402
+from sts import calendar, risk
+from sts.catalyst import CatalystCalendar
+from sts.data.study_store import StudyStore
+from sts.portfolio import simulate_portfolio
+from sts.study.h4_candidates import FAMILY_PARAMS, candidates_for
+from sts.study.h4_gate import bootstrap_expectancy, year_stability
 
 DEFAULT_OOS_START = dt.date(2024, 1, 1)
 COST_ARMS = {"base": (5.0, 1.0), "2x": (10.0, 2.0)}
@@ -283,7 +282,7 @@ def build_report(
         "study": "h4b-h1-ranked-expression",
         "oos_start": oos_start.isoformat(),
         "oos_end": oos_end.isoformat(),
-        "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "generated_at": dt.datetime.now(dt.UTC).isoformat(),
         "n_trades_base_arm": base_summary["n_trades"],
         "bars": bars,
         "slices": slices,

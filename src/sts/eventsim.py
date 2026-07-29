@@ -6,14 +6,14 @@ structure-anchored stop, ATR- or structure-anchored target, and the hard
 15-session time stop, managed bar-by-bar via `risk.manage_bar`. Entry is
 always the next bar's open after the signal fires.
 
-Two-layer read (docs/PLAN.md Phase 2, docs/HYPOTHESES.md "bars shape"):
+Two-layer read:
 - Layer (a), `raw_forward_returns`: exit-free forward returns at fixed
   horizons — the entry's raw price edge in isolation, no stop, no target,
   no time cap.
 - Layer (b), `simulate_events`: the same events run through the full swing
   exit structure, reported as R multiples (expectancy).
 Layer (a) must be positive on its own; a family that only wins after
-exit-sim is an exit artifact, not a real signal (docs/HYPOTHESES.md).
+exit-sim is an exit artifact, not a real signal.
 
 Independent-event convention (documented explicitly, not inherited): no
 portfolio caps, no slot competition, no slippage, no commissions — each
@@ -33,7 +33,7 @@ Deterministic: no RNG anywhere in this module.
 from __future__ import annotations
 
 import datetime as dt
-from typing import Callable
+from collections.abc import Callable
 
 import numpy as np
 import pandas as pd

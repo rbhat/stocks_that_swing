@@ -24,15 +24,16 @@ cannot yet produce the net, auditable evidence required by its own charter.
    rule, and add a regression test. Amend the Phase-2 ledger claim that skipping this bar is
    merely conservative; it can be optimistic.
 
-2. **⏸ DEFERRED (slippage assumed 0 for now) — Implement the evidence contract, not just gross R.** The simulator explicitly has no
-   slippage or commissions (`src/sts/eventsim.py:18`), yet every promotion bar requires base
-   and 2x friction (`docs/VISION.md:17`, `docs/PREREG_TEMPLATE.md:50`). It also marks an
+2. **⏸ SUPERSEDED — Implement the evidence contract, not just gross R.** The
+   simulator explicitly has no slippage or commissions
+   (`src/sts/eventsim.py:18`). The former cost-based promotion contract was
+   removed; the active plan now ranks gross results with no assumed trading
+   costs. It also marks an
    immature trade to the last close and includes that partial return in expectancy
    (`src/sts/eventsim.py:225`), which can bias the most recent OOS events. Before studies:
 
-   - define whether the bps assumption is execution slippage or an additional fee;
-   - return gross, base-cost, and 2x-cost R using charter-sized reference positions so the
-     $1/order term is meaningful;
+   - report gross R, turnover, and break-even cost without assuming a fee or
+     slippage value;
    - exclude right-censored events from judged `n` and expectancy (report them as immature);
    - emit auditable per-event rows: symbol, signal/entry/exit dates, prices, exit reason,
      initial risk, gross/net R, hold, cap/clamp flags, and skip reason. The current summary-only
@@ -57,9 +58,9 @@ cannot yet produce the net, auditable evidence required by its own charter.
    cluster by signal date and symbol; overlapping events should have a one-active-event-per-
    symbol sensitivity rather than being treated as independent observations.
 
-5. **⏸ DEFERRED — Make the preregistration actually constrain search.** H1's stated grid is already 54
-   cells, before resolving ambiguous choices such as 20 vs 40 weeks, 3 vs 5 down closes, and
-   10 vs 20-day exits (`docs/HYPOTHESES.md:46-64`). Lock one executable primary cell; secondary
+5. **⏸ DEFERRED — Make the preregistration actually constrain search.** H1's
+   historical grid was already 54 cells, before resolving ambiguous choices
+   such as 20 vs 40 weeks, 3 vs 5 down closes, and 10 vs 20-day exits. Lock one executable primary cell; secondary
    cells are descriptive and cannot PROCEED without a fresh prereg. State which bars use IS,
    OOS, or both, how partial 2025/2026 years vote, and how multiplicity is controlled. The
    current “no year >40%” rule is not interpretable if it is applied only to roughly two
@@ -123,7 +124,7 @@ cannot yet produce the net, auditable evidence required by its own charter.
   the 250-name roster. Separate the 100-name mutable watchlist contract from the research
   roster.
 - Ratify the currently missing drawdown cap and Phase-4 exposure floor before seeing Phase-3
-  winners (`docs/VISION.md:24`, `docs/PLAN.md:73-74`).
+  winners (`docs/VISION.md`).
 - Add a dependency lock and stamp Python/package versions plus git/data hashes into every
   artifact. Clean stale `stm`, `CLAUDE.md`, Phase-9/10, missing-transcript, Fibonacci-target,
   and 2R-fallback references; they contradict the repo's self-contained claim and obscure the

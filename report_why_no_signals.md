@@ -2,8 +2,7 @@
 
 **Review date:** 2026-07-26
 **Scope:** repository design, signal generation, production VM state/logs, tests, deployment, and the research-to-forward handoff.
-**Historical status:** diagnosis retained; its former repair handoff was superseded by the
-2026-07-26 full restart. `docs/PLAN.md` is the sole active plan.
+**Historical status:** diagnosis retained; it is not an active plan.
 
 ## Executive conclusion
 
@@ -109,14 +108,14 @@ This means fixing EOD detection does not require changing the strategy, risk mul
 - EOD: detect and rank using completed information; record signal-bar ATR and provisional display geometry.
 - Next open: observe the actual open; compute final entry/stop/target/size.
 
-That is also what the locked forward prereg says at `docs/preregs/2026-07-12_phase5-forward-paper.md:69-86`.
+That is also what the removed legacy forward specification required.
 
 ## The design document already anticipated this bug
 
-The Phase-5 implementation plan is unusually explicit:
+The removed legacy Phase-5 specification was unusually explicit:
 
-- `docs/superpowers/plans/2026-07-12-phase5-forward-paper.md:177-184` says the live path cannot depend on next-bar geometry and must compute provisional signal-close/ATR geometry.
-- `docs/superpowers/plans/2026-07-12-phase5-forward-paper.md:217` says the fill job must re-anchor at the actual open.
+- the live path cannot depend on next-bar geometry and must compute provisional signal-close/ATR geometry;
+- the fill job must re-anchor at the actual open.
 
 The prose at lines 180–184 contains the required design, but `pipeline._default_candidate_source()` still reuses `candidates_for()` as if it could return the underlying signal without geometry. It cannot.
 
@@ -149,7 +148,10 @@ There is no production-like EOD test with a valid detector event on the last row
 
 ### The manual rehearsal was historical, not live-equivalent
 
-`docs/superpowers/plans/2026-07-12-phase5-forward-paper.md:250-255` prescribed an EOD rehearsal for a prior Friday followed by the next session's fill. When a historical `asof` is used against a cache that already contains later bars, `entry_geometry()` can see the next session and the broken adapter appears to work.
+The legacy rehearsal used a prior Friday followed by the next session's fill.
+When a historical `asof` is used against a cache that already contains later
+bars, `entry_geometry()` can see the next session and the broken adapter
+appears to work.
 
 A valid live rehearsal must truncate every frame exactly at `asof` before signal generation.
 
@@ -237,10 +239,6 @@ This is the recommended starting map for future work.
 
 - `docs/VISION.md:1-55` — product goal, success criteria, evidence principles.
 - `docs/VISION.md:70-112` — ratified capital, sizing, exits, catalyst, universe, and process rules.
-- `docs/preregs/2026-07-12_phase5-forward-paper.md:1-46` — exact H1/H2 forward book and priority/throttle expression.
-- `docs/preregs/2026-07-12_phase5-forward-paper.md:48-95` — ledger and EOD/open/monitor execution contracts.
-- `docs/FORWARD_OPS.md:1-129` — schedules, production writer, manual commands, and ledger locations.
-- `decisions.md` — append-only study verdicts and overrides; use this rather than inferring promotion from `report.json["bars"]` alone.
 
 ### Data and calendar
 

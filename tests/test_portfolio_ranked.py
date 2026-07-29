@@ -1,15 +1,11 @@
-"""Tests for the Phase-4b `simulate_portfolio` additions: `entry_rank_key`
-and `max_new_entries_per_window` (docs/preregs/2026-07-12_h4b-h1-ranked-
-expression.md)."""
+"""Tests for the Phase-4b `simulate_portfolio` ranking and throttle additions."""
 
 from __future__ import annotations
 
 import datetime as dt
 
 import pandas as pd
-import pytest
 
-from sts import risk
 from sts.portfolio import simulate_portfolio
 
 

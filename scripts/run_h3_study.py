@@ -1,4 +1,4 @@
-"""H3 study runner -- re-geometried breakout/squeeze (docs/HYPOTHESES.md §H3).
+"""Historical H3 re-geometried breakout/squeeze study runner.
 
 Runs the parent's detector families VERBATIM on their studied DEFAULTS --
 vol_squeeze, consolidation_breakout, sweep_reclaim, and the avwap-252 x

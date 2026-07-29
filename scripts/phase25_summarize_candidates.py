@@ -1,6 +1,6 @@
 """Phase 2.5 stage: rank sweep_signals/screen_features output into a short
-candidates list. Screening, not judging — no PROCEED/PARK/STOP verdict here
-(docs/PLAN.md Phase 2.5). Output is candidates, never verdicts.
+candidates list. Screening, not judging — no PROCEED/PARK/STOP verdict here.
+Output is candidates, never verdicts.
 """
 
 from __future__ import annotations
@@ -11,8 +11,7 @@ from pathlib import Path
 
 from phase25_common import atomic_write_json, setup_stage_logger
 
-# Adequacy floor reused verbatim from docs/PREREG_TEMPLATE.md ("n ≥ 100
-# OOS events" — same minimum sample size applied here to IS sweep candidates).
+# Historical Phase 2.5 screening default; not an active qualification gate.
 DEFAULT_MIN_EVENTS = 100
 
 DISCLAIMER = (

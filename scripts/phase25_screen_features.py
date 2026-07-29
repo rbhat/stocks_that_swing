@@ -1,7 +1,6 @@
 """Phase 2.5 stage: feature engineering + a simple classifier screen predicting
 whether an event's forward move is positive, trained/evaluated only on IS
-data. Screening, not judging — no PROCEED/PARK/STOP verdict here (docs/PLAN.md
-Phase 2.5).
+data. Screening, not judging — no PROCEED/PARK/STOP verdict here.
 
 Reuses `sweep_signals.DETECTOR_FNS` for event generation (not a new detector
 list). Per-event features are computed directly from the price frame around
@@ -16,14 +15,14 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from phase25_common import atomic_write_json, load_is_frames, setup_stage_logger
+from phase25_sweep_signals import DETECTOR_FNS
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
 from sklearn.model_selection import TimeSeriesSplit, cross_val_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from phase25_common import atomic_write_json, load_is_frames, setup_stage_logger
-from phase25_sweep_signals import DETECTOR_FNS
 from sts import eventsim, risk
 
 FEATURES = ["atr_pct", "dist_from_20d_high", "volume_z"]

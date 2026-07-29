@@ -8,27 +8,22 @@ there for exactly this reuse), never re-derived here. Detector calls and
 decile/PEAD selection reuse `sts.study.h2_events` / `sts.signals` verbatim,
 same as the Phase-3 runners.
 
-`FAMILY_PARAMS` holds each family's LOCKED primary-cell params, copied
-verbatim from the family's prereg / Phase-3 runner (never edit these without
-also updating the cited prereg):
+`FAMILY_PARAMS` holds each historical family's locked primary-cell params,
+copied verbatim from its Phase-3 runner:
 
-- H1: docs/preregs/2026-07-11_h1-trend-pullback.md primary cell
-  ("trend_pullback"), params = `TREND_PULLBACK_DEFAULTS` (detector) +
+- H1: "trend_pullback", params = `TREND_PULLBACK_DEFAULTS` (detector) +
   `sts.study.h1_events._PARAM_DEFAULTS` (ATR window 14, stop/target multiple
   2.0 each) — see `scripts/run_h1_study.py`.
-- H3: docs/preregs/2026-07-12_h3-regeometried-breakout.md primary cell
-  "avwap_squeeze_seed" — the `vol_squeeze` detector on `SQUEEZE_DEFAULTS`
+- H3: "avwap_squeeze_seed" — the `vol_squeeze` detector on `SQUEEZE_DEFAULTS`
   gated by `trend_filter="avwap_252_above"` — see
   `scripts/run_h3_study.py` `CELLS["avwap_squeeze_seed"]`.
-- H2: docs/preregs/2026-07-12_h2-pead.md primary cell
-  "top_decile_day2_open" — the day2_open entry mode on the top decile of
+- H2: "top_decile_day2_open" — the day2_open entry mode on the top decile of
   the causal price/volume PEAD proxy — see `scripts/run_h2_study.py`
   `PRIMARY_CELL`.
 
 Catalyst embargo: ALL THREE families apply the standing 2-session
 pre-earnings entry embargo (`block_entry`), matching their Phase-3 event
-collection exactly — H2's locked prereg (2026-07-12_h2-pead.md, "Catalyst
-rule") locks the embargo for H2 too, and `h2_events` applies it at both
+collection exactly. `h2_events` applies it at both
 collection and simulation. An H2 entry sits ~a quarter away from the NEXT
 earnings date, so the filter rarely binds, but Phase 4 must not diverge
 from the locked family definition (independent-review finding F1,

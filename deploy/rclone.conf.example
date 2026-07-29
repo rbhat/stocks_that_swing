@@ -1,5 +1,5 @@
 # Copy to secrets/rclone.conf; pair with secrets/sts-drive-sa.json
-# (gcloud iam service-accounts keys create). See docs/FORWARD_OPS.md.
+# (gcloud iam service-accounts keys create).
 # service_account_file is the CONTAINER path (secrets/ mounts at /app/secrets).
 [gdrive-sa]
 type = drive

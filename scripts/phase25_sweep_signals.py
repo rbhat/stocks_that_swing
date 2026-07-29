@@ -1,6 +1,6 @@
 """Phase 2.5 stage: grid-sweep each detector's parameters through eventsim on
 IS-only data. Output is raw metrics per config — screening, not judging; no
-PROCEED/PARK/STOP verdict is computed here (docs/PLAN.md Phase 2.5).
+PROCEED/PARK/STOP verdict is computed here.
 
 Note: `sts.eventsim.simulate_events` / `raw_forward_returns` take the whole
 `prices` dict plus a `detector` callable override (they run detection
@@ -18,6 +18,7 @@ import time
 from pathlib import Path
 
 from phase25_common import atomic_write_json, load_is_frames, setup_stage_logger
+
 from sts import eventsim
 from sts.signals import breakout, deep_pullback, markov, squeeze, sweep_reclaim
 

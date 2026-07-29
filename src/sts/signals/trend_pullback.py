@@ -1,17 +1,17 @@
 """Trend-conditioned pullback detector (H1 primary cell: "trend_pullback").
 
-Mechanism (docs/preregs/2026-07-11_h1-trend-pullback.md): a name in a
-confirmed weekly uptrend (close above a rising 20-week MA) that prints an
+Mechanism: a name in a confirmed weekly uptrend (close above a rising
+20-week MA) that prints an
 RSI(2) oversold read, then closes back above the prior day's high, is a
 short-horizon reversal transacting against standing structural demand, not
 against a name in genuine distress.
 
-Only the H1 prereg's PRIMARY cell is implemented here (Trend-1 x Trigger-1 x
+Only the historical H1 primary cell is implemented here (Trend-1 x Trigger-1 x
 Entry-1): weekly close > rising 20-week MA, RSI(2) < 10, entry on the first
 reclaim of the prior day's high within `reclaim_max_wait` sessions of the
 start of an oversold episode. Secondary grid cells (40-week MA,
 consecutive-down-close/20d-SMA-tag triggers, limit-at-level entry) are out
-of scope -- the prereg marks them descriptive-only, never load-bearing for
+of scope -- they were descriptive-only, never load-bearing for
 the verdict.
 
 Weekly trend reuses `sts.weekly.resample_weekly` + `align_to_daily` for the

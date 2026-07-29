@@ -1,8 +1,8 @@
-"""Shared plumbing for every Phase 2.5 exploratory-discovery stage script.
+"""Shared plumbing for every historical exploratory-discovery stage script.
 
-Hard rule (docs/PLAN.md Phase 2.5): every stage reads only strictly-pre-OOS-wall
-data. This is enforced HERE, once, so no stage script can accidentally (or
-deliberately) read past it.
+Hard rule: every stage reads only strictly-pre-OOS-wall data. This is enforced
+HERE, once, so no stage script can accidentally (or deliberately) read past
+it.
 """
 
 from __future__ import annotations

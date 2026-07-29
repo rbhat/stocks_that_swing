@@ -1,7 +1,7 @@
 """Idempotent study-roster fetcher — builds the wide backtest cache (~250 names).
 
-WHY: event-level studies (HYPOTHESES.md) need statistical power across a wide,
-liquid roster, not just the 12 universe.yaml seeds. This fetches/tops-up the
+WHY: event-level studies need statistical power across a wide, liquid roster,
+not just the 12 universe.yaml seeds. This fetches/tops-up the
 roster to --target-total names so sparse slices (year, regime, symbol-liquidity
 tercile) clear their adequacy floors.
 

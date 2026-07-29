@@ -66,9 +66,9 @@ git diff --check
 (no output)
 ```
 
-`docs/FORWARD_OPS.md` now documents the three markers, deterministic partial
-resume, at-least-once notification behavior, and sync-on-every-invocation
-contract. No detector, decile, rank, risk, sizing, embargo, or book constant
+The then-current operations runbook documented the three markers,
+deterministic partial resume, at-least-once notification behavior, and
+sync-on-every-invocation contract. No detector, decile, rank, risk, sizing, embargo, or book constant
 changed. The existing 83 MB local cache was preserved, no production ledger
 was read or written, no secret was exposed or modified, and no `gcloud`
 command was called.

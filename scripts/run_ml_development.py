@@ -38,8 +38,6 @@ def _code_hashes() -> dict[str, str]:
         "src/sts/ml/evaluation.py",
         "src/sts/ml/development.py",
         "scripts/run_ml_development.py",
-        "docs/superpowers/plans/2026-07-26-ml-restart.md",
-        "docs/preregs/2026-07-26_ml-restart-development.md",
     )
     return {
         relative_path: sha256_file(ROOT / relative_path)

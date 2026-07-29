@@ -9,8 +9,7 @@ the caller wants simulated; it has no opinion on OOS walls, catalyst
 embargoes, or study wiring beyond the shared cross-family slot-contention
 rule below.
 
-Candidate dict contract (see plan docs/superpowers/plans/2026-07-12-phase4-
-portfolio.md): `{"symbol", "signal_date", "entry_date", "entry", "stop",
+Candidate dict contract: `{"symbol", "signal_date", "entry_date", "entry", "stop",
 "target", "family"}`. `entry`/`stop`/`target` are already validated at
 Phase-3 geometry by the adapter; this module re-validates via `risk.Position`
 and skips violators (counted, never silently dropped).
@@ -61,7 +60,7 @@ from __future__ import annotations
 
 import datetime as dt
 from collections import deque
-from typing import Callable
+from collections.abc import Callable
 
 import pandas as pd
 

@@ -339,7 +339,6 @@ Primary repository sources:
 - [Phase 3 evidence](phase-3.md)
 - [Phase 3 discovery artifact](../../../runs/success-v2/phase3/discovery.json)
 - [Phase 3 screen config](../../../configs/success_v2_phase3.yaml)
-- [Success contract](../../SUCCESS_GATE.md)
 - [Project charter](../../VISION.md)
 - [Dependency declaration](../../../pyproject.toml)
 
@@ -356,8 +355,5 @@ session.
 ## Disposition record (append-only)
 
 - 2026-07-26 — User selected **AUTHORIZE PLAN DRAFTING**.
-- Locked plan: `docs/superpowers/plans/2026-07-26-ml-restart.md`.
-- Locked development prereg:
-  `docs/preregs/2026-07-26_ml-restart-development.md`.
-- Planning authorization does not authorize implementation. Phase 3 remains
-  STOP and Phase 4 remains unauthorized.
+- The obsolete plan and preregistration were later removed during planning
+  consolidation. This memo remains historical evidence only.

@@ -1,5 +1,5 @@
-"""Phase 2.5 exploration orchestrator — single entrypoint for the exploratory
-discovery pass (docs/PLAN.md Phase 2.5). Runs sweep_signals, screen_features,
+"""Historical exploration orchestrator — single entrypoint for the exploratory
+discovery pass. Runs sweep_signals, screen_features,
 summarize_candidates as subprocesses against a FIXED run directory
 (runs/phase25/), so re-invoking with the same config resumes/no-ops instead of
 piling up duplicate timestamped runs (long-running-script convention, see
@@ -44,7 +44,7 @@ def _load_manifest(run_dir: Path) -> dict | None:
         return None
     try:
         return json.loads(p.read_text())
-    except Exception:
+    except (OSError, json.JSONDecodeError):
         return None
 
 
@@ -77,9 +77,9 @@ def plan_stages(run_dir: Path, config: dict, force_clean: bool = False,
     if not force_clean:
         if non_interactive:
             raise ConfigChangedError(
-                f"runs/phase25 has results from a different config; pass "
-                f"--force-clean to delete and restart, or --resume is not "
-                f"possible across a config change.")
+                "runs/phase25 has results from a different config; pass "
+                "--force-clean to delete and restart, or --resume is not "
+                "possible across a config change.")
         answer = input(
             f"Existing Phase 2.5 run at {run_dir} used a different config. "
             f"Delete all existing logs/results and start fresh? [y/N] "
@@ -118,7 +118,7 @@ def _run_stage_subprocess(name: str, run_dir: Path, config: dict,
     env["PYTHONPATH"] = os.pathsep.join(extra_paths + [env.get("PYTHONPATH", "")]).rstrip(os.pathsep)
 
     logger.info("=== starting stage %s: %s ===", name, " ".join(cmd))
-    proc = subprocess.run(cmd, capture_output=False, env=env)
+    proc = subprocess.run(cmd, capture_output=False, env=env, check=False)
     if proc.returncode != 0:
         raise StageFailedError(name, proc.returncode)
     logger.info("=== stage %s finished ok ===", name)
@@ -173,8 +173,11 @@ def execute(run_dir: Path, config: dict, force_clean: bool, non_interactive: boo
         logger.info("[%d/%d] %s done — elapsed %.0fs, ETA %.0fs", i, len(to_run), stage,
                     elapsed, eta)
 
-    logger.info("Phase 2.5 run complete. Candidates: %s/candidates.md — "
-                "candidates, not evidence (docs/PLAN.md Phase 2.5).", run_dir)
+    logger.info(
+        "Historical exploration complete. Candidates: %s/candidates.md — "
+        "candidates, not evidence.",
+        run_dir,
+    )
 
 
 def main() -> None:
