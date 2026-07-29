@@ -19,7 +19,8 @@ There is no composite weighting, performance kill criterion, or automatic
 promotion. The user chooses the forward-test mix.
 
 The practical Yahoo/current-roster cache is accepted with explicit
-survivorship and adjusted-history limitations. Planning is complete; discovery
-implementation is next.
+survivorship and adjusted-history limitations. Discovery implementation is in
+progress under `sts.swing_ranking`; the immutable protocol and identity
+contracts are complete.
 
 Start the next session with [`prompt_restart.md`](prompt_restart.md).

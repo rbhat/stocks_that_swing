@@ -1,7 +1,7 @@
 [project]
 name = "sts"
 version = "0.1.0"
-description = "Stocks That Swing - swing-trading (3-15 session) study and paper-trading engine"
+description = "Stocks That Swing - swing-trading (3-21 session) study and paper-trading engine"
 requires-python = ">=3.12"
 dependencies = [
     "yfinance>=0.2.50",

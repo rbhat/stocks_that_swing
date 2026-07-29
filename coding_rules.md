@@ -1,3 +1,9 @@
 - Use `Decimal` and one canonical serializer; reject floats, missing facts, and implicit defaults.
 - Rank and identify by permanent ID with the locked SHA-256 tie-break; never sort or deduplicate by symbol.
 - Emit every outcome through one event-sourced simulator: one durable rejection, no deferred order, no alternate control path.
+- Do not import legacy risk, portfolio, study, ML, or forward semantics into `swing-ranking-v1`.
+- Freeze and hash the protocol, grammar, strategy revision, and input manifest before writing performance.
+- Process opening fills before same-bar exits; intraday exit cash never funds that session's entries.
+- Count the entry bar as session 1 and time-exit at the 21st session close.
+- Include starting capital in drawdown; cost diagnostics never change equity, profit, or rankings.
+- Reject planned reward/risk equal to 1.5; the charter requires strictly greater than 1.5.

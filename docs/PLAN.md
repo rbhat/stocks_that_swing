@@ -1,7 +1,7 @@
 # Swing Strategy Discovery and Ranking Plan
 
 - **Study:** `swing-ranking-v1`
-- **Status:** ready for implementation
+- **Status:** implementation in progress
 - **Authority:** `docs/VISION.md` defines the scope; this is the sole active
   execution plan
 
