@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime as dt
 import hashlib
 import json
 from pathlib import Path
@@ -21,18 +22,28 @@ from sts.swing_ranking.preflight import (
     ResolvedSecurity,
 )
 from sts.swing_ranking.runner import RunnerViolation, evaluate_study
+from sts.swing_ranking.split import (
+    derive_evaluation_split,
+    evaluation_split_document,
+)
 
 
 def _bundle() -> dict[str, object]:
+    evaluation_start = dt.date(2024, 1, 2)
+    evaluation_end = dt.date(2024, 8, 31)
     return {
+        "evidence_window": "development",
         "protocol": {
             "study_id": "swing-ranking-v1",
             "protocol_version": "fixture-v1",
             "evidence_label": "retrospective_screening",
-            "evaluation_start": "2024-01-02",
-            "evaluation_end_exclusive": "2024-02-16",
-            "data_cutoff": "2024-02-15",
-            "prospective_wall": "2024-02-20",
+            "evaluation_start": evaluation_start.isoformat(),
+            "evaluation_end_exclusive": evaluation_end.isoformat(),
+            "data_cutoff": "2024-08-30",
+            "prospective_wall": "2024-09-03",
+            "evaluation_split": evaluation_split_document(
+                derive_evaluation_split(evaluation_start, evaluation_end)
+            ),
             "grammar_version": "fixture-v1",
             "charter": {
                 "starting_capital": "100000",
@@ -54,9 +65,9 @@ def _bundle() -> dict[str, object]:
                 {
                     "kind": kind,
                     "content_hash": "a" * 64,
-                    "as_of": "2024-02-15",
-                    "coverage_start": "2024-01-02",
-                    "coverage_end_exclusive": "2024-02-16",
+                    "as_of": "2024-08-30",
+                    "coverage_start": evaluation_start.isoformat(),
+                    "coverage_end_exclusive": evaluation_end.isoformat(),
                     "adjustment_basis": ADJUSTMENT_BASIS,
                 }
                 for kind in REQUIRED_SOURCE_KINDS
@@ -153,6 +164,8 @@ def test_load_study_bundle_binds_program_geometry_and_protocol(tmp_path: Path) -
     configured.strategy.validate_against(study.protocol)
     configured.geometry_program.validate_against(configured.strategy)
     assert configured.strategy.geometry_spec_identity == configured.geometry_spec.identity
+    assert study.evidence_window == "development"
+    assert study.window == study.protocol.evaluation_split.development
     assert configured.geometry_spec.identity in study.protocol.candidate_grammar.definition[
         "geometry_spec_identities"
     ]

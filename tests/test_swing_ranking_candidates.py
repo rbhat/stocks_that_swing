@@ -27,6 +27,7 @@ from sts.swing_ranking.contracts import (
     StrategyRevision,
     swing_ranking_charter,
 )
+from sts.swing_ranking.split import derive_evaluation_split
 
 
 def _hash(value: str) -> str:
@@ -82,10 +83,14 @@ def _protocol(program: StrategyProgram) -> DiscoveryProtocol:
         study_id="swing-ranking-v1",
         protocol_version="v1",
         evidence_label="retrospective_screening",
-        evaluation_start=dt.date(2024, 1, 2),
+        evaluation_start=dt.date(2023, 1, 3),
         evaluation_end_exclusive=dt.date(2024, 5, 1),
         data_cutoff=cutoff,
         prospective_wall=dt.date(2024, 5, 1),
+        evaluation_split=derive_evaluation_split(
+            dt.date(2023, 1, 3),
+            dt.date(2024, 5, 1),
+        ),
         charter=swing_ranking_charter(),
         candidate_grammar=CandidateGrammar(
             version="v1",
@@ -96,7 +101,7 @@ def _protocol(program: StrategyProgram) -> DiscoveryProtocol:
                 kind=kind,
                 content_hash=_hash(kind),
                 as_of=cutoff,
-                coverage_start=dt.date(2024, 1, 1),
+                coverage_start=dt.date(2023, 1, 3),
                 coverage_end_exclusive=dt.date(2024, 5, 1),
                 adjustment_basis=ADJUSTMENT_BASIS,
             )

@@ -84,6 +84,8 @@ def run(
             "resolved_inputs_identity": resolved.identity,
             "security_count": len(resolved.securities),
             "strategy_count": len(study.strategies),
+            "evidence_window": study.evidence_window,
+            "evidence_window_identity": study.window.sessions_identity,
         }
 
         def built_in_execution(mode: str, destination: Path) -> Mapping[str, Any]:

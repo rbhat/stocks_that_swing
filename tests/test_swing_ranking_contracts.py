@@ -17,6 +17,7 @@ from sts.swing_ranking.contracts import (
     ContractViolation,
     DiscoveryProtocol,
     EntryGeometry,
+    EvaluationSplit,
     SignalFact,
     SourceFact,
     SourceLimitation,
@@ -25,6 +26,7 @@ from sts.swing_ranking.contracts import (
     swing_ranking_charter,
 )
 from sts.swing_ranking.identity import canonical_bytes, identity_hash
+from sts.swing_ranking.split import derive_evaluation_split
 
 
 def _hash(value: str) -> str:
@@ -41,6 +43,10 @@ def _protocol() -> DiscoveryProtocol:
         evaluation_end_exclusive=dt.date(2025, 2, 1),
         data_cutoff=cutoff,
         prospective_wall=dt.date(2025, 2, 3),
+        evaluation_split=derive_evaluation_split(
+            dt.date(2010, 1, 1),
+            dt.date(2025, 2, 1),
+        ),
         charter=swing_ranking_charter(),
         candidate_grammar=CandidateGrammar(
             version="v1",
@@ -107,6 +113,7 @@ def _candidate(protocol: DiscoveryProtocol, strategy: StrategyRevision) -> Candi
 def test_contracts_are_frozen_and_have_no_implicit_constructor_defaults():
     for contract in (
         CandidateGrammar,
+        EvaluationSplit,
         DiscoveryProtocol,
         StrategyRevision,
         Candidate,
@@ -158,7 +165,7 @@ def test_strategy_and_candidate_are_bound_to_protocol_and_permanent_id():
     assert candidate.tie_break == locked_tie_break(
         strategy.identity, candidate.signal_session, candidate.permanent_id
     )
-    assert candidate.tie_break == "af4470b69beab8956e0a4d7c7ed23a8b201f3327045f4f13fc281e57777f3feb"
+    assert candidate.tie_break == "b71eaabe512fa86ec359d1953096b44cc3513988f8ed55c678f5c302ced3715f"
     assert candidate.tie_break != locked_tie_break(
         strategy.identity, candidate.signal_session, "perm-43"
     )

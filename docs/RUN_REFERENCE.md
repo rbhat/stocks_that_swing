@@ -12,9 +12,10 @@ or execution flag. Synthetic fixtures are refused below any `runs/` path.
 ## Required inputs
 
 - A study-bundle JSON matching `sts.swing_ranking.config.load_study_bundle`.
-  It fixes the protocol, charter, source facts, limitations, candidate
-  grammar members, readable strategy revisions, and geometry before
-  performance is read.
+  It fixes the protocol, charter, exact XNYS-session 60/20/20 split, both
+  21-entry-session purge windows, selected evidence window, source facts,
+  limitations, candidate grammar members, readable strategy revisions, and
+  geometry before performance is read.
 - A preflight-paths JSON matching
   `sts.swing_ranking.config.load_preflight_paths`.
 - Complete permanent-ID security master and symbol history, point-in-time

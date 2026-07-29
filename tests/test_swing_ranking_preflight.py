@@ -27,8 +27,9 @@ from sts.swing_ranking.preflight import (
     ResolvedParquet,
     resolve_inputs,
 )
+from sts.swing_ranking.split import derive_evaluation_split
 
-START = dt.date(2025, 1, 2)
+START = dt.date(2024, 1, 2)
 CUTOFF = dt.date(2025, 1, 3)
 END = dt.date(2025, 1, 4)
 
@@ -41,7 +42,12 @@ def _write_json(path: Path, value: object) -> None:
     path.write_text(json.dumps(value, sort_keys=True), encoding="utf-8")
 
 
-def _frame(days: tuple[dt.date, ...] = (START, CUTOFF)) -> pd.DataFrame:
+def _frame(days: tuple[dt.date, ...] | None = None) -> pd.DataFrame:
+    if days is None:
+        days = tuple(
+            session.date()
+            for session in calendar.sessions_between(START, CUTOFF)
+        )
     index = pd.DatetimeIndex(pd.to_datetime(days))
     return pd.DataFrame(
         {
@@ -64,6 +70,7 @@ def _protocol(source_hashes: dict[str, str]) -> DiscoveryProtocol:
         evaluation_end_exclusive=END,
         data_cutoff=CUTOFF,
         prospective_wall=dt.date(2025, 1, 6),
+        evaluation_split=derive_evaluation_split(START, END),
         charter=swing_ranking_charter(),
         candidate_grammar=CandidateGrammar(version="v1", definition={"test": "fixture"}),
         source_facts=tuple(
@@ -91,7 +98,8 @@ def cache_inputs(tmp_path: Path) -> tuple[DiscoveryProtocol, PreflightPaths]:
     roster = tmp_path / "roster.yaml"
     roster.write_text(yaml.safe_dump({"symbols": ["AAA"], "count": 1}), encoding="utf-8")
     parquet = parquet_root / "AAA.parquet"
-    _frame().to_parquet(parquet)
+    frame = _frame()
+    frame.to_parquet(parquet)
     roster_manifest = tmp_path / "roster_manifest.json"
     _write_json(
         roster_manifest,
@@ -102,7 +110,7 @@ def cache_inputs(tmp_path: Path) -> tuple[DiscoveryProtocol, PreflightPaths]:
                     "file_sha256": _sha(parquet),
                     "first_session": START.isoformat(),
                     "last_session": CUTOFF.isoformat(),
-                    "n_bars": 2,
+                    "n_bars": len(frame),
                 }
             },
         },
@@ -162,7 +170,7 @@ def cache_inputs(tmp_path: Path) -> tuple[DiscoveryProtocol, PreflightPaths]:
                 file_sha256=_sha(parquet),
                 first_session=START,
                 last_session=CUTOFF,
-                n_bars=2,
+                n_bars=len(frame),
             ),
         ),
     )

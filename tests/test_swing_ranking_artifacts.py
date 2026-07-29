@@ -32,6 +32,7 @@ from sts.swing_ranking.contracts import (
 from sts.swing_ranking.metrics import calculate_metrics
 from sts.swing_ranking.ranking import rank_strategies
 from sts.swing_ranking.simulator import DailyBar, simulate
+from sts.swing_ranking.split import derive_evaluation_split
 
 
 def _evaluation() -> tuple[DiscoveryProtocol, StrategyEvaluation]:
@@ -41,14 +42,18 @@ def _evaluation() -> tuple[DiscoveryProtocol, StrategyEvaluation]:
         study_id="swing-ranking-v1",
         protocol_version="artifact-test-v1",
         evidence_label="retrospective_screening",
-        evaluation_start=sessions[0],
+        evaluation_start=dt.date(2023, 1, 3),
         evaluation_end_exclusive=sessions[-1] + dt.timedelta(days=1),
         data_cutoff=sessions[-1],
         prospective_wall=sessions[-1] + dt.timedelta(days=2),
+        evaluation_split=derive_evaluation_split(
+            dt.date(2023, 1, 3),
+            sessions[-1] + dt.timedelta(days=1),
+        ),
         charter=swing_ranking_charter(),
         candidate_grammar=CandidateGrammar("v1", {"fixture": "generic"}),
         source_facts=tuple(
-            SourceFact(kind, "a" * 64, sessions[-1], sessions[0], sessions[-1] + dt.timedelta(days=1), ADJUSTMENT_BASIS)
+            SourceFact(kind, "a" * 64, sessions[-1], dt.date(2023, 1, 3), sessions[-1] + dt.timedelta(days=1), ADJUSTMENT_BASIS)
             for kind in REQUIRED_SOURCE_KINDS
         ),
         limitations=tuple(SourceLimitation(kind, f"{kind} limitation") for kind in REQUIRED_LIMITATION_KINDS),

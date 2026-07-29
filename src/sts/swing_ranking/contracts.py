@@ -34,6 +34,14 @@ REQUIRED_LIMITATION_KINDS = (
     "historical_earnings_calendar",
 )
 TIE_BREAK_DOMAIN = "swing-ranking-v1/tie-break/v1"
+SPLIT_VERSION = "chronological-60-20-20-purge-21-v1"
+SPLIT_WINDOW_KINDS = (
+    "development",
+    "development_validation_purge",
+    "validation",
+    "validation_oos_purge",
+    "oos",
+)
 
 D0 = Decimal(0)
 D1 = Decimal(1)
@@ -258,6 +266,108 @@ class CandidateGrammar:
 
 
 @dataclass(frozen=True)
+class SplitWindow:
+    """One immutable, contiguous portion of the evaluation-session sequence."""
+
+    kind: str
+    start: dt.date
+    end_exclusive: dt.date
+    session_count: int
+    sessions_identity: str
+
+    def __post_init__(self) -> None:
+        kind = _text(self.kind, "split window kind")
+        if kind not in SPLIT_WINDOW_KINDS:
+            raise ContractViolation(f"unknown split window kind {kind!r}")
+        object.__setattr__(self, "kind", kind)
+        start = _date(self.start, f"{kind} start")
+        end = _date(self.end_exclusive, f"{kind} end_exclusive")
+        if start >= end:
+            raise ContractViolation(f"{kind} window must be non-empty")
+        object.__setattr__(
+            self,
+            "session_count",
+            _positive_count(self.session_count, f"{kind} session_count"),
+        )
+        _sha256(self.sessions_identity, f"{kind} sessions_identity")
+
+
+@dataclass(frozen=True)
+class EvaluationSplit:
+    """Frozen 60/20/20 XNYS-session split with two 21-entry-session purges."""
+
+    version: str
+    evaluation_start: dt.date
+    evaluation_end_exclusive: dt.date
+    development_fraction: Decimal
+    validation_fraction: Decimal
+    oos_fraction: Decimal
+    purge_entry_sessions: int
+    session_count: int
+    sessions_identity: str
+    development: SplitWindow
+    development_validation_purge: SplitWindow
+    validation: SplitWindow
+    validation_oos_purge: SplitWindow
+    oos: SplitWindow
+
+    def __post_init__(self) -> None:
+        if self.version != SPLIT_VERSION:
+            raise ContractViolation(f"split version must be {SPLIT_VERSION!r}")
+        start = _date(self.evaluation_start, "split evaluation_start")
+        end = _date(self.evaluation_end_exclusive, "split evaluation_end_exclusive")
+        if start >= end:
+            raise ContractViolation("split evaluation range must be non-empty")
+        fractions = (
+            _positive_decimal(self.development_fraction, "development_fraction"),
+            _positive_decimal(self.validation_fraction, "validation_fraction"),
+            _positive_decimal(self.oos_fraction, "oos_fraction"),
+        )
+        if fractions != (Decimal("0.60"), Decimal("0.20"), Decimal("0.20")):
+            raise ContractViolation("split fractions must equal the ratified 60/20/20")
+        if sum(fractions, D0) != D1:
+            raise ContractViolation("split fractions must sum to one")
+        if self.purge_entry_sessions != 21:
+            raise ContractViolation("purge_entry_sessions must equal 21")
+        object.__setattr__(
+            self,
+            "session_count",
+            _positive_count(self.session_count, "split session_count"),
+        )
+        _sha256(self.sessions_identity, "split sessions_identity")
+        windows = (
+            self.development,
+            self.development_validation_purge,
+            self.validation,
+            self.validation_oos_purge,
+            self.oos,
+        )
+        if not all(isinstance(window, SplitWindow) for window in windows):
+            raise ContractViolation("split windows must contain SplitWindow values")
+        if tuple(window.kind for window in windows) != SPLIT_WINDOW_KINDS:
+            raise ContractViolation("split windows must follow the locked chronological order")
+        if windows[0].start < start or windows[-1].end_exclusive != end:
+            raise ContractViolation("split windows must span the evaluation range")
+        if any(
+            left.end_exclusive != right.start
+            for left, right in zip(windows, windows[1:])
+        ):
+            raise ContractViolation("split windows must be contiguous")
+        if sum(window.session_count for window in windows) != self.session_count:
+            raise ContractViolation("split window counts must equal the evaluation session count")
+        if (
+            self.development_validation_purge.session_count
+            != self.purge_entry_sessions
+            or self.validation_oos_purge.session_count != self.purge_entry_sessions
+        ):
+            raise ContractViolation("each split purge must contain exactly 21 entry sessions")
+
+    @property
+    def identity(self) -> str:
+        return identity_hash("swing-ranking-v1/evaluation-split/v1", self)
+
+
+@dataclass(frozen=True)
 class DiscoveryProtocol:
     """The complete pre-performance discovery record."""
 
@@ -268,6 +378,7 @@ class DiscoveryProtocol:
     evaluation_end_exclusive: dt.date
     data_cutoff: dt.date
     prospective_wall: dt.date
+    evaluation_split: EvaluationSplit
     charter: Charter
     candidate_grammar: CandidateGrammar
     source_facts: tuple[SourceFact, ...]
@@ -294,6 +405,13 @@ class DiscoveryProtocol:
             raise ContractViolation("prospective_wall must follow data_cutoff")
         if evaluation_end > wall or evaluation_start > cutoff:
             raise ContractViolation("evaluation range must end by the prospective wall")
+        if not isinstance(self.evaluation_split, EvaluationSplit):
+            raise ContractViolation("evaluation_split must be an EvaluationSplit")
+        if (
+            self.evaluation_split.evaluation_start != evaluation_start
+            or self.evaluation_split.evaluation_end_exclusive != evaluation_end
+        ):
+            raise ContractViolation("evaluation_split range must match the protocol")
         if not isinstance(self.charter, Charter):
             raise ContractViolation("charter must be a Charter")
         if not isinstance(self.candidate_grammar, CandidateGrammar):

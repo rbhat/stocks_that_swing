@@ -15,7 +15,9 @@ from sts.swing_ranking.contracts import (
     Charter,
     ContractViolation,
     DiscoveryProtocol,
+    EvaluationSplit,
     GeometryProgram,
+    SplitWindow,
     SourceFact,
     SourceLimitation,
     StrategyRevision,
@@ -23,6 +25,7 @@ from sts.swing_ranking.contracts import (
 from sts.swing_ranking.geometry import GeometrySpec, PriceFormula
 from sts.swing_ranking.identity import IdentityViolation, canonical_bytes, identity_hash
 from sts.swing_ranking.preflight import PreflightPaths
+from sts.swing_ranking.split import derive_evaluation_split
 
 
 class ConfigurationViolation(ContractViolation):
@@ -219,6 +222,87 @@ def _charter(raw: object) -> Charter:
     )
 
 
+def _split_window(raw: object, kind: str) -> SplitWindow:
+    value = _object(
+        raw,
+        {"start", "end_exclusive", "session_count", "sessions_identity"},
+        f"{kind} split window",
+    )
+    return SplitWindow(
+        kind=kind,
+        start=_date(value["start"], f"{kind} start"),
+        end_exclusive=_date(value["end_exclusive"], f"{kind} end_exclusive"),
+        session_count=value["session_count"],
+        sessions_identity=_text(
+            value["sessions_identity"],
+            f"{kind} sessions_identity",
+        ),
+    )
+
+
+def _evaluation_split(raw: object) -> EvaluationSplit:
+    keys = {
+        "version",
+        "evaluation_start",
+        "evaluation_end_exclusive",
+        "development_fraction",
+        "validation_fraction",
+        "oos_fraction",
+        "purge_entry_sessions",
+        "session_count",
+        "sessions_identity",
+        "development",
+        "development_validation_purge",
+        "validation",
+        "validation_oos_purge",
+        "oos",
+    }
+    value = _object(raw, keys, "evaluation split")
+    split = EvaluationSplit(
+        version=_text(value["version"], "split version"),
+        evaluation_start=_date(value["evaluation_start"], "split evaluation_start"),
+        evaluation_end_exclusive=_date(
+            value["evaluation_end_exclusive"],
+            "split evaluation_end_exclusive",
+        ),
+        development_fraction=_decimal(
+            value["development_fraction"],
+            "development_fraction",
+        ),
+        validation_fraction=_decimal(
+            value["validation_fraction"],
+            "validation_fraction",
+        ),
+        oos_fraction=_decimal(value["oos_fraction"], "oos_fraction"),
+        purge_entry_sessions=value["purge_entry_sessions"],
+        session_count=value["session_count"],
+        sessions_identity=_text(
+            value["sessions_identity"],
+            "split sessions_identity",
+        ),
+        development=_split_window(value["development"], "development"),
+        development_validation_purge=_split_window(
+            value["development_validation_purge"],
+            "development_validation_purge",
+        ),
+        validation=_split_window(value["validation"], "validation"),
+        validation_oos_purge=_split_window(
+            value["validation_oos_purge"],
+            "validation_oos_purge",
+        ),
+        oos=_split_window(value["oos"], "oos"),
+    )
+    expected = derive_evaluation_split(
+        split.evaluation_start,
+        split.evaluation_end_exclusive,
+    )
+    if split != expected:
+        raise ConfigurationViolation(
+            "evaluation split does not equal the deterministic XNYS derivation"
+        )
+    return split
+
+
 @dataclass(frozen=True)
 class ConfiguredStrategy:
     strategy: StrategyRevision
@@ -230,7 +314,26 @@ class ConfiguredStrategy:
 @dataclass(frozen=True)
 class ConfiguredStudy:
     protocol: DiscoveryProtocol
+    evidence_window: str
     strategies: tuple[ConfiguredStrategy, ...]
+
+    def __post_init__(self) -> None:
+        if self.evidence_window not in ("development", "validation", "oos"):
+            raise ConfigurationViolation(
+                "evidence_window must be development, validation, or oos"
+            )
+        strategies = tuple(self.strategies)
+        if not strategies or not all(
+            isinstance(value, ConfiguredStrategy) for value in strategies
+        ):
+            raise ConfigurationViolation(
+                "strategies must contain configured strategies"
+            )
+        object.__setattr__(self, "strategies", strategies)
+
+    @property
+    def window(self) -> SplitWindow:
+        return getattr(self.protocol.evaluation_split, self.evidence_window)
 
     @property
     def identity(self) -> str:
@@ -240,9 +343,10 @@ class ConfiguredStudy:
 def load_study_bundle(path: Path) -> ConfiguredStudy:
     raw = _object(
         _read_json(Path(path), "study bundle"),
-        {"protocol", "strategies"},
+        {"protocol", "evidence_window", "strategies"},
         "study bundle",
     )
+    evidence_window = _text(raw["evidence_window"], "evidence_window")
     strategy_rows = _list(raw["strategies"], "strategies")
     components: list[tuple[dict[str, Any], StrategyProgram, GeometrySpec]] = []
     for row in strategy_rows:
@@ -272,6 +376,7 @@ def load_study_bundle(path: Path) -> ConfiguredStudy:
             "evaluation_end_exclusive",
             "data_cutoff",
             "prospective_wall",
+            "evaluation_split",
             "grammar_version",
             "charter",
             "source_facts",
@@ -327,6 +432,7 @@ def load_study_bundle(path: Path) -> ConfiguredStudy:
             for row in _list(protocol_raw["limitations"], "limitations")
         )
     )
+    evaluation_split = _evaluation_split(protocol_raw["evaluation_split"])
     protocol = DiscoveryProtocol(
         study_id=_text(protocol_raw["study_id"], "study_id"),
         protocol_version=_text(
@@ -347,6 +453,7 @@ def load_study_bundle(path: Path) -> ConfiguredStudy:
             protocol_raw["prospective_wall"],
             "prospective_wall",
         ),
+        evaluation_split=evaluation_split,
         charter=_charter(protocol_raw["charter"]),
         candidate_grammar=grammar,
         source_facts=source_facts,
@@ -386,7 +493,7 @@ def load_study_bundle(path: Path) -> ConfiguredStudy:
         configured.append(
             ConfiguredStrategy(strategy, program, geometry, geometry_program)
         )
-    return ConfiguredStudy(protocol, tuple(configured))
+    return ConfiguredStudy(protocol, evidence_window, tuple(configured))
 
 
 def load_preflight_paths(path: Path) -> PreflightPaths:

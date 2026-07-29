@@ -134,7 +134,19 @@ def evaluate_study(
                     scheduled_earnings=tuple(earnings_by_id[permanent_id]),
                 )
             )
-        candidates = tuple(sorted(generated, key=lambda item: item.identity))
+        candidates = tuple(
+            sorted(
+                (
+                    candidate
+                    for candidate in generated
+                    if study.window.start
+                    <= candidate.signal_session
+                    < study.window.end_exclusive
+                    and candidate.entry_session < study.window.end_exclusive
+                ),
+                key=lambda item: item.identity,
+            )
+        )
         geometries: dict[str, EntryGeometry] = {}
         bar_by_session = {
             permanent_id: {bar.session: bar for bar in values}
