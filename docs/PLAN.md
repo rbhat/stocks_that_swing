@@ -1,7 +1,7 @@
 # Swing Strategy Discovery and Ranking Plan
 
 - **Study:** `swing-ranking-v1`
-- **Status:** implementation complete; real screening not started
+- **Status:** fresh-study input and split derivation; no run started
 - **Authority:** `docs/VISION.md` defines the scope; this is the sole active
   execution plan
 
@@ -36,22 +36,32 @@ The plan does not preselect:
 - ranking models;
 - parameter ranges;
 - the number of candidates;
-- data folds or optimization method; or
+- optimization method; or
 - a preferred balance among profit, drawdown, and profit/drawdown.
 
 Signals and execution rules must remain human-readable. ML may rank a
 candidate pool but cannot invent signals, change geometry, size positions, or
 override risk.
 
-Exploration may iterate. Each tested strategy version must be retained with
-its exact rules, parameters, data range, inputs, and results. A strategy may
-change during discovery; an old result may not be attributed to a revised
-strategy.
+Exploration may iterate. Each tested strategy version is retained with its
+exact rules, parameters, data range, inputs, and results. Every revision gets
+its own immutable result identity.
 
 Before performance is read, each study run records its research protocol,
-candidate grammar, data cutoff, and prospective wall. The historical screen
-may use all available backtest data and is labeled screening, never untouched
-out-of-sample evidence.
+candidate grammar, data cutoff, and split dates.
+
+## Evaluation split
+
+Sort the frozen evaluation range by XNYS session and divide it
+chronologically:
+
+- oldest 60%: development;
+- next 20%: validation;
+- newest 20%: unseen study OOS.
+
+Purge 21 entry sessions between windows so no trade outcome crosses a
+boundary. Explore revisions on development, choose frozen revisions using
+validation, and open OOS once for the final independent rankings.
 
 ## Charter constraints
 
@@ -78,9 +88,11 @@ The plan adds no other strategy, target, or portfolio constraint.
 ## Data and evidence
 
 The local validated parquet cache is the source of truth. Use one adjustment
-basis consistently and exclude incomplete bars. Every artifact states the
-current-roster survivorship, symbol-history, delisting, adjustment-vintage,
-and historical earnings-calendar limitations.
+basis consistently and exclude incomplete bars. Historical earnings report
+sessions/results come from archived, hashed Investing.com custom-date calendar
+queries; upcoming schedules use append-only daily snapshots. Every artifact
+states the current-roster survivorship, symbol-history, delisting,
+adjustment-vintage, and historical schedule-knowledge limitations.
 
 All features, signals, and decisions must use information available at the
 decision time. Data quality, causal ordering, accounting, and reproducibility
@@ -151,16 +163,14 @@ where available and leave the decision to the user.
 
 ## Work sequence
 
-1. Define and record the discovery protocol and candidate grammar without
-   reading performance.
-2. Implement the exploration, portfolio simulation, artifacts, and tests.
-3. Explore strategy versions and retain every evaluated specification.
-4. Produce the three rankings and top-five comparison.
-5. Ask the user to select the forward-paper mix.
-6. Version the selected strategies and start a prospective wall only after
-   that selection.
-7. Compare forward gross return with retrospective screening after at least
-   30 closed trades per selected strategy.
+1. Freeze source identities and chronological split dates.
+2. Define the candidate grammar without reading performance.
+3. Explore strategy versions on development.
+4. Freeze revisions using validation.
+5. Open OOS once and produce the three rankings and top-five comparison.
+6. Ask the user to select the forward-paper mix.
+7. Compare forward gross return with OOS after at least 30 closed trades per
+   selected strategy.
 
 The sequence is not a set of performance gates. The user may change direction
 or request additional work at any point. Dashboard, alerts, deployment, and
@@ -168,6 +178,6 @@ live money are outside scope unless the user explicitly asks.
 
 ## Next step
 
-Approve an explicit candidate grammar and study bundle without reading
-performance, complete the missing real-cache identity and event inputs, then
-run the guarded read-only preflight. Stop for review before execution.
+Add the split contract, derive the candidate grammar and study bundle, and
+complete the missing real-cache identity and earnings inputs. Then run the
+guarded read-only preflight and stop for review before execution.

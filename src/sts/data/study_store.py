@@ -1,21 +1,4 @@
-"""Study store: cache/study_frames/{SYMBOL}.parquet — wide-roster evidence data.
-
-Feeds ONLY stm.validate's signal-level (layer 1) evidence: a wide cross-
-section of symbols (configs/study_roster.yaml), backtested at the event
-level. These symbols are never traded and never mixed into cache/ohlcv/ (the
-source-of-truth price store, see stm.data.store.PriceStore) or the live
-universe. Frames share PriceStore's shape — OHLCV daily bars, a DatetimeIndex,
-split- and dividend-adjusted total-return prices from stm.data.fetch —
-so study and traded symbols can be pooled in one evaluation without mixing
-adjustment bases.
-
-Deliberately NOT PriceStore, despite mirroring its atomic-write and
-validate-before-write discipline: this store is read-only for signal
-evaluation, so it has none of PriceStore's overlap-revision detection or
-full-history rebuild machinery. A re-fetched frame here just overwrites the
-old one once it clears the quality gate — evidence data, not the trade-facing
-source of truth.
-"""
+"""Validated, atomic parquet storage for the research roster."""
 
 from __future__ import annotations
 
@@ -37,7 +20,7 @@ DEFAULT_ROOT = Path("cache/study_frames")
 
 def _truncate_incomplete(df: pd.DataFrame) -> pd.DataFrame:
     """Drop any bar dated after the last completed session — a partial bar
-    is never cached as if it were final (same rule as PriceStore)."""
+        is never cached as if it were final."""
     last_ok = calendar.last_completed_session()
     return df[df.index.date <= last_ok]
 
@@ -83,7 +66,7 @@ class StudyStore:
         """Truncate incomplete bars, gate through quality, then atomic-write.
 
         Raises ValueError (message = the quality report's errors) if `df`
-        fails stm.data.quality.check; any existing file is left untouched.
+        fails ``sts.data.quality.check``; existing data remains untouched.
         """
         truncated = _truncate_incomplete(df)
         report = quality.check(symbol, truncated)

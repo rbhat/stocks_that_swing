@@ -1,17 +1,4 @@
-"""StudyStore: the wide-roster layer-1 evidence store.
-
-Mirrors test_store.py's style (real NYSE session dates, injectable fetch).
-The store must uphold the same discipline as PriceStore where it matters —
-atomic writes, validate-before-write, incomplete bars never cached — while
-staying a plain evidence cache (no revision log, no rebuild machinery).
-
-NOTE: the parent's test_study_store.py also covered `stm.jobs.study_refresh`
-(a production refresh job) — that module is out of scope for this port (the
-exact port list uses scripts/fetch_study_roster.py to populate
-cache/study_frames/ instead; see Phase-1 port report). Only the
-StudyStore-class tests are ported here; the "Roster config" and
-"study_refresh.refresh" sections are dropped along with it.
-"""
+"""Tests for the validated research-roster parquet store."""
 
 import datetime as dt
 
@@ -37,7 +24,7 @@ def make_df(dates, close_scale=1.0):
     )
 
 
-# Real NYSE trading days (same anchors as test_store.py).
+# Real NYSE trading days.
 D1 = ["2026-06-25", "2026-06-26"]
 D_FULL = ["2026-06-25", "2026-06-26", "2026-06-29", "2026-06-30"]
 LAST_COMPLETED = dt.date(2026, 6, 30)
@@ -55,10 +42,6 @@ def pin_last_completed(monkeypatch):
         calendar_module, "last_completed_session", lambda now=None: LAST_COMPLETED
     )
 
-
-# ---------------------------------------------------------------------------
-# StudyStore
-# ---------------------------------------------------------------------------
 
 def test_write_then_load_roundtrip(store):
     df = make_df(D1)

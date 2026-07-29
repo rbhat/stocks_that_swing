@@ -95,7 +95,7 @@ def test_artifact_package_is_canonical_complete_and_idempotently_written(tmp_pat
     manifest = json.loads(package.files["manifest.json"])
     assert manifest["artifact_identity"] == package.identity
     assert set(manifest["source_hashes"]) == set(REQUIRED_SOURCE_KINDS)
-    assert "historical_screening_not_untouched_oos" == manifest["screening_label"]
+    assert "historical_screening_current_roster" == manifest["screening_label"]
     assert "current_roster_survivorship" in package.files["report.md"].decode()
 
     path = tmp_path / "artifact"

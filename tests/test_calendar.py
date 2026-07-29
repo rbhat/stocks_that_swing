@@ -22,4 +22,6 @@ def test_half_day_after_early_close_counts_same_day():
 
 def test_naive_datetime_raises():
     with pytest.raises(ValueError):
-        calendar.last_completed_session(dt.datetime(2025, 11, 28, 12, 0))
+        calendar.last_completed_session(
+            dt.datetime(2025, 11, 28, 12, 0)  # noqa: DTZ001 - intentional API rejection
+        )

@@ -18,11 +18,14 @@ indicators, targets, models, or parameter ranges. It will publish:
 There is no composite weighting, performance kill criterion, or automatic
 promotion. The user chooses the forward-test mix.
 
-The practical Yahoo/current-roster cache is accepted with explicit
-survivorship and adjusted-history limitations. The isolated
-`sts.swing_ranking` implementation now covers immutable configuration,
-causal candidate generation, geometry, the zero-cost event simulator,
-metrics, independent rankings, fail-closed preflight, and atomic artifacts.
-No real-cache preflight or screening run has started.
+The current-roster cache is accepted with explicit survivorship and
+adjusted-history limitations. `sts.swing_ranking` is the sole research path.
+It contains immutable configuration, causal candidate generation, geometry,
+the zero-cost event simulator, metrics, independent rankings, fail-closed
+preflight, and atomic artifacts.
+
+The next implementation revision adds the frozen chronological
+development/validation/OOS split and derives the first study bundle. No
+real-cache preflight or study run has started.
 
 Start the next session with [`prompt_restart.md`](prompt_restart.md).

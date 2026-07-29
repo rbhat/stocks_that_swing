@@ -21,6 +21,11 @@ or execution flag. Synthetic fixtures are refused below any `runs/` path.
   earnings events, XNYS sessions, corporate-action coverage, source hashes,
   and exactly one validated parquet per roster member.
 
+Historical earnings report sessions/results come from custom-date queries to
+<https://www.investing.com/earnings-calendar>. Raw responses and normalized
+rows must be archived and hashed. Upcoming earnings schedules are append-only
+daily snapshots so the first-known session is preserved.
+
 No study bundle is checked in because choosing its grammar and strategies is
 the next research decision, not an implementation default.
 
@@ -48,7 +53,7 @@ Execution is a separate opt-in after reviewing preflight:
 ## Current local blockers
 
 The readiness audit found no permanent-ID security-master/symbol-history
-inputs, no point-in-time earnings cache, and 240 parquet files for a
+inputs, no earnings cache, and 240 parquet files for a
 250-symbol roster. The absent symbols are `AEP`, `BA`, `CAT`, `CNP`, `CVX`,
 `DIS`, `DTE`, `ED`, `GD`, and `GE`. Preflight is expected to fail closed until
 those inputs are supplied and their hashes are frozen into the study bundle.

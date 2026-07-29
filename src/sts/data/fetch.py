@@ -1,7 +1,7 @@
 """yfinance wrapper: split-adjusted daily OHLCV with retries.
 
 Yahoo is an unofficial feed — every call retries with exponential backoff,
-and callers must run quality checks (stm.data.quality) before using the data.
+and callers must run ``sts.data.quality`` checks before using the data.
 """
 
 from __future__ import annotations
@@ -43,11 +43,14 @@ def fetch_daily(symbol: str, start: dt.date | None = None) -> pd.DataFrame:
     """Daily split-adjusted bars from `start` (or max history) through today.
 
     auto_adjust=True adjusts for both splits and dividends (total-return
-    basis) — prices are not raw. Either kind of re-adjustment changes prior
-    closes, which the store's overlap check (PriceStore.update) detects and
-    responds to with a full rebuild.
+    basis) — prices are not raw.
     """
-    kwargs = dict(interval="1d", auto_adjust=True, progress=False, threads=False)
+    kwargs = {
+        "interval": "1d",
+        "auto_adjust": True,
+        "progress": False,
+        "threads": False,
+    }
     if start:
         df = yf.download(symbol, start=start.isoformat(), **kwargs)
     else:

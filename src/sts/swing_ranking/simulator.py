@@ -1,8 +1,7 @@
 """The one zero-cost, event-sourced simulator for ``swing-ranking-v1``.
 
-The module owns execution ordering and accounting.  It deliberately has no
-dependency on the repository's earlier portfolio, risk, study, ML, or forward
-implementations.
+The module owns execution ordering and accounting and has no alternate
+simulation path.
 """
 
 from __future__ import annotations

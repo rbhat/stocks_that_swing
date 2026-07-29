@@ -2,14 +2,14 @@ import sys
 from pathlib import Path
 
 import pandas as pd
-import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "src"))
 
-import fetch_study_roster as fsr  # noqa: E402
-from sts.data.study_store import StudyStore  # noqa: E402
+import fetch_study_roster as fsr
+
+from sts.data.study_store import StudyStore
 
 
 def _ohlcv(n=320, start="2023-01-02"):
@@ -41,7 +41,7 @@ def test_fresh_scratch_symbols_uses_last_completed_session(tmp_path, monkeypatch
     stale = _ohlcv(n=320, start="2020-01-02")  # ends ~2021
     store.write("STALE", stale)
 
-    import sts.calendar as calendar
+    from sts import calendar
     today_bar = _ohlcv(n=1, start=calendar.last_completed_session().isoformat())
     store.write("FRESH", today_bar)
 
@@ -62,13 +62,15 @@ def test_write_roster_artifacts_shape(tmp_path, monkeypatch):
     store.write("AAPL", _ohlcv())
     store.write("MSFT", _ohlcv())
 
-    fsr._write_roster_artifacts(seeds=["AAPL"], anchors=["SPY"])
+    fsr._write_roster_artifacts(anchors=["SPY"])
 
-    import yaml, json
+    import json
+
+    import yaml
     roster = yaml.safe_load(roster_yaml.read_text())
     assert set(roster["symbols"]) == {"AAPL", "MSFT"}
     assert roster["source"] == "cache/scan/constituents.json (S&P 500 + Nasdaq-100)"
-    assert "as_of" in roster and "seeds" in roster and "anchors" in roster
+    assert "as_of" in roster and "anchors" in roster
 
     manifest = json.loads(manifest_json.read_text())
     assert set(manifest["symbols"].keys()) == {"AAPL", "MSFT"}
@@ -93,7 +95,7 @@ def test_dry_run_noop_does_not_write_artifacts(tmp_path, monkeypatch):
     constituents_json.write_text('{"symbols": ["SPY", "QQQ"]}')
     monkeypatch.setattr(fsr, "CONSTITUENTS", constituents_json)
     monkeypatch.setattr(fsr, "ANCHORS", ["SPY", "QQQ"])
-    monkeypatch.setattr(fsr, "_seed_symbols", lambda: [])
+    monkeypatch.setattr(fsr, "_configured_symbols", list)
     monkeypatch.setattr(fsr, "_load_failures", lambda: set())
 
     # Pre-populate the store so must_fetch is empty and need_fill == 0
