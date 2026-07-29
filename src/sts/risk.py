@@ -5,8 +5,7 @@ Every number in this module comes from the ratified charter (VISION.md
 volatility (ATR) and structure, never to a fixed percent designed for a
 multi-year hold. Position size is risk-budget-divided-by-stop-distance, not
 a fixed fraction of equity; this is the entire point of a swing-native
-engine (see LESSONS.md §2 "geometry mismatch" for what happens when it
-isn't).
+engine so risk geometry cannot drift between sizing and execution.
 
 Invariants held by this module:
 - Long only. Every helper and `Position` assumes a stop below entry and
@@ -42,7 +41,7 @@ MAX_POSITION_NOTIONAL_PCT = 0.15  # 15% per-position notional cap
 MAX_POSITIONS = 8                 # max concurrent positions
 MAX_DEPLOYED_PCT = 0.80           # max 80% of equity deployed
 MAX_STOP_PCT = 0.12               # stop distance sanity bound: never >12% of entry
-TIME_STOP_SESSIONS = 15           # hard time stop, not a tunable (LESSONS §8)
+TIME_STOP_SESSIONS = 15           # hard time stop, not a tunable
 DEFAULT_ATR_WINDOW = 14
 
 
@@ -145,8 +144,7 @@ def position_size(
     This is the swing-native core: size is driven by risk-budget (0.75% of
     equity) divided by stop distance — not a fixed fraction of equity. A
     fixed-fraction sizing scheme (the parent project's approach) decouples
-    size from how far the stop actually sits, which is exactly the
-    "geometry mismatch" LESSONS §2 identifies as the parent's killer flaw:
+    size from how far the stop actually sits, creating a geometry mismatch:
     a wide fixed-% stop makes 1R practically unreachable at swing horizons.
     Here, size adapts so a real stop-out always costs ~RISK_PER_TRADE_PCT of
     equity, regardless of how tight or wide that particular stop is (subject

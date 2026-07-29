@@ -19,9 +19,10 @@ There is no composite weighting, performance kill criterion, or automatic
 promotion. The user chooses the forward-test mix.
 
 The practical Yahoo/current-roster cache is accepted with explicit
-survivorship and adjusted-history limitations. Discovery implementation is in
-progress under `sts.swing_ranking`; immutable contracts and causal
-multi-timeframe candidate generation plus the zero-cost event-sourced
-portfolio simulator are complete.
+survivorship and adjusted-history limitations. The isolated
+`sts.swing_ranking` implementation now covers immutable configuration,
+causal candidate generation, geometry, the zero-cost event simulator,
+metrics, independent rankings, fail-closed preflight, and atomic artifacts.
+No real-cache preflight or screening run has started.
 
 Start the next session with [`prompt_restart.md`](prompt_restart.md).

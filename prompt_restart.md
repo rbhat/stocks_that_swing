@@ -7,9 +7,13 @@ Rank the top five independently by gross profit, maximum drawdown, and
 profit/drawdown. Diagnostics never exclude a strategy. The user alone chooses
 the forward mix.
 
-Discovery implementation is isolated under `sts.swing_ranking`. Immutable
-contracts and configuration-driven causal daily/weekly/monthly candidate
-generation plus the zero-cost event-sourced portfolio simulator are complete.
-Continue with metrics, independent rankings, durable artifacts, and real-cache
-preflight. Do not create a dashboard, alerts, deployment, forward writer, or
-live-money path unless the user explicitly asks.
+Discovery implementation is isolated under `sts.swing_ranking` and includes
+strict configuration, causal candidate generation, declared geometry, the
+zero-cost event simulator, metrics, independent rankings, fail-closed
+preflight, and atomic artifacts. All synthetic and repository tests pass.
+
+No real-cache preflight or screening run has started. Ask the user to approve
+the candidate grammar/study bundle and resolve the documented cache blockers
+before running the guarded preflight. Pause again before `--execute`. Do not
+create a dashboard, alerts, deployment, forward writer, or live-money path
+unless the user explicitly asks.

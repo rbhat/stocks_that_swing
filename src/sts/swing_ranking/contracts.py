@@ -344,6 +344,7 @@ class StrategyRevision:
     revision: str
     readable_rules: tuple[str, ...]
     parameters: Mapping[str, Any]
+    geometry_spec_identity: str
     protocol_identity: str
     candidate_grammar_identity: str
     input_manifest_identity: str
@@ -361,6 +362,7 @@ class StrategyRevision:
         object.__setattr__(self, "parameters", _freeze_mapping(self.parameters, "parameters"))
         if not self.parameters:
             raise ContractViolation("parameters cannot be empty")
+        _sha256(self.geometry_spec_identity, "geometry_spec_identity")
         for name in (
             "protocol_identity",
             "candidate_grammar_identity",
@@ -608,6 +610,7 @@ class GeometryProgram:
     """
 
     strategy_revision_identity: str
+    geometry_spec_identity: str
     program_name: str
     version: str
     readable_rules: tuple[str, ...]
@@ -615,6 +618,7 @@ class GeometryProgram:
 
     def __post_init__(self) -> None:
         _sha256(self.strategy_revision_identity, "strategy_revision_identity")
+        _sha256(self.geometry_spec_identity, "geometry_spec_identity")
         object.__setattr__(self, "program_name", _text(self.program_name, "geometry program_name"))
         object.__setattr__(self, "version", _text(self.version, "geometry version"))
         rules = tuple(_text(rule, "geometry readable rule") for rule in self.readable_rules)
@@ -632,3 +636,5 @@ class GeometryProgram:
     def validate_against(self, strategy: StrategyRevision) -> None:
         if self.strategy_revision_identity != strategy.identity:
             raise ContractViolation("geometry program strategy revision identity does not match")
+        if self.geometry_spec_identity != strategy.geometry_spec_identity:
+            raise ContractViolation("geometry program spec identity does not match strategy")

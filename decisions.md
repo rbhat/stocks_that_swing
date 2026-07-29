@@ -15,4 +15,5 @@ There is no performance kill, qualification gate, automatic promotion, or
 automatic winner. The user chooses the strategies and mix for forward paper
 testing.
 
-`docs/PLAN.md` is the sole active plan. Discovery implementation is next.
+`docs/PLAN.md` is the sole active plan. Discovery implementation is complete;
+no real-cache preflight or screening run has started.

@@ -208,6 +208,25 @@ class FeatureMatrix:
     available_sessions: pd.DataFrame
 
 
+@dataclass(frozen=True)
+class ScheduledEarnings:
+    """A scheduled earnings session and when that schedule was known."""
+
+    earnings_session: dt.date
+    known_session: dt.date
+
+    def __post_init__(self) -> None:
+        if (
+            isinstance(self.earnings_session, dt.datetime)
+            or not isinstance(self.earnings_session, dt.date)
+            or isinstance(self.known_session, dt.datetime)
+            or not isinstance(self.known_session, dt.date)
+        ):
+            raise ContractViolation("earnings sessions must be datetime.date values")
+        if self.known_session > self.earnings_session:
+            raise ContractViolation("earnings known_session cannot follow the event")
+
+
 def _validate_frame(frame: pd.DataFrame) -> pd.DataFrame:
     if not isinstance(frame, pd.DataFrame):
         raise ContractViolation("price frame must be a pandas DataFrame")
@@ -372,8 +391,9 @@ def generate_candidates(
     protocol: DiscoveryProtocol,
     strategy: StrategyRevision,
     program: StrategyProgram,
+    geometry_fact_names: tuple[str, ...],
     facts_as_of: dict[str, dt.date],
-    scheduled_earnings: tuple[dt.date, ...],
+    scheduled_earnings: tuple[ScheduledEarnings, ...],
 ) -> tuple[Candidate, ...]:
     """Return every triggered intent; eligibility rejections belong to the simulator."""
     strategy.validate_against(protocol)
@@ -384,6 +404,15 @@ def generate_candidates(
         {"program": program.definition}
     ):
         raise ContractViolation("strategy parameters do not match the strategy program")
+    geometry_facts = tuple(geometry_fact_names)
+    if (
+        not all(isinstance(name, str) and name.strip() for name in geometry_facts)
+        or len(geometry_facts) != len(set(geometry_facts))
+    ):
+        raise ContractViolation("geometry_fact_names must be unique non-empty strings")
+    declared_features = {feature.name for feature in program.features}
+    if not set(geometry_facts).issubset(declared_features):
+        raise ContractViolation("geometry facts must name declared strategy features")
     if set(facts_as_of) != set(REQUIRED_SOURCE_KINDS):
         raise ContractViolation("facts_as_of must include every required source kind")
     daily = _validate_frame(frame)
@@ -396,22 +425,44 @@ def generate_candidates(
         min_periods=program.average_dollar_volume_lookback,
     ).mean()
     candidates: list[Candidate] = []
-    earnings = tuple(sorted(scheduled_earnings))
+    earnings = tuple(
+        sorted(
+            scheduled_earnings,
+            key=lambda item: (item.earnings_session, item.known_session),
+        )
+    )
+    if not all(isinstance(item, ScheduledEarnings) for item in earnings):
+        raise ContractViolation(
+            "scheduled_earnings must contain ScheduledEarnings values"
+        )
     used_features = {
         condition.left for condition in (*program.where, *program.when)
     } | {
         condition.right_feature
         for condition in (*program.where, *program.when)
         if condition.right_feature is not None
-    } | {program.priority_feature}
+    } | {program.priority_feature, *geometry_facts}
     for session in daily.index[mask]:
+        if not (
+            protocol.evaluation_start
+            <= session.date()
+            < protocol.evaluation_end_exclusive
+        ):
+            continue
         priority = matrix.values.at[session, program.priority_feature]
         dollar_volume = adv.at[session]
         if pd.isna(priority) or pd.isna(dollar_volume):
             continue
         entry_session = _next_session(session)
+        if entry_session >= protocol.evaluation_end_exclusive:
+            continue
         next_earnings = next(
-            (date for date in earnings if date >= entry_session),
+            (
+                item.earnings_session
+                for item in earnings
+                if item.known_session <= session.date()
+                and item.earnings_session >= entry_session
+            ),
             None,
         )
         before_earnings = (

@@ -74,6 +74,7 @@ def _strategy(protocol: DiscoveryProtocol) -> StrategyRevision:
         revision="r1",
         readable_rules=("trend defines where", "daily trigger defines when"),
         parameters={"atr_multiple": Decimal(2), "level": "prior_high"},
+        geometry_spec_identity=_hash("geometry"),
         protocol_identity=protocol.identity,
         candidate_grammar_identity=protocol.candidate_grammar.identity,
         input_manifest_identity=protocol.input_manifest_identity,
@@ -157,7 +158,7 @@ def test_strategy_and_candidate_are_bound_to_protocol_and_permanent_id():
     assert candidate.tie_break == locked_tie_break(
         strategy.identity, candidate.signal_session, candidate.permanent_id
     )
-    assert candidate.tie_break == "95daaab854eb7dbc61a85a26a22836394c65040df0b1f51fdef99cadf1660cca"
+    assert candidate.tie_break == "af4470b69beab8956e0a4d7c7ed23a8b201f3327045f4f13fc281e57777f3feb"
     assert candidate.tie_break != locked_tie_break(
         strategy.identity, candidate.signal_session, "perm-43"
     )

@@ -1,7 +1,7 @@
 # Swing Strategy Discovery and Ranking Plan
 
 - **Study:** `swing-ranking-v1`
-- **Status:** implementation in progress
+- **Status:** implementation complete; real screening not started
 - **Authority:** `docs/VISION.md` defines the scope; this is the sole active
   execution plan
 
@@ -168,6 +168,6 @@ live money are outside scope unless the user explicitly asks.
 
 ## Next step
 
-Implement the discovery protocol, candidate grammar, evaluator, and ranking
-artifacts described here. Do not preselect strategies or targets while doing
-so.
+Approve an explicit candidate grammar and study bundle without reading
+performance, complete the missing real-cache identity and event inputs, then
+run the guarded read-only preflight. Stop for review before execution.

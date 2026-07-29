@@ -70,6 +70,7 @@ def _strategy(protocol: DiscoveryProtocol) -> StrategyRevision:
         revision="r1",
         readable_rules=("where", "when"),
         parameters={"fixture": "generic"},
+        geometry_spec_identity=_hash("geometry"),
         protocol_identity=protocol.identity,
         candidate_grammar_identity=protocol.candidate_grammar.identity,
         input_manifest_identity=protocol.input_manifest_identity,
@@ -129,6 +130,7 @@ def _run(
     strategy = _strategy(protocol)
     geometry_program = GeometryProgram(
         strategy_revision_identity=strategy.identity,
+        geometry_spec_identity=strategy.geometry_spec_identity,
         program_name="fixture geometry",
         version="v1",
         readable_rules=("study supplies every stop and target",),
@@ -192,7 +194,13 @@ def test_priority_tie_break_duplicate_and_deployment_caps_are_durable():
         _candidate(protocol, strategy, permanent_id, sessions[0], Decimal(1))
         for permanent_id in ("Z", "A", "B", "C", "D", "E", "F")
     )
-    duplicate = replace(candidates[0], signal_session=calendar.nyse().previous_session(dt.datetime.combine(sessions[0], dt.time())).date(), priority_value=Decimal(0))
+    duplicate = replace(
+        candidates[0],
+        signal_session=calendar.nyse()
+        .previous_session(dt.datetime.combine(sessions[0], dt.time()))
+        .date(),
+        priority_value=Decimal(2),
+    )
     result = _run(
         (*candidates, duplicate),
         {candidate.permanent_id: _bars(sessions) for candidate in candidates},

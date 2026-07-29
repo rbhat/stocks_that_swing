@@ -11,6 +11,7 @@ from sts import calendar
 from sts.swing_ranking.candidates import (
     ConditionSpec,
     FeatureSpec,
+    ScheduledEarnings,
     StrategyProgram,
     build_feature_matrix,
     generate_candidates,
@@ -118,6 +119,7 @@ def _strategy(
         revision="r1",
         readable_rules=("completed weekly context", "daily close trigger"),
         parameters={"program": program.definition},
+        geometry_spec_identity=_hash("geometry"),
         protocol_identity=protocol.identity,
         candidate_grammar_identity=protocol.candidate_grammar.identity,
         input_manifest_identity=protocol.input_manifest_identity,
@@ -158,9 +160,10 @@ def test_decimal_threshold_conditions_execute_inside_float_feature_matrix():
         permanent_id="perm-1",
         symbol="AAA",
         protocol=protocol,
-        strategy=strategy,
-        program=threshold_program,
-        facts_as_of={
+            strategy=strategy,
+            program=threshold_program,
+            geometry_fact_names=(),
+            facts_as_of={
             kind: dt.date(2024, 1, 1) for kind in REQUIRED_SOURCE_KINDS
         },
         scheduled_earnings=(),
@@ -188,6 +191,7 @@ def test_future_bars_do_not_change_prior_features_or_candidates():
         protocol=protocol,
         strategy=strategy,
         program=program,
+        geometry_fact_names=(),
         facts_as_of=facts,
         scheduled_earnings=(),
     )
@@ -199,6 +203,7 @@ def test_future_bars_do_not_change_prior_features_or_candidates():
         protocol=protocol,
         strategy=strategy,
         program=program,
+        geometry_fact_names=(),
         facts_as_of=facts,
         scheduled_earnings=(),
     )
@@ -221,12 +226,18 @@ def test_candidate_captures_available_facts_and_symbol_is_not_identity():
         permanent_id="perm-1",
         symbol="AAA",
         protocol=protocol,
-        strategy=strategy,
-        program=program,
-        facts_as_of={
+            strategy=strategy,
+            program=program,
+            geometry_fact_names=(),
+            facts_as_of={
             kind: dt.date(2024, 1, 1) for kind in REQUIRED_SOURCE_KINDS
         },
-        scheduled_earnings=(dt.date(2024, 3, 15),),
+        scheduled_earnings=(
+            ScheduledEarnings(
+                earnings_session=dt.date(2024, 3, 15),
+                known_session=dt.date(2024, 1, 2),
+            ),
+        ),
     )
     assert candidates
     candidate = candidates[-1]

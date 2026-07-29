@@ -3,6 +3,7 @@
 from sts.swing_ranking.candidates import (
     ConditionSpec,
     FeatureSpec,
+    ScheduledEarnings,
     StrategyProgram,
     build_feature_matrix,
     generate_candidates,
@@ -22,6 +23,9 @@ from sts.swing_ranking.contracts import (
     locked_tie_break,
     swing_ranking_charter,
 )
+from sts.swing_ranking.geometry import GeometrySpec, PriceFormula, resolve_geometry
+from sts.swing_ranking.metrics import StrategyMetrics, calculate_metrics
+from sts.swing_ranking.ranking import RankingReport, rank_strategies
 from sts.swing_ranking.simulator import (
     DailyBar,
     EquityRecord,
@@ -46,18 +50,26 @@ __all__ = [
     "EventRecord",
     "FeatureSpec",
     "GeometryProgram",
+    "GeometrySpec",
     "OrderRecord",
+    "PriceFormula",
+    "RankingReport",
+    "ScheduledEarnings",
     "SignalFact",
     "SimulationResult",
     "SimulationViolation",
     "SourceFact",
     "SourceLimitation",
+    "StrategyMetrics",
     "StrategyProgram",
     "StrategyRevision",
     "TradeRecord",
     "build_feature_matrix",
+    "calculate_metrics",
     "generate_candidates",
     "locked_tie_break",
+    "rank_strategies",
+    "resolve_geometry",
     "simulate",
     "swing_ranking_charter",
 ]

@@ -12,3 +12,8 @@
 - Prefix-invariance tests must cover a signal on the truncated frame's final session.
 - Increment committed deployment after every opening fill; later fills use current cash and deployment.
 - Resolve same-bar stop/target collisions stop-first.
+- Rank zero-drawdown profit/drawdown by explicit status; zero-return undefined ranks last.
+- Compare cross-strategy overlap by permanent-ID/session keys, never candidate identity or symbol.
+- Real-cache preflight fails closed on any missing identity, coverage, inventory, or source hash.
+- Rehash parquet inputs at evaluation time; preflight metadata cannot mask a changed file.
+- Keep synthetic artifacts outside every `runs/` path and keep dry-run separate from execute.
