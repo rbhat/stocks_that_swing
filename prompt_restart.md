@@ -9,6 +9,7 @@ the forward mix.
 
 Discovery implementation is isolated under `sts.swing_ranking`. Immutable
 contracts and configuration-driven causal daily/weekly/monthly candidate
-generation are complete. Continue with the zero-cost event-sourced portfolio
-simulator. Do not create a dashboard, alerts, deployment, forward writer, or
+generation plus the zero-cost event-sourced portfolio simulator are complete.
+Continue with metrics, independent rankings, durable artifacts, and real-cache
+preflight. Do not create a dashboard, alerts, deployment, forward writer, or
 live-money path unless the user explicitly asks.

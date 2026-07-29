@@ -80,6 +80,9 @@ def _protocol(program: StrategyProgram) -> DiscoveryProtocol:
     return DiscoveryProtocol(
         study_id="swing-ranking-v1",
         protocol_version="v1",
+        evidence_label="retrospective_screening",
+        evaluation_start=dt.date(2024, 1, 2),
+        evaluation_end_exclusive=dt.date(2024, 5, 1),
         data_cutoff=cutoff,
         prospective_wall=dt.date(2024, 5, 1),
         charter=swing_ranking_charter(),

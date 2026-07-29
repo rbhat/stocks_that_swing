@@ -263,6 +263,9 @@ class DiscoveryProtocol:
 
     study_id: str
     protocol_version: str
+    evidence_label: str
+    evaluation_start: dt.date
+    evaluation_end_exclusive: dt.date
     data_cutoff: dt.date
     prospective_wall: dt.date
     charter: Charter
@@ -274,10 +277,23 @@ class DiscoveryProtocol:
         if _text(self.study_id, "study_id") != STUDY_ID:
             raise ContractViolation(f"study_id must be {STUDY_ID!r}")
         object.__setattr__(self, "protocol_version", _text(self.protocol_version, "protocol_version"))
+        if self.evidence_label != "retrospective_screening":
+            raise ContractViolation(
+                "evidence_label must be explicitly retrospective_screening"
+            )
+        evaluation_start = _date(self.evaluation_start, "evaluation_start")
+        evaluation_end = _date(
+            self.evaluation_end_exclusive,
+            "evaluation_end_exclusive",
+        )
+        if evaluation_start >= evaluation_end:
+            raise ContractViolation("evaluation range must be non-empty")
         cutoff = _date(self.data_cutoff, "data_cutoff")
         wall = _date(self.prospective_wall, "prospective_wall")
         if wall <= cutoff:
             raise ContractViolation("prospective_wall must follow data_cutoff")
+        if evaluation_end > wall or evaluation_start > cutoff:
+            raise ContractViolation("evaluation range must end by the prospective wall")
         if not isinstance(self.charter, Charter):
             raise ContractViolation("charter must be a Charter")
         if not isinstance(self.candidate_grammar, CandidateGrammar):
@@ -495,6 +511,14 @@ class Candidate:
             raise ContractViolation("candidate strategy revision identity does not match")
         if self.input_manifest_identity != protocol.input_manifest_identity:
             raise ContractViolation("candidate input manifest identity does not match")
+        if not (
+            protocol.evaluation_start
+            <= self.signal_session
+            < protocol.evaluation_end_exclusive
+        ):
+            raise ContractViolation("candidate signal is outside the evaluation range")
+        if self.entry_session >= protocol.evaluation_end_exclusive:
+            raise ContractViolation("candidate entry is outside the evaluation range")
         if any(as_of > protocol.data_cutoff for as_of in self.facts_as_of.values()):
             raise ContractViolation("candidate source fact exceeds the protocol cutoff")
         if self.signal_close < protocol.charter.minimum_price:
@@ -572,3 +596,39 @@ class EntryGeometry:
             raise ContractViolation("planned reward/risk must be strictly greater than 1.5")
         if self.planned_hold_sessions != charter.maximum_hold_sessions:
             raise ContractViolation("planned_hold_sessions must equal the hard 21-session stop")
+
+
+@dataclass(frozen=True)
+class GeometryProgram:
+    """An explicit, strategy-bound source of prospective entry geometry.
+
+    The program records *how* a study supplied its geometry but intentionally
+    does not privilege a stop or target formula.  The evaluator receives the
+    resulting ``EntryGeometry`` values keyed by candidate identity.
+    """
+
+    strategy_revision_identity: str
+    program_name: str
+    version: str
+    readable_rules: tuple[str, ...]
+    parameters: Mapping[str, Any]
+
+    def __post_init__(self) -> None:
+        _sha256(self.strategy_revision_identity, "strategy_revision_identity")
+        object.__setattr__(self, "program_name", _text(self.program_name, "geometry program_name"))
+        object.__setattr__(self, "version", _text(self.version, "geometry version"))
+        rules = tuple(_text(rule, "geometry readable rule") for rule in self.readable_rules)
+        if not rules:
+            raise ContractViolation("geometry readable_rules cannot be empty")
+        object.__setattr__(self, "readable_rules", rules)
+        object.__setattr__(self, "parameters", _freeze_mapping(self.parameters, "geometry parameters"))
+        if not self.parameters:
+            raise ContractViolation("geometry parameters cannot be empty")
+
+    @property
+    def identity(self) -> str:
+        return identity_hash("swing-ranking-v1/geometry-program/v1", self)
+
+    def validate_against(self, strategy: StrategyRevision) -> None:
+        if self.strategy_revision_identity != strategy.identity:
+            raise ContractViolation("geometry program strategy revision identity does not match")

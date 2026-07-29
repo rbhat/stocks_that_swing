@@ -10,3 +10,5 @@
 - Within a session, order candidates by declared priority then permanent-ID SHA tie; never symbol.
 - Require every decision-time signal fact to be available no later than its signal session.
 - Prefix-invariance tests must cover a signal on the truncated frame's final session.
+- Increment committed deployment after every opening fill; later fills use current cash and deployment.
+- Resolve same-bar stop/target collisions stop-first.

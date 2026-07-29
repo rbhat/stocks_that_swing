@@ -36,6 +36,9 @@ def _protocol() -> DiscoveryProtocol:
     return DiscoveryProtocol(
         study_id="swing-ranking-v1",
         protocol_version="v1",
+        evidence_label="retrospective_screening",
+        evaluation_start=dt.date(2010, 1, 1),
+        evaluation_end_exclusive=dt.date(2025, 2, 1),
         data_cutoff=cutoff,
         prospective_wall=dt.date(2025, 2, 3),
         charter=swing_ranking_charter(),
@@ -154,7 +157,7 @@ def test_strategy_and_candidate_are_bound_to_protocol_and_permanent_id():
     assert candidate.tie_break == locked_tie_break(
         strategy.identity, candidate.signal_session, candidate.permanent_id
     )
-    assert candidate.tie_break == "0b06850301f3ebe708d0446bcc3af688379b2bd29354f48a3ca80e4b58977fda"
+    assert candidate.tie_break == "95daaab854eb7dbc61a85a26a22836394c65040df0b1f51fdef99cadf1660cca"
     assert candidate.tie_break != locked_tie_break(
         strategy.identity, candidate.signal_session, "perm-43"
     )
