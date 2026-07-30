@@ -10,6 +10,7 @@ import pytest
 from sts import calendar
 from sts.swing_ranking.artifacts import (
     ArtifactViolation,
+    EvidenceSelection,
     StrategyEvaluation,
     build_artifact_package,
     write_artifact_package,
@@ -36,24 +37,30 @@ from sts.swing_ranking.split import derive_evaluation_split
 
 
 def _evaluation() -> tuple[DiscoveryProtocol, StrategyEvaluation]:
-    sessions = tuple(item.date() for item in calendar.sessions_between(dt.date(2024, 1, 2), dt.date(2024, 2, 15)))
-    sessions = sessions[:22]
+    sessions = tuple(
+        item.date()
+        for item in calendar.sessions_between(
+            dt.date(2023, 1, 3),
+            dt.date(2024, 2, 15),
+        )
+    )
+    bars = sessions[:22]
     protocol = DiscoveryProtocol(
         study_id="swing-ranking-v1",
         protocol_version="artifact-test-v1",
         evidence_label="retrospective_screening",
-        evaluation_start=dt.date(2023, 1, 3),
-        evaluation_end_exclusive=sessions[-1] + dt.timedelta(days=1),
-        data_cutoff=sessions[-1],
-        prospective_wall=sessions[-1] + dt.timedelta(days=2),
+        evaluation_start=sessions[0],
+        evaluation_end_exclusive=dt.date(2024, 2, 15),
+        data_cutoff=dt.date(2024, 2, 14),
+        prospective_wall=dt.date(2024, 3, 18),
         evaluation_split=derive_evaluation_split(
-            dt.date(2023, 1, 3),
-            sessions[-1] + dt.timedelta(days=1),
+            sessions[0],
+            dt.date(2024, 2, 15),
         ),
         charter=swing_ranking_charter(),
         candidate_grammar=CandidateGrammar("v1", {"fixture": "generic"}),
         source_facts=tuple(
-            SourceFact(kind, "a" * 64, sessions[-1], dt.date(2023, 1, 3), sessions[-1] + dt.timedelta(days=1), ADJUSTMENT_BASIS)
+            SourceFact(kind, "a" * 64, dt.date(2024, 2, 14), sessions[0], dt.date(2024, 2, 15), ADJUSTMENT_BASIS)
             for kind in REQUIRED_SOURCE_KINDS
         ),
         limitations=tuple(SourceLimitation(kind, f"{kind} limitation") for kind in REQUIRED_LIMITATION_KINDS),
@@ -64,10 +71,10 @@ def _evaluation() -> tuple[DiscoveryProtocol, StrategyEvaluation]:
         protocol.identity, protocol.candidate_grammar.identity, protocol.input_manifest_identity, protocol.charter.identity,
     )
     candidate = Candidate(
-        strategy.identity, protocol.input_manifest_identity, "permanent-1", "AAA", sessions[0], sessions[1],
+        strategy.identity, protocol.input_manifest_identity, "permanent-1", "AAA", bars[0], bars[1],
         Decimal(100), Decimal(20_000_000), None, None,
-        {kind: sessions[-1] for kind in REQUIRED_SOURCE_KINDS},
-        {"close": SignalFact(Decimal(100), sessions[0])}, Decimal(1),
+        {kind: dt.date(2024, 2, 14) for kind in REQUIRED_SOURCE_KINDS},
+        {"close": SignalFact(Decimal(100), bars[0])}, Decimal(1),
     )
     geometry = EntryGeometry(candidate.identity, Decimal(100), Decimal(95), Decimal(108), 21)
     program = GeometryProgram(strategy.identity, strategy.geometry_spec_identity, "fixture geometry", "v1", ("stop and target",), {"fixture": "generic"})
@@ -78,7 +85,7 @@ def _evaluation() -> tuple[DiscoveryProtocol, StrategyEvaluation]:
         candidates=(candidate,),
         geometries_by_candidate_identity={candidate.identity: geometry},
         bars_by_permanent_id={
-            candidate.permanent_id: tuple(DailyBar(session, Decimal(100), Decimal(101), Decimal(99), Decimal(100)) for session in sessions)
+            candidate.permanent_id: tuple(DailyBar(session, Decimal(100), Decimal(101), Decimal(99), Decimal(100)) for session in bars)
         },
         priority_direction="descending",
     )
@@ -91,16 +98,37 @@ def _evaluation() -> tuple[DiscoveryProtocol, StrategyEvaluation]:
     return protocol, StrategyEvaluation(strategy, program, (geometry,), (candidate,), result, metrics)
 
 
+def _selection(protocol: DiscoveryProtocol) -> EvidenceSelection:
+    window = protocol.evaluation_split.development
+    return EvidenceSelection(
+        configured_study_identity="c" * 64,
+        name="development",
+        window_identity=window.sessions_identity,
+        start=window.start,
+        end_exclusive=window.end_exclusive,
+        outcome_end_exclusive=(
+            protocol.evaluation_split.development_validation_purge.end_exclusive
+        ),
+    )
+
+
 def test_artifact_package_is_canonical_complete_and_idempotently_written(tmp_path: Path) -> None:
     protocol, evaluation = _evaluation()
     ranking = rank_strategies((evaluation.metrics,))
-    package = build_artifact_package(protocol=protocol, evaluations=(evaluation,), ranking=ranking, synthetic=True)
+    package = build_artifact_package(
+        protocol=protocol,
+        selection=_selection(protocol),
+        evaluations=(evaluation,),
+        ranking=ranking,
+        synthetic=True,
+    )
 
-    assert {"manifest.json", "protocol.json", "ranking.json", "report.md", "candidates.jsonl", "events.jsonl", "orders.jsonl", "trades.jsonl", "equity.jsonl", "metrics.jsonl"} <= set(package.files)
+    assert {"manifest.json", "protocol.json", "selection.json", "ranking.json", "report.md", "candidates.jsonl", "events.jsonl", "orders.jsonl", "trades.jsonl", "equity.jsonl", "metrics.jsonl"} <= set(package.files)
     manifest = json.loads(package.files["manifest.json"])
     assert manifest["artifact_identity"] == package.identity
     assert set(manifest["source_hashes"]) == set(REQUIRED_SOURCE_KINDS)
     assert "historical_screening_current_roster" == manifest["screening_label"]
+    assert manifest["evidence_window"] == "development"
     assert "current_roster_survivorship" in package.files["report.md"].decode()
 
     path = tmp_path / "artifact"
@@ -113,6 +141,7 @@ def test_artifact_writer_refuses_unequal_and_synthetic_runs_destination(tmp_path
     protocol, evaluation = _evaluation()
     package = build_artifact_package(
         protocol=protocol,
+        selection=_selection(protocol),
         evaluations=(evaluation,),
         ranking=rank_strategies((evaluation.metrics,)),
         synthetic=True,

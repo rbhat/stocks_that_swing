@@ -28,13 +28,14 @@ There is no performance kill, qualification gate, automatic promotion, or
 automatic winner. The user chooses the strategies and mix for forward paper
 testing.
 
-The checked bundle selects development evidence only. Its first complete run
-is recorded in `docs/DEVELOPMENT_RESULTS.md`. The results are exploratory and
-do not automatically select, exclude, or promote a strategy. Validation
-remains closed for revision selection and study OOS remains closed for its one
-final opening.
+The checked bundle selects development evidence only. The validation selection
+is a separate immutable document bound to the checked bundle hash. Complete
+development and validation runs are recorded in `docs/DEVELOPMENT_RESULTS.md`
+and `docs/VALIDATION_RESULTS.md`. The results are exploratory and do not
+automatically select, exclude, or promote a strategy. Revision selection is
+pending and study OOS remains closed for its one final opening.
 
 `docs/PLAN.md` is the sole active plan. Source preparation is complete. The
 guarded read-only real-cache preflight passed for all 250 securities and 144
-frozen strategies with development as the selected evidence window. The first
-development run completed; no validation or study-OOS run has started.
+frozen strategies with both authorized evidence selections. The development
+and validation runs completed. No study-OOS run has started.

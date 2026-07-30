@@ -11,9 +11,11 @@ from decimal import Decimal
 from pathlib import Path
 
 import pandas as pd
+import pyarrow.parquet as pq
 
 from sts.swing_ranking.artifacts import (
     ArtifactWriteResult,
+    EvidenceSelection,
     StrategyEvaluation,
     write_artifacts,
 )
@@ -53,6 +55,8 @@ def _load_frames(
     resolved: ResolvedInputs,
     paths: PreflightPaths,
     simulation_start: dt.date,
+    feature_end_exclusive: dt.date,
+    outcome_end_exclusive: dt.date,
 ) -> tuple[Mapping[str, pd.DataFrame], Mapping[str, tuple[DailyBar, ...]]]:
     files = {
         item.stem.upper(): item
@@ -72,8 +76,35 @@ def _load_frames(
             raise RunnerViolation(
                 f"preflight-resolved parquet changed for {parquet.symbol}"
             )
-        frame = pd.read_parquet(path)
-        frames[parquet.permanent_id] = frame
+        metadata = pq.read_schema(path).pandas_metadata
+        index_columns = None if metadata is None else metadata.get("index_columns")
+        if (
+            not isinstance(index_columns, list)
+            or len(index_columns) != 1
+            or not isinstance(index_columns[0], str)
+        ):
+            raise RunnerViolation(
+                f"{parquet.symbol} parquet must declare one stored date index"
+            )
+        frame = pd.read_parquet(
+            path,
+            filters=[
+                (
+                    index_columns[0],
+                    "<",
+                    pd.Timestamp(outcome_end_exclusive),
+                )
+            ],
+        )
+        if not isinstance(frame.index, pd.DatetimeIndex) or any(
+            session.date() >= outcome_end_exclusive for session in frame.index
+        ):
+            raise RunnerViolation(
+                f"{parquet.symbol} parquet outcome boundary was not enforced"
+            )
+        frames[parquet.permanent_id] = frame.loc[
+            frame.index < pd.Timestamp(feature_end_exclusive)
+        ]
         bars[parquet.permanent_id] = tuple(
             DailyBar(
                 session=session.date(),
@@ -83,7 +114,9 @@ def _load_frames(
                 close=_decimal(row.close, f"{parquet.symbol} close"),
             )
             for session, row in frame.iterrows()
-            if session.date() >= simulation_start
+            if simulation_start
+            <= session.date()
+            < outcome_end_exclusive
         )
     return frames, bars
 
@@ -112,7 +145,9 @@ def evaluate_study(
     frames, bars = _load_frames(
         resolved,
         paths,
-        study.protocol.evaluation_start,
+        study.window.start,
+        study.window.end_exclusive,
+        study.outcome_end_exclusive,
     )
     symbol_by_id = {
         security.permanent_id: security.symbol for security in resolved.securities
@@ -212,6 +247,14 @@ def evaluate_study(
     artifact = write_artifacts(
         Path(output),
         protocol=study.protocol,
+        selection=EvidenceSelection(
+            configured_study_identity=study.identity,
+            name=study.evidence_window,
+            window_identity=study.window.sessions_identity,
+            start=study.window.start,
+            end_exclusive=study.window.end_exclusive,
+            outcome_end_exclusive=study.outcome_end_exclusive,
+        ),
         evaluations=values,
         ranking=ranking,
         synthetic=False,

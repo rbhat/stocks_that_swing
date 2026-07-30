@@ -37,6 +37,10 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--execute", action="store_true", help="explicitly permit evaluation and artifact writes")
     parser.add_argument("--output", help="explicit artifact directory for execution")
     parser.add_argument("--bundle", help="strict study-bundle JSON; required for the built-in real-cache path")
+    parser.add_argument(
+        "--selection",
+        help="strict evidence-selection JSON bound to the frozen study bundle",
+    )
     parser.add_argument("--paths", help="explicit preflight-paths JSON; required for the built-in real-cache path")
     return parser
 
@@ -60,8 +64,12 @@ def run(
         and "runs" in output.resolve().parts
     ):
         parser.error("synthetic artifacts are refused under runs/")
-    if args.synthetic_fixture and (args.bundle is not None or args.paths is not None):
-        parser.error("--bundle and --paths are real-cache inputs")
+    if args.synthetic_fixture and (
+        args.bundle is not None
+        or args.selection is not None
+        or args.paths is not None
+    ):
+        parser.error("--bundle, --selection, and --paths are real-cache inputs")
     if not args.dry_run and not args.execute:
         parser.error("execution is disabled; pass --execute after reviewing the dry-run")
 
@@ -71,11 +79,22 @@ def run(
     elif args.real_cache:
         if args.bundle is None or args.paths is None:
             parser.error("--bundle and --paths are required for built-in real-cache preflight")
-        from sts.swing_ranking.config import load_preflight_paths, load_study_bundle
+        from sts.swing_ranking.config import (
+            load_preflight_paths,
+            load_selected_study,
+            load_study_bundle,
+        )
         from sts.swing_ranking.preflight import resolve_inputs
         from sts.swing_ranking.runner import evaluate_study
 
-        study = load_study_bundle(Path(args.bundle))
+        study = (
+            load_study_bundle(Path(args.bundle))
+            if args.selection is None
+            else load_selected_study(
+                Path(args.bundle),
+                Path(args.selection),
+            )
+        )
         paths = load_preflight_paths(Path(args.paths))
         resolved = resolve_inputs(study.protocol, paths)
         summary = {

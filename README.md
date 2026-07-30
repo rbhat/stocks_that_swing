@@ -27,7 +27,9 @@ The chronological development/validation/OOS split, 250 permanent security
 IDs, historical and upcoming earnings inputs, and the first 144-member
 development bundle are frozen under `configs/swing_ranking_v1/`. The guarded
 read-only real-cache preflight passes. The first development run is complete;
-see [`docs/DEVELOPMENT_RESULTS.md`](docs/DEVELOPMENT_RESULTS.md). Validation
-and study OOS remain closed.
+see [`docs/DEVELOPMENT_RESULTS.md`](docs/DEVELOPMENT_RESULTS.md). The
+validation run is also complete; see
+[`docs/VALIDATION_RESULTS.md`](docs/VALIDATION_RESULTS.md). Revision selection
+is pending and study OOS remains closed.
 
 Start the next session with [`prompt_restart.md`](prompt_restart.md).

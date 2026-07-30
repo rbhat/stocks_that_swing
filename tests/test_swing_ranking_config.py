@@ -9,7 +9,11 @@ import pandas as pd
 import pytest
 
 from sts import calendar
-from sts.swing_ranking.config import ConfigurationViolation, load_study_bundle
+from sts.swing_ranking.config import (
+    ConfigurationViolation,
+    load_selected_study,
+    load_study_bundle,
+)
 from sts.swing_ranking.contracts import (
     ADJUSTMENT_BASIS,
     REQUIRED_LIMITATION_KINDS,
@@ -180,12 +184,52 @@ def test_load_study_bundle_rejects_json_float(tmp_path: Path) -> None:
         load_study_bundle(path)
 
 
+def test_load_selected_study_binds_validation_to_exact_bundle(
+    tmp_path: Path,
+) -> None:
+    bundle = tmp_path / "study.json"
+    _write(bundle, _bundle())
+    selection = tmp_path / "selection.json"
+    _write(
+        selection,
+        {
+            "schema_version": "swing-ranking-v1.evidence-selection.v1",
+            "study_bundle_sha256": hashlib.sha256(
+                bundle.read_bytes()
+            ).hexdigest(),
+            "evidence_window": "validation",
+        },
+    )
+
+    study = load_selected_study(bundle, selection)
+
+    assert study.evidence_window == "validation"
+    assert study.window == study.protocol.evaluation_split.validation
+    assert study.outcome_end_exclusive == (
+        study.protocol.evaluation_split.validation_oos_purge.end_exclusive
+    )
+    bundle.write_bytes(bundle.read_bytes() + b"\n")
+    with pytest.raises(ConfigurationViolation, match="does not match"):
+        load_selected_study(bundle, selection)
+
+
 def test_configured_study_reaches_artifact_implementation_boundary(
     tmp_path: Path,
 ) -> None:
     bundle = tmp_path / "study.json"
     _write(bundle, _bundle())
-    study = load_study_bundle(bundle)
+    selection = tmp_path / "selection.json"
+    _write(
+        selection,
+        {
+            "schema_version": "swing-ranking-v1.evidence-selection.v1",
+            "study_bundle_sha256": hashlib.sha256(
+                bundle.read_bytes()
+            ).hexdigest(),
+            "evidence_window": "validation",
+        },
+    )
+    study = load_selected_study(bundle, selection)
     sessions = calendar.sessions_between(
         study.protocol.evaluation_start,
         study.protocol.data_cutoff,
@@ -194,6 +238,7 @@ def test_configured_study_reaches_artifact_implementation_boundary(
     frame_sessions = pd.DatetimeIndex([prehistory_session, *sessions]).tz_localize(
         None
     )
+    frame_sessions.name = "date"
     frame = pd.DataFrame(
         {
             "open": [100.0] * len(frame_sessions),
@@ -206,6 +251,10 @@ def test_configured_study_reaches_artifact_implementation_boundary(
     )
     frame.loc[prehistory_session, "high"] = 100.0
     frame.loc[prehistory_session, "close"] = 100.0 + 1e-12
+    frame.loc[
+        frame.index >= pd.Timestamp(study.outcome_end_exclusive),
+        "low",
+    ] = 200.0
     parquet_root = tmp_path / "parquets"
     parquet_root.mkdir()
     parquet = parquet_root / "AAA.parquet"
@@ -251,6 +300,14 @@ def test_configured_study_reaches_artifact_implementation_boundary(
     assert result.artifact.path == output
     assert result.evaluations[0].metrics.candidate_count > 0
     assert (output / "manifest.json").is_file()
+    equity = result.evaluations[0].simulation.equity
+    assert equity[0].session == study.window.start
+    assert equity[-1].session < study.outcome_end_exclusive
+    manifest = json.loads((output / "manifest.json").read_text())
+    assert manifest["evidence_window"] == "validation"
+    assert manifest["outcome_end_exclusive"] == (
+        study.outcome_end_exclusive.isoformat()
+    )
     frame.assign(close=101.0).to_parquet(parquet)
     with pytest.raises(RunnerViolation, match="changed"):
         evaluate_study(

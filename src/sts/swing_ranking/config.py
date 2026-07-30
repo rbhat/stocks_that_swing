@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 import json
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
@@ -336,6 +337,15 @@ class ConfiguredStudy:
         return getattr(self.protocol.evaluation_split, self.evidence_window)
 
     @property
+    def outcome_end_exclusive(self) -> dt.date:
+        split = self.protocol.evaluation_split
+        if self.evidence_window == "development":
+            return split.development_validation_purge.end_exclusive
+        if self.evidence_window == "validation":
+            return split.validation_oos_purge.end_exclusive
+        return self.protocol.prospective_wall
+
+    @property
     def identity(self) -> str:
         return identity_hash("swing-ranking-v1/configured-study/v1", self)
 
@@ -507,6 +517,54 @@ def load_study_bundle(path: Path) -> ConfiguredStudy:
     return ConfiguredStudy(protocol, evidence_window, tuple(configured))
 
 
+def load_selected_study(
+    bundle_path: Path,
+    selection_path: Path,
+) -> ConfiguredStudy:
+    """Bind one explicit evidence-window selection to an exact frozen bundle."""
+    bundle_path = Path(bundle_path)
+    selection = _object(
+        _read_json(Path(selection_path), "evidence selection"),
+        {"schema_version", "study_bundle_sha256", "evidence_window"},
+        "evidence selection",
+    )
+    if (
+        _text(selection["schema_version"], "selection schema_version")
+        != "swing-ranking-v1.evidence-selection.v1"
+    ):
+        raise ConfigurationViolation("unsupported evidence selection schema")
+    expected_hash = _text(
+        selection["study_bundle_sha256"],
+        "selection study_bundle_sha256",
+    )
+    if len(expected_hash) != 64 or any(
+        character not in "0123456789abcdef" for character in expected_hash
+    ):
+        raise ConfigurationViolation(
+            "selection study_bundle_sha256 must be lowercase SHA-256 hex"
+        )
+    try:
+        actual_hash = hashlib.sha256(bundle_path.read_bytes()).hexdigest()
+    except OSError as exc:
+        raise ConfigurationViolation(
+            f"study bundle is unreadable: {exc}"
+        ) from exc
+    if actual_hash != expected_hash:
+        raise ConfigurationViolation(
+            "evidence selection does not match the frozen study bundle"
+        )
+    configured = load_study_bundle(bundle_path)
+    evidence_window = _text(
+        selection["evidence_window"],
+        "selection evidence_window",
+    )
+    return ConfiguredStudy(
+        configured.protocol,
+        evidence_window,
+        configured.strategies,
+    )
+
+
 def load_preflight_paths(path: Path) -> PreflightPaths:
     raw = _object(
         _read_json(Path(path), "preflight paths"),
@@ -547,5 +605,6 @@ __all__ = [
     "ConfiguredStrategy",
     "ConfiguredStudy",
     "load_preflight_paths",
+    "load_selected_study",
     "load_study_bundle",
 ]

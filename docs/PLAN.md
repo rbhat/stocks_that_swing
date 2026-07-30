@@ -1,8 +1,8 @@
 # Swing Strategy Discovery and Ranking Plan
 
 - **Study:** `swing-ranking-v1`
-- **Status:** first frozen development run complete; validation and study OOS
-  remain closed
+- **Status:** development and validation runs complete; revision selection is
+  pending and study OOS remains closed
 - **Authority:** `docs/VISION.md` defines the scope; this is the sole active
   execution plan
 
@@ -179,5 +179,6 @@ live money are outside scope unless the user explicitly asks.
 
 ## Next step
 
-Review `DEVELOPMENT_RESULTS.md`. The user may direct another development
-revision or authorize the validation step. Keep study OOS closed.
+Review `DEVELOPMENT_RESULTS.md` and `VALIDATION_RESULTS.md`, then direct the
+revision freeze. Keep study OOS closed until the user explicitly authorizes
+its one final opening.

@@ -9,7 +9,8 @@
   equity records; 375,845 events
 - Costs: none assumed or deducted
 
-All manifest content hashes and record counts reconcile. These are development
+All manifest content hashes, record identities, event chains, accounting
+totals, metric formulas, and rankings reconcile. These are development
 rankings, not validation or study-OOS results. They do not select, qualify,
 exclude, or promote a strategy.
 
@@ -50,4 +51,8 @@ exclude, or promote a strategy.
 - Historical earnings report sessions are known on the event session, so the
   two-session retrospective earnings blackout cannot be reconstructed.
 - Yahoo adjusted history is tied to its recorded adjustment vintage.
-- Validation and study OOS remain closed.
+- Artifact v1 equity-marked the full 300-session evaluation range after all
+  development positions were closed. No later-window candidate, order, or
+  trade entered the development result, so the metrics and rankings are
+  unchanged. Artifact v2 enforces and records the selected outcome boundary.
+- Validation has since completed; study OOS remains closed.

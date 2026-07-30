@@ -7,6 +7,7 @@
 3. `../decisions.md` — active decision record.
 4. `RUN_REFERENCE.md` — guarded implementation boundary and required inputs.
 5. `DEVELOPMENT_RESULTS.md` — first frozen development run.
+6. `VALIDATION_RESULTS.md` — frozen validation run.
 
 ## Current authority
 
@@ -23,6 +24,6 @@ fail-closed preflight, and atomic artifacts. See `RUN_REFERENCE.md`.
 
 The guarded read-only real-cache preflight passes for the local source
 inventory, permanent IDs, earnings inputs, split contract, and development
-bundle. The first development run is complete. Validation and study OOS remain
-closed; final rankings, user selection, and forward paper testing remain
-incomplete. No live-money trading is authorized.
+bundle. The development and validation runs are complete. Revision selection
+is pending and study OOS remains closed; final rankings, user selection, and
+forward paper testing remain incomplete. No live-money trading is authorized.

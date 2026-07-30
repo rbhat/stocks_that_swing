@@ -7,6 +7,7 @@ directory atomically.  It never reads the cache or runs a simulation.
 
 from __future__ import annotations
 
+import datetime as dt
 import os
 import shutil
 import uuid
@@ -26,18 +27,59 @@ from sts.swing_ranking.identity import (
     canonical_bytes,
     canonical_json,
     identity_hash,
+    require_sha256,
     sha256_hex,
 )
 from sts.swing_ranking.metrics import StrategyMetrics
 from sts.swing_ranking.ranking import RankingReport
 from sts.swing_ranking.simulator import SimulationResult
 
-_ARTIFACT_DOMAIN = "swing-ranking-v1/artifact/v1"
-_SCHEMA_VERSION = "swing-ranking-v1.artifact.v1"
+_ARTIFACT_DOMAIN = "swing-ranking-v1/artifact/v2"
+_SCHEMA_VERSION = "swing-ranking-v1.artifact.v2"
 
 
 class ArtifactViolation(ContractViolation):
     """Artifact inputs or an artifact destination are incomplete or unsafe."""
+
+
+@dataclass(frozen=True)
+class EvidenceSelection:
+    """The exact evidence and outcome boundaries admitted to one artifact."""
+
+    configured_study_identity: str
+    name: str
+    window_identity: str
+    start: dt.date
+    end_exclusive: dt.date
+    outcome_end_exclusive: dt.date
+
+    def __post_init__(self) -> None:
+        try:
+            require_sha256(
+                self.configured_study_identity,
+                "configured_study_identity",
+            )
+            require_sha256(self.window_identity, "window_identity")
+        except ValueError as exc:
+            raise ArtifactViolation(str(exc)) from exc
+        if self.name not in {"development", "validation", "oos"}:
+            raise ArtifactViolation(
+                "evidence selection name must be development, validation, or oos"
+            )
+        for field_name in (
+            "start",
+            "end_exclusive",
+            "outcome_end_exclusive",
+        ):
+            value = getattr(self, field_name)
+            if isinstance(value, dt.datetime) or not isinstance(value, dt.date):
+                raise ArtifactViolation(
+                    f"evidence selection {field_name} must be a date"
+                )
+        if not self.start < self.end_exclusive < self.outcome_end_exclusive:
+            raise ArtifactViolation(
+                "evidence and outcome boundaries must be strictly increasing"
+            )
 
 
 @dataclass(frozen=True)
@@ -156,11 +198,33 @@ def _jsonl(rows: Sequence[object]) -> bytes:
 
 def _validate_evaluations(
     protocol: DiscoveryProtocol,
+    selection: EvidenceSelection,
     evaluations: Sequence[StrategyEvaluation],
     ranking: RankingReport,
 ) -> tuple[StrategyEvaluation, ...]:
     if not isinstance(protocol, DiscoveryProtocol):
         raise ArtifactViolation("protocol must be a DiscoveryProtocol")
+    if not isinstance(selection, EvidenceSelection):
+        raise ArtifactViolation("selection must be an EvidenceSelection")
+    window = getattr(protocol.evaluation_split, selection.name)
+    if (
+        selection.window_identity != window.sessions_identity
+        or selection.start != window.start
+        or selection.end_exclusive != window.end_exclusive
+    ):
+        raise ArtifactViolation(
+            "selection does not match the protocol evidence window"
+        )
+    split = protocol.evaluation_split
+    expected_outcome_end = {
+        "development": split.development_validation_purge.end_exclusive,
+        "validation": split.validation_oos_purge.end_exclusive,
+        "oos": protocol.prospective_wall,
+    }[selection.name]
+    if selection.outcome_end_exclusive != expected_outcome_end:
+        raise ArtifactViolation(
+            "selection outcome boundary does not match the protocol"
+        )
     values = tuple(evaluations)
     if not values or not all(isinstance(value, StrategyEvaluation) for value in values):
         raise ArtifactViolation("evaluations must be non-empty StrategyEvaluation values")
@@ -177,6 +241,33 @@ def _validate_evaluations(
                 raise ArtifactViolation("candidate strategy binding does not match")
             if candidate.input_manifest_identity != protocol.input_manifest_identity:
                 raise ArtifactViolation("candidate input-manifest binding does not match")
+            if not (
+                selection.start
+                <= candidate.signal_session
+                < selection.end_exclusive
+                and candidate.entry_session < selection.end_exclusive
+            ):
+                raise ArtifactViolation(
+                    "candidate falls outside the selected evidence window"
+                )
+        if (
+            not value.simulation.equity
+            or value.simulation.equity[0].session != selection.start
+            or any(
+                record.session >= selection.outcome_end_exclusive
+                for record in value.simulation.equity
+            )
+        ):
+            raise ArtifactViolation(
+                "equity records do not respect the selected outcome boundary"
+            )
+        if any(
+            trade.exit_session >= selection.outcome_end_exclusive
+            for trade in value.simulation.trades
+        ):
+            raise ArtifactViolation(
+                "trade exits do not respect the selected outcome boundary"
+            )
         filled_candidate_ids = {
             order.candidate_identity
             for order in value.simulation.orders
@@ -205,12 +296,27 @@ def _validate_evaluations(
     return values
 
 
-def _report_markdown(protocol: DiscoveryProtocol, evaluations: Sequence[StrategyEvaluation], identity: str, synthetic: bool) -> bytes:
+def _report_markdown(
+    protocol: DiscoveryProtocol,
+    selection: EvidenceSelection,
+    evaluations: Sequence[StrategyEvaluation],
+    identity: str,
+    synthetic: bool,
+) -> bytes:
     lines = [
         "# Swing ranking screening artifact",
         "",
         f"- Artifact identity: `{identity}`",
         f"- Evidence: `{protocol.evidence_label}`",
+        (
+            f"- Evidence window: `{selection.name}`, "
+            f"{selection.start.isoformat()} through "
+            f"{selection.end_exclusive.isoformat()} exclusive"
+        ),
+        (
+            "- Outcome boundary: "
+            f"`{selection.outcome_end_exclusive.isoformat()}` exclusive"
+        ),
         f"- Synthetic fixture: `{str(synthetic).lower()}`",
         f"- Strategies: `{len(evaluations)}`",
         "- Costs: `none assumed or deducted`; turnover and break-even cost are diagnostics only.",
@@ -230,6 +336,7 @@ def _report_markdown(protocol: DiscoveryProtocol, evaluations: Sequence[Strategy
 def build_artifact_package(
     *,
     protocol: DiscoveryProtocol,
+    selection: EvidenceSelection,
     evaluations: Sequence[StrategyEvaluation],
     ranking: RankingReport,
     synthetic: bool,
@@ -237,10 +344,16 @@ def build_artifact_package(
     """Build all canonical artifact bytes without touching the filesystem."""
     if not isinstance(synthetic, bool):
         raise ArtifactViolation("synthetic must be a bool")
-    values = _validate_evaluations(protocol, evaluations, ranking)
+    values = _validate_evaluations(
+        protocol,
+        selection,
+        evaluations,
+        ranking,
+    )
     logical_payload = {
         "schema_version": _SCHEMA_VERSION,
         "protocol": protocol,
+        "selection": selection,
         "evaluations": values,
         "ranking": ranking,
         "synthetic": synthetic,
@@ -255,6 +368,7 @@ def build_artifact_package(
                 "record": protocol,
             }
         ),
+        "selection.json": _json({"record": selection}),
         "ranking.json": _json({"artifact_identity": identity, "record": ranking}),
         "candidates.jsonl": _jsonl(
             [_record(candidate, candidate.identity) for value in values for candidate in value.candidates]
@@ -274,7 +388,13 @@ def build_artifact_package(
         "metrics.jsonl": _jsonl(
             [_record(value.metrics, value.strategy.identity) for value in values]
         ),
-        "report.md": _report_markdown(protocol, values, identity, synthetic),
+        "report.md": _report_markdown(
+            protocol,
+            selection,
+            values,
+            identity,
+            synthetic,
+        ),
     }
     for value in values:
         files[f"strategies/{value.strategy.identity}.json"] = _json(
@@ -302,6 +422,12 @@ def build_artifact_package(
             "artifact_identity": identity,
             "synthetic_fixture": synthetic,
             "evidence_label": protocol.evidence_label,
+            "configured_study_identity": selection.configured_study_identity,
+            "evidence_window": selection.name,
+            "evidence_window_identity": selection.window_identity,
+            "evidence_start": selection.start,
+            "evidence_end_exclusive": selection.end_exclusive,
+            "outcome_end_exclusive": selection.outcome_end_exclusive,
             "screening_label": "historical_screening_current_roster",
             "protocol_identity": protocol.identity,
             "candidate_grammar_identity": protocol.candidate_grammar.identity,
@@ -389,6 +515,7 @@ def write_artifacts(
     path: Path,
     *,
     protocol: DiscoveryProtocol,
+    selection: EvidenceSelection,
     evaluations: Sequence[StrategyEvaluation],
     ranking: RankingReport,
     synthetic: bool,
@@ -398,6 +525,7 @@ def write_artifacts(
         path,
         build_artifact_package(
             protocol=protocol,
+            selection=selection,
             evaluations=evaluations,
             ranking=ranking,
             synthetic=synthetic,
@@ -409,6 +537,7 @@ __all__ = [
     "ArtifactPackage",
     "ArtifactViolation",
     "ArtifactWriteResult",
+    "EvidenceSelection",
     "StrategyEvaluation",
     "build_artifact_package",
     "write_artifact_package",

@@ -16,6 +16,10 @@ or execution flag. Synthetic fixtures are refused below any `runs/` path.
   21-entry-session purge windows, selected evidence window, source facts,
   limitations, candidate grammar members, readable strategy revisions, and
   geometry before performance is read.
+- For an evidence window other than the bundle's development selection, an
+  evidence-selection JSON matching
+  `sts.swing_ranking.config.load_selected_study`. It binds the selected window
+  to the exact study-bundle SHA-256 before performance is read.
 - A preflight-paths JSON matching
   `sts.swing_ranking.config.load_preflight_paths`.
 - Complete permanent-ID security master and symbol history, point-in-time
@@ -39,6 +43,11 @@ event. They become known on the report session, and the two-session historical
 blackout is therefore not represented as known in advance. The bundle records
 this limitation. `upcoming_earnings_calendar.json` is a separate current
 schedule input and is not admitted to retrospective evaluation.
+
+The checked validation selection is
+`configs/swing_ranking_v1/validation_selection.json`. It binds validation to
+the frozen development bundle hash without changing the protocol, grammar, or
+strategy revisions.
 
 ## Rebuilding frozen inputs
 
@@ -96,6 +105,16 @@ Read-only preflight:
   --paths configs/swing_ranking_v1/preflight_paths.json
 ```
 
+For validation, add the explicit selection:
+
+```bash
+.venv/bin/python scripts/run_swing_ranking.py \
+  --real-cache --dry-run \
+  --bundle configs/swing_ranking_v1/study_bundle.json \
+  --selection configs/swing_ranking_v1/validation_selection.json \
+  --paths configs/swing_ranking_v1/preflight_paths.json
+```
+
 Execution is a separate opt-in after reviewing preflight:
 
 ```bash
@@ -106,6 +125,9 @@ Execution is a separate opt-in after reviewing preflight:
   --output <artifact-directory>
 ```
 
+The validation execution uses the same command with `--execute`, the checked
+validation selection, and an explicit immutable output directory.
+
 ## Current pause point
 
 All 250 roster parquets, permanent-ID mappings, source facts, historical
@@ -115,8 +137,8 @@ guarded real-cache preflight passed with protocol identity
 `2efa2dc1035cd84774702acbf4880b6116f92940a662993b95cbbb2858c24be8`
 and resolved-inputs identity
 `d636616107d93670bde1d7b327f4aaa1d499e8e9ba2c218851a217cca146938b`.
-It resolved 250 securities and 144 strategies with development as the selected
-evidence window.
+It resolved 250 securities and 144 strategies with both authorized evidence
+selections.
 
 The first development run is complete at
 `runs/swing-ranking-v1/development-v1`, with artifact identity
@@ -128,6 +150,25 @@ three development leaderboards.
 
 The initial execution attempt stopped before artifact publication because
 feature-only prehistory contained sub-quality-tolerance adjusted-OHLC
-rounding. The runner now creates strict simulator bars only from the evaluation
-start while retaining full prehistory for causal feature construction.
-Validation and study OOS remain closed.
+rounding. The runner now creates strict simulator bars only from the selected
+evidence start through its outcome purge while retaining only earlier
+prehistory for causal feature construction.
+
+An independent re-audit verified the development content hashes, record
+identities, event chains, accounting, metrics, and rankings. It also found
+that artifact v1 equity-marked all 300 evaluation sessions after development
+positions were closed. No validation/OOS candidates, orders, or trades entered
+the development results, so the reported performance is unchanged. Artifact
+v2 now records and enforces the selected evidence and outcome boundaries.
+
+The validation run is complete at `runs/swing-ranking-v1/validation-v1`, with
+artifact identity
+`25157f4ee3a913f066d49cd4287e1b5090f84bed5201ae7e7bca602944ebb98e`.
+All 154 manifest hashes and record counts reconcile. The artifact contains 144
+strategy metrics, 79,056 candidates/orders, 5,993 closed trades, 8,640 daily
+equity records, and 93,689 events. Every strategy has exactly 60 equity
+sessions and no record reaches the 2026-03-13 study-OOS start. See
+`VALIDATION_RESULTS.md`.
+
+Revision selection is pending. Study OOS remains closed and no forward-paper
+work has started.

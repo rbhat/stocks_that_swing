@@ -19,4 +19,5 @@
 - Archive each fetched source response before normalization; resume from raw files and fail on ambiguous mappings.
 - Model scheduled events as known/superseded validity intervals; later snapshots never rewrite earlier knowledge.
 - Exclude mutable inventory files from the content set whose identity they record.
-- Keep feature-only prehistory out of strict simulator bars; simulator bars begin at the evaluation start.
+- Keep feature-only prehistory out of strict simulator bars; simulator bars begin at the selected evidence start.
+- Bind each selected evidence window to the frozen bundle; read and simulate only that window plus its 21-session outcome purge, and record both boundaries in the artifact.
