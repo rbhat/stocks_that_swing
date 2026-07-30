@@ -32,5 +32,7 @@ The checked bundle selects development evidence only. Validation remains
 closed for revision selection and study OOS remains closed for its one final
 opening.
 
-`docs/PLAN.md` is the sole active plan. Source preparation is complete. No
-real-cache preflight or study run has started.
+`docs/PLAN.md` is the sole active plan. Source preparation is complete. The
+guarded read-only real-cache preflight passed for all 250 securities and 144
+frozen strategies with development as the selected evidence window. No study
+run has started.

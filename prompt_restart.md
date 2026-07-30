@@ -16,6 +16,7 @@ preflight, and atomic artifacts. All synthetic and repository tests pass.
 The split, permanent IDs, earnings inputs, source facts, and 144-member
 development bundle are frozen under `configs/swing_ranking_v1/`. Historical
 earnings come from archived Investing.com custom-date calendar queries;
-upcoming schedules use append-only daily snapshots. No real-cache preflight or
-study run has started. Review the bundle before the guarded dry-run and pause
-again before `--execute`.
+upcoming schedules use append-only daily snapshots. The guarded real-cache
+dry-run preflight passes for all 250 securities; no study run has started.
+Review the preflight identities and frozen bundle, then pause before
+`--execute` unless the user explicitly authorizes the development-only run.

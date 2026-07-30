@@ -20,7 +20,7 @@ causal daily/weekly/monthly candidates, declared entry geometry, the
 Decimal-only zero-cost event simulator, metrics, independent leaderboards,
 fail-closed preflight, and atomic artifacts. See `RUN_REFERENCE.md`.
 
-No real-cache preflight or study run has started. The local source inventory,
-permanent IDs, earnings inputs, split contract, and development bundle are
-prepared for the guarded read-only preflight. Rankings, user selection, and
-forward paper testing remain incomplete. No live-money trading is authorized.
+The guarded read-only real-cache preflight passes for the local source
+inventory, permanent IDs, earnings inputs, split contract, and development
+bundle. No study run has started. Rankings, user selection, and forward paper
+testing remain incomplete. No live-money trading is authorized.

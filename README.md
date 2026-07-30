@@ -25,7 +25,7 @@ preflight, and atomic artifacts.
 
 The chronological development/validation/OOS split, 250 permanent security
 IDs, historical and upcoming earnings inputs, and the first 144-member
-development bundle are frozen under `configs/swing_ranking_v1/`. No
-real-cache preflight or study run has started.
+development bundle are frozen under `configs/swing_ranking_v1/`. The guarded
+read-only real-cache preflight passes. No study run has started.
 
 Start the next session with [`prompt_restart.md`](prompt_restart.md).

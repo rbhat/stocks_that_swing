@@ -111,5 +111,9 @@ Execution is a separate opt-in after reviewing preflight:
 All 250 roster parquets, permanent-ID mappings, source facts, historical
 earnings rows, upcoming schedule snapshot, and derived bundle files are
 present. Repository tests and non-performance bundle validation pass. The
-guarded real-cache preflight above has deliberately not been invoked, and no
-study execution or performance read has started.
+guarded real-cache preflight passed with protocol identity
+`2efa2dc1035cd84774702acbf4880b6116f92940a662993b95cbbb2858c24be8`
+and resolved-inputs identity
+`d636616107d93670bde1d7b327f4aaa1d499e8e9ba2c218851a217cca146938b`.
+It resolved 250 securities and 144 strategies with development as the selected
+evidence window. No study execution or performance read has started.
