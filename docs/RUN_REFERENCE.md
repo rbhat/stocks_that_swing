@@ -130,15 +130,19 @@ validation selection, and an explicit immutable output directory.
 
 ## Current pause point
 
-All 250 roster parquets, permanent-ID mappings, source facts, historical
-earnings rows, upcoming schedule snapshot, and derived bundle files are
-present. Repository tests and non-performance bundle validation pass. The
-guarded real-cache preflight passed with protocol identity
+Resume verification started from clean commit `86f55b8`, aligned with
+`origin/main`. All 250 roster parquets, permanent-ID mappings, source facts,
+historical earnings rows, upcoming schedule snapshot, and derived bundle files
+are present. All 80 repository tests pass. The guarded real-cache preflight
+passes for both authorized evidence selections with protocol identity
 `2efa2dc1035cd84774702acbf4880b6116f92940a662993b95cbbb2858c24be8`
 and resolved-inputs identity
 `d636616107d93670bde1d7b327f4aaa1d499e8e9ba2c218851a217cca146938b`.
-It resolved 250 securities and 144 strategies with both authorized evidence
-selections.
+Each resolves 250 securities and 144 strategies. The development window
+identity is
+`74cb71782e4caae06a92289c5a41d894a464985ac0b032bf543691e867492a83`;
+the validation window identity is
+`2917c3f0f65ceb97639718401211c8e7f71f1dae2896b2042b0ae92d881eadd8`.
 
 The first development run is complete at
 `runs/swing-ranking-v1/development-v1`, with artifact identity
@@ -172,3 +176,16 @@ sessions and no record reaches the 2026-03-13 study-OOS start. See
 
 Revision selection is pending. Study OOS remains closed and no forward-paper
 work has started.
+
+The cross-window audit joins the same 144 revisions by immutable identity and
+recomputes the three study rankings from each artifact's metric records. The
+development/validation Spearman rank correlations are `-0.1855` for profit,
+`-0.1642` for drawdown, and `-0.2260` for profit/drawdown. No metric shares a
+top-10 revision; top-20 overlaps are two, three, and one respectively. See
+`VALIDATION_RESULTS.md` for the revision-level comparison. These are
+diagnostics only.
+
+The clean pause contains only `development-v1` and `validation-v1` under the
+study run directory. There is no study-OOS selection document or artifact
+directory and no forward-paper path. The next authorized action is
+user-directed revision selection only.

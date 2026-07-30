@@ -35,7 +35,15 @@ and `docs/VALIDATION_RESULTS.md`. The results are exploratory and do not
 automatically select, exclude, or promote a strategy. Revision selection is
 pending and study OOS remains closed for its one final opening.
 
+The development-versus-validation comparison joins all 144 revisions by
+immutable strategy identity and preserves the three independent ranking
+definitions. No metric has a shared top-10 member across the two windows, and
+all three full-field rank correlations are low and negative. This observed
+instability is revision-selection evidence, not a new gate, composite score,
+exclusion rule, or causal regime claim.
+
 `docs/PLAN.md` is the sole active plan. Source preparation is complete. The
 guarded read-only real-cache preflight passed for all 250 securities and 144
 frozen strategies with both authorized evidence selections. The development
-and validation runs completed. No study-OOS run has started.
+and validation runs completed and their artifact audits pass. No study-OOS
+selection or run exists, and no forward-paper work has started.

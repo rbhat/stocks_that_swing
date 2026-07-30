@@ -44,6 +44,30 @@ exclude, or promote a strategy.
 | 4 | `monthly-ema6-above__close-cross-ema5__atr14x1p5__target-risk1p75` | $23,576.11 | 4.9068% | 4.8048 | 134 | 7 |
 | 5 | `monthly-ema6-above__close-cross-ema5__atr14x1__target-risk1p75` | $32,868.84 | 6.9018% | 4.7623 | 217 | 4 |
 
+## Cross-metric comparison
+
+| Strategy | Gross profit | Profit rank | Max drawdown | Drawdown rank | Profit/drawdown | Ratio rank |
+|---|---:|---:|---:|---:|---:|---:|
+| `monthly-ema6-above__close-cross-ema5__atr14x1__target-risk1p75` | $32,868.84 | 1 | 6.9018% | 51 | 4.7623 | 5 |
+| `monthly-ema6-above__return5-cross-zero__atr14x1__target-rolling-high20` | $29,218.37 | 2 | 4.3743% | 8 | 6.6796 | 2 |
+| `monthly-ema6-above__close-cross-sma10__atr14x1__target-rolling-high20` | $27,395.67 | 3 | 4.0800% | 4 | 6.7145 | 1 |
+| `monthly-ema6-above__close-cross-ema5__atr14x1__target-risk2p5` | $25,563.67 | 4 | 6.1139% | 34 | 4.1813 | 8 |
+| `monthly-ema6-above__close-cross-ema5__atr14x1p5__target-risk1p75` | $23,576.11 | 5 | 4.9068% | 14 | 4.8048 | 4 |
+| `monthly-ema6-above__close-cross-sma10__atr14x1__target-risk1p75` | $20,655.25 | 9 | 4.0940% | 5 | 5.0452 | 3 |
+| `weekly-ema13-above__return5-cross-zero__atr14x1p5__target-rolling-high20` | $11,427.26 | 41 | 4.0640% | 3 | 2.8118 | 17 |
+| `weekly-ema13-above__close-cross-sma10__atr14x1__target-risk1p75` | $10,129.80 | 48 | 3.9356% | 2 | 2.5739 | 24 |
+| `weekly-ema13-above__close-cross-sma10__atr14x1p5__target-rolling-high20` | $10,123.66 | 49 | 3.8542% | 1 | 2.6267 | 21 |
+
+## Validation comparison
+
+Validation has since completed. None of the nine development top-five-union
+revisions appears in the nine-revision validation top-five union. Across all
+144 revisions, development/validation rank correlations are low and negative
+for profit, drawdown, and profit/drawdown. The full comparison and the limited
+metric-specific top-20 continuity are recorded in
+`VALIDATION_RESULTS.md`. These observations do not select or exclude a
+revision.
+
 ## Limitations
 
 - The accepted current roster introduces survivorship, symbol-history, and

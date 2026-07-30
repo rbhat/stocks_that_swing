@@ -63,6 +63,50 @@ remains closed.
 | `monthly-ema6-below__close-cross-sma10__rolling-low20__target-risk2p5` | $8,012.87 | 5 | 1.4765% | 1 | 5.4270 | 1 |
 | `weekly-ema13-below__close-cross-sma10__atr14x1p5__target-risk1p75` | $3,906.28 | 58 | 1.7330% | 4 | 2.2540 | 24 |
 
+## Development-versus-validation stability
+
+The comparison joins all 144 revisions by immutable strategy identity and
+recomputes each window's ranks from `metrics.jsonl` using the study ordering
+and locked SHA-256 tie-break. Spearman correlation measures rank persistence;
+the metrics remain independent and are not combined.
+
+| Metric | Spearman rank correlation | Shared top 5 | Shared top 10 | Shared top 20 |
+|---|---:|---:|---:|---:|
+| Gross profit | -0.1855 | 0 | 0 | 2 |
+| Lowest maximum drawdown | -0.1642 | 0 | 0 | 3 |
+| Profit/drawdown | -0.2260 | 0 | 0 | 1 |
+
+Gross-profit sign agrees for 78 of 144 revisions: 76 are positive in both
+windows and two are nonpositive in both. It changes for 66 revisions: 40 are
+positive only in development and 26 only in validation.
+
+The validation top-five union has the following independent ranks in each
+window. Rank triples are profit / drawdown / profit/drawdown.
+
+| Strategy | Development ranks | Validation ranks |
+|---|---:|---:|
+| `monthly-ema6-below__close-cross-sma10__atr14x1p5__target-risk2p5` | 44 / 110 / 54 | 1 / 70 / 11 |
+| `monthly-ema6-below__close-cross-sma10__rolling-low10__target-risk1p75` | 110 / 126 / 112 | 2 / 82 / 15 |
+| `monthly-ema6-below__close-cross-sma10__atr14x1p5__target-rolling-high20` | 120 / 88 / 122 | 3 / 8 / 2 |
+| `weekly-ema13-below__close-cross-ema5__atr14x1__target-risk1p75` | 20 / 117 / 44 | 4 / 20 / 5 |
+| `monthly-ema6-below__close-cross-sma10__rolling-low20__target-risk2p5` | 136 / 127 / 137 | 5 / 1 / 1 |
+| `weekly-ema13-below__return5-cross-zero__rolling-low20__target-risk2p5` | 117 / 89 / 118 | 11 / 2 / 3 |
+| `monthly-ema6-above__return5-cross-zero__rolling-low20__target-risk1p75` | 76 / 56 / 70 | 13 / 5 / 4 |
+| `monthly-ema6-below__return5-cross-zero__rolling-low20__target-risk2p5` | 137 / 113 / 142 | 21 / 3 / 6 |
+| `weekly-ema13-below__close-cross-sma10__atr14x1p5__target-risk1p75` | 90 / 124 / 97 | 58 / 4 / 24 |
+
+Only these revisions are top 20 for the same individual metric in both
+windows:
+
+| Metric | Strategy | Development rank | Validation rank |
+|---|---|---:|---:|
+| Gross profit | `weekly-ema13-below__close-cross-ema5__atr14x1__target-risk1p75` | 20 | 4 |
+| Gross profit | `monthly-ema6-above__return5-cross-zero__rolling-low10__target-risk1p75` | 18 | 10 |
+| Drawdown | `weekly-ema13-above__return5-cross-zero__atr14x1__target-rolling-high20` | 12 | 6 |
+| Drawdown | `weekly-ema13-above__close-cross-sma10__atr14x1__target-rolling-high20` | 11 | 18 |
+| Drawdown | `weekly-ema13-above__close-cross-sma10__atr14x1p5__target-rolling-high20` | 1 | 19 |
+| Profit/drawdown | `monthly-ema6-above__close-cross-ema5__atr14x1p5__target-rolling-high20` | 14 | 19 |
+
 ## Validation assessment
 
 - The validation artifact is ready for revision-selection review with the
@@ -70,9 +114,19 @@ remains closed.
 - The nine-strategy validation top-five union has no member in common with the
   nine-strategy development top-five union. This is observed rank instability,
   not an exclusion rule or a causal regime claim.
+- All nine development top-five-union revisions use an above-EMA context. The
+  validation union contains eight below-EMA revisions and one above-EMA
+  revision. This is an observed context-side reversal, not a causal
+  explanation.
+- The low negative rank correlations, zero top-10 overlap, and 45.8%
+  gross-profit sign changes show that revision ordering is not stable across
+  these two windows. The six metric-specific shared top-20 results are limited
+  continuity evidence and do not form a composite shortlist.
 - The validation entry window contains 39 sessions. Leaderboard trade counts
-  range from 20 to 67, so sample size and window sensitivity remain material
-  diagnostics.
+  range from 20 to 67, versus 159 entry sessions in development, so sample
+  size and window sensitivity remain material diagnostics.
+- Revision selection remains the user's decision. No strategy is selected,
+  excluded, or promoted by this assessment.
 
 ## Limitations
 

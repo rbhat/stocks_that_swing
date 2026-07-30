@@ -30,6 +30,9 @@ read-only real-cache preflight passes. The first development run is complete;
 see [`docs/DEVELOPMENT_RESULTS.md`](docs/DEVELOPMENT_RESULTS.md). The
 validation run is also complete; see
 [`docs/VALIDATION_RESULTS.md`](docs/VALIDATION_RESULTS.md). Revision selection
-is pending and study OOS remains closed.
+is pending. The cross-window audit found no overlap between the two
+nine-strategy top-five unions and low negative rank persistence across all 144
+revisions; see the validation results for the decision-support detail. Study
+OOS remains closed and forward-paper work has not started.
 
 Start the next session with [`prompt_restart.md`](prompt_restart.md).

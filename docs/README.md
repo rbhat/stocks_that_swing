@@ -24,6 +24,9 @@ fail-closed preflight, and atomic artifacts. See `RUN_REFERENCE.md`.
 
 The guarded read-only real-cache preflight passes for the local source
 inventory, permanent IDs, earnings inputs, split contract, and development
-bundle. The development and validation runs are complete. Revision selection
-is pending and study OOS remains closed; final rankings, user selection, and
-forward paper testing remain incomplete. No live-money trading is authorized.
+bundle. The development and validation runs and their artifact audits are
+complete. The cross-window audit shows no shared top-five-union member, no
+shared top-10 revision for any metric, and low negative rank persistence
+across all 144 revisions. Revision selection is pending and study OOS remains
+closed; final rankings, user selection, and forward paper testing remain
+incomplete. No live-money trading is authorized.

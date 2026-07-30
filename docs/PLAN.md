@@ -1,8 +1,9 @@
 # Swing Strategy Discovery and Ranking Plan
 
 - **Study:** `swing-ranking-v1`
-- **Status:** development and validation runs complete; revision selection is
-  pending and study OOS remains closed
+- **Status:** development and validation runs and cross-window stability audit
+  complete; user-directed revision selection is pending and study OOS remains
+  closed
 - **Authority:** `docs/VISION.md` defines the scope; this is the sole active
   execution plan
 
@@ -177,8 +178,22 @@ The sequence is not a set of performance gates. The user may change direction
 or request additional work at any point. Dashboard, alerts, deployment, and
 live money are outside scope unless the user explicitly asks.
 
+## Current evidence state
+
+The development and validation artifacts reconcile to their manifests and
+contain the same 144 immutable strategy revisions. The cross-window comparison
+in `VALIDATION_RESULTS.md` recomputes all three rankings from the metric
+records. The top-five unions do not overlap, no metric has a common top-10
+revision, and the three full-field rank correlations are low and negative.
+Validation contains 39 entry sessions versus 159 in development, so sample and
+window sensitivity remain material. These diagnostics do not select or
+exclude a revision.
+
 ## Next step
 
-Review `DEVELOPMENT_RESULTS.md` and `VALIDATION_RESULTS.md`, then direct the
-revision freeze. Keep study OOS closed until the user explicitly authorizes
-its one final opening.
+Review the independent metrics and cross-window stability in
+`DEVELOPMENT_RESULTS.md` and `VALIDATION_RESULTS.md`, then have the user direct
+which exact revisions, if any, to freeze. Do not create an OOS selection or
+open study OOS until the user explicitly authorizes its one final opening. Do
+not begin forward-paper work before the user selects a mix and explicitly
+authorizes that work.

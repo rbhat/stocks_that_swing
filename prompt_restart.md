@@ -1,5 +1,6 @@
 Resume `swing-ranking-v1`. Read the user-owned `docs/VISION.md`, then
-`docs/PLAN.md` and `decisions.md`.
+`docs/PLAN.md`, `decisions.md`, `coding_rules.md`, `docs/RUN_REFERENCE.md`,
+`docs/DEVELOPMENT_RESULTS.md`, and `docs/VALIDATION_RESULTS.md`.
 
 Do not preselect strategy families, behaviors, indicators, targets, models,
 parameter ranges, or composite weights. Use the frozen chronological 60/20/20
@@ -20,6 +21,12 @@ upcoming schedules use append-only daily snapshots. The guarded real-cache
 dry-run preflight passes for all 250 securities. The development and
 validation runs are complete and recorded in `docs/DEVELOPMENT_RESULTS.md`
 and `docs/VALIDATION_RESULTS.md`; their immutable local artifacts are under
-`runs/swing-ranking-v1/`. Revision selection is pending. Study OOS remains
-closed and no forward-paper work has started. Review both results and pause
-before any next run unless the user explicitly authorizes it.
+`runs/swing-ranking-v1/`. Their artifact audits and both authorized real-cache
+dry runs pass. The cross-window comparison covers all 144 revisions: the
+top-five unions do not overlap, no metric has a shared top-10 revision, and
+all three rank correlations are low and negative.
+
+Revision selection is pending. Review the independent ranks and stability
+evidence, then wait for the user to name exact revisions. Do not create an OOS
+selection, open study OOS, or begin forward-paper work without the user's
+explicit authorization.
