@@ -116,4 +116,18 @@ guarded real-cache preflight passed with protocol identity
 and resolved-inputs identity
 `d636616107d93670bde1d7b327f4aaa1d499e8e9ba2c218851a217cca146938b`.
 It resolved 250 securities and 144 strategies with development as the selected
-evidence window. No study execution or performance read has started.
+evidence window.
+
+The first development run is complete at
+`runs/swing-ranking-v1/development-v1`, with artifact identity
+`0a3d7a1a04bac3800af4ed663267d0c210784bb82aab1f0e37c1f6b9b1551340`.
+All manifest content hashes and record counts reconcile. The artifact contains
+144 strategy metrics, 313,404 candidates/orders, 19,241 closed trades, 43,200
+daily equity records, and 375,845 events. See `DEVELOPMENT_RESULTS.md` for the
+three development leaderboards.
+
+The initial execution attempt stopped before artifact publication because
+feature-only prehistory contained sub-quality-tolerance adjusted-OHLC
+rounding. The runner now creates strict simulator bars only from the evaluation
+start while retaining full prehistory for causal feature construction.
+Validation and study OOS remain closed.

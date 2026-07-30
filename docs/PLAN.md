@@ -1,8 +1,8 @@
 # Swing Strategy Discovery and Ranking Plan
 
 - **Study:** `swing-ranking-v1`
-- **Status:** source identities, split, and development bundle frozen;
-  guarded read-only real-cache preflight passed; no study run started
+- **Status:** first frozen development run complete; validation and study OOS
+  remain closed
 - **Authority:** `docs/VISION.md` defines the scope; this is the sole active
   execution plan
 
@@ -179,6 +179,5 @@ live money are outside scope unless the user explicitly asks.
 
 ## Next step
 
-Review the passed preflight identities and frozen development bundle. On
-explicit user approval, execute the development-only study and keep validation
-and study OOS closed.
+Review `DEVELOPMENT_RESULTS.md`. The user may direct another development
+revision or authorize the validation step. Keep study OOS closed.

@@ -17,6 +17,8 @@ The split, permanent IDs, earnings inputs, source facts, and 144-member
 development bundle are frozen under `configs/swing_ranking_v1/`. Historical
 earnings come from archived Investing.com custom-date calendar queries;
 upcoming schedules use append-only daily snapshots. The guarded real-cache
-dry-run preflight passes for all 250 securities; no study run has started.
-Review the preflight identities and frozen bundle, then pause before
-`--execute` unless the user explicitly authorizes the development-only run.
+dry-run preflight passes for all 250 securities. The first development run is
+complete and recorded in `docs/DEVELOPMENT_RESULTS.md`; its immutable local
+artifact is `runs/swing-ranking-v1/development-v1`. Validation and study OOS
+remain closed. Review the development results and pause before any next run
+unless the user explicitly authorizes it.

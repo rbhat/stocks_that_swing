@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import datetime as dt
 import hashlib
 from collections import defaultdict
 from collections.abc import Mapping
@@ -51,6 +52,7 @@ def _decimal(value: object, label: str) -> Decimal:
 def _load_frames(
     resolved: ResolvedInputs,
     paths: PreflightPaths,
+    simulation_start: dt.date,
 ) -> tuple[Mapping[str, pd.DataFrame], Mapping[str, tuple[DailyBar, ...]]]:
     files = {
         item.stem.upper(): item
@@ -81,6 +83,7 @@ def _load_frames(
                 close=_decimal(row.close, f"{parquet.symbol} close"),
             )
             for session, row in frame.iterrows()
+            if session.date() >= simulation_start
         )
     return frames, bars
 
@@ -106,7 +109,11 @@ def evaluate_study(
     if resolved.protocol_identity != study.protocol.identity:
         raise RunnerViolation("resolved inputs do not match the configured protocol")
 
-    frames, bars = _load_frames(resolved, paths)
+    frames, bars = _load_frames(
+        resolved,
+        paths,
+        study.protocol.evaluation_start,
+    )
     symbol_by_id = {
         security.permanent_id: security.symbol for security in resolved.securities
     }

@@ -190,16 +190,22 @@ def test_configured_study_reaches_artifact_implementation_boundary(
         study.protocol.evaluation_start,
         study.protocol.data_cutoff,
     )
+    prehistory_session = calendar.nyse().previous_session(sessions[0]).tz_localize(None)
+    frame_sessions = pd.DatetimeIndex([prehistory_session, *sessions]).tz_localize(
+        None
+    )
     frame = pd.DataFrame(
         {
-            "open": [100.0] * len(sessions),
-            "high": [102.0] * len(sessions),
-            "low": [98.0] * len(sessions),
-            "close": [100.0] * len(sessions),
-            "volume": [1_000_000] * len(sessions),
+            "open": [100.0] * len(frame_sessions),
+            "high": [102.0] * len(frame_sessions),
+            "low": [98.0] * len(frame_sessions),
+            "close": [100.0] * len(frame_sessions),
+            "volume": [1_000_000] * len(frame_sessions),
         },
-        index=pd.DatetimeIndex(sessions).tz_localize(None),
+        index=frame_sessions,
     )
+    frame.loc[prehistory_session, "high"] = 100.0
+    frame.loc[prehistory_session, "close"] = 100.0 + 1e-12
     parquet_root = tmp_path / "parquets"
     parquet_root.mkdir()
     parquet = parquet_root / "AAA.parquet"
@@ -217,9 +223,9 @@ def test_configured_study_reaches_artifact_implementation_boundary(
                 "permanent-aaa",
                 "AAA",
                 file_hash,
-                sessions[0].date(),
+                prehistory_session.date(),
                 sessions[-1].date(),
-                len(sessions),
+                len(frame_sessions),
             ),
         ),
         earnings_events=(),
