@@ -350,6 +350,36 @@ class ConfiguredStudy:
         return identity_hash("swing-ranking-v1/configured-study/v1", self)
 
 
+@dataclass(frozen=True)
+class CohortMember:
+    """One exact revision and its immutable cohort memberships."""
+
+    strategy_name: str
+    strategy_revision_identity: str
+    memberships: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class CohortSelection:
+    """User-approved OOS and forward cohort binding."""
+
+    selection_name: str
+    approved_on: dt.date
+    study_bundle_sha256: str
+    evidence_window: str
+    members: tuple[CohortMember, ...]
+    cohorts: dict[str, tuple[str, ...]]
+    forward_run_id: str
+    forward_eligible_cohorts: tuple[str, ...]
+    forward_eligibility: str
+    minimum_decision_trades_per_revision: int
+    interim_trade_counts: tuple[int, ...]
+
+    @property
+    def identity(self) -> str:
+        return identity_hash("swing-ranking-v1/cohort-selection/v1", self)
+
+
 def load_study_bundle(path: Path) -> ConfiguredStudy:
     raw = _object(
         _read_json(Path(path), "study bundle"),
@@ -565,6 +595,154 @@ def load_selected_study(
     )
 
 
+def load_cohort_selected_study(
+    bundle_path: Path,
+    selection_path: Path,
+) -> tuple[ConfiguredStudy, CohortSelection]:
+    """Bind the approved nine-revision OOS/forward cohorts to one frozen bundle."""
+    bundle_path = Path(bundle_path)
+    raw = _object(
+        _read_json(Path(selection_path), "cohort selection"),
+        {
+            "schema_version",
+            "selection_name",
+            "approved_on",
+            "study_bundle_sha256",
+            "evidence_window",
+            "members",
+            "cohorts",
+            "forward",
+        },
+        "cohort selection",
+    )
+    if (
+        _text(raw["schema_version"], "cohort selection schema_version")
+        != "swing-ranking-v1.cohort-selection.v1"
+    ):
+        raise ConfigurationViolation("unsupported cohort selection schema")
+    expected_hash = _text(raw["study_bundle_sha256"], "study bundle sha256")
+    if len(expected_hash) != 64 or any(
+        character not in "0123456789abcdef" for character in expected_hash
+    ):
+        raise ConfigurationViolation("study bundle sha256 must be lowercase SHA-256 hex")
+    try:
+        actual_hash = hashlib.sha256(bundle_path.read_bytes()).hexdigest()
+    except OSError as exc:
+        raise ConfigurationViolation(f"study bundle is unreadable: {exc}") from exc
+    if actual_hash != expected_hash:
+        raise ConfigurationViolation("cohort selection does not match the frozen study bundle")
+    evidence_window = _text(raw["evidence_window"], "evidence_window")
+    if evidence_window != "oos":
+        raise ConfigurationViolation("cohort selection must select oos")
+    configured = load_study_bundle(bundle_path)
+    strategy_by_id = {
+        item.strategy.identity: item for item in configured.strategies
+    }
+    members: list[CohortMember] = []
+    for row in _list(raw["members"], "cohort members"):
+        value = _object(
+            row,
+            {"strategy_name", "strategy_revision_identity", "memberships"},
+            "cohort member",
+        )
+        identity = _text(
+            value["strategy_revision_identity"],
+            "strategy revision identity",
+        )
+        if len(identity) != 64 or any(
+            character not in "0123456789abcdef" for character in identity
+        ):
+            raise ConfigurationViolation(
+                "strategy revision identity must be lowercase SHA-256 hex"
+            )
+        memberships = tuple(
+            _text(item, "cohort membership")
+            for item in _list(value["memberships"], "cohort memberships")
+        )
+        member = CohortMember(
+            strategy_name=_text(value["strategy_name"], "strategy name"),
+            strategy_revision_identity=identity,
+            memberships=memberships,
+        )
+        frozen = strategy_by_id.get(identity)
+        if frozen is None or frozen.strategy.strategy_name != member.strategy_name:
+            raise ConfigurationViolation(
+                "cohort member does not match a frozen strategy name and identity"
+            )
+        members.append(member)
+    if len(members) != 9 or len({item.strategy_revision_identity for item in members}) != 9:
+        raise ConfigurationViolation("cohort selection must contain nine unique revisions")
+    cohort_rows = _object(raw["cohorts"], {"VF9", "MC5", "FO4"}, "cohorts")
+    cohorts = {
+        name: tuple(
+            _text(item, f"{name} strategy identity")
+            for item in _list(cohort_rows[name], name)
+        )
+        for name in ("VF9", "MC5", "FO4")
+    }
+    member_ids = {item.strategy_revision_identity for item in members}
+    vf9, mc5, fo4 = map(set, (cohorts["VF9"], cohorts["MC5"], cohorts["FO4"]))
+    if (
+        len(cohorts["VF9"]) != 9
+        or len(cohorts["MC5"]) != 5
+        or len(cohorts["FO4"]) != 4
+        or vf9 != member_ids
+        or mc5 & fo4
+        or mc5 | fo4 != vf9
+    ):
+        raise ConfigurationViolation("cohorts must satisfy VF9 = MC5 + FO4 with 9/5/4 members")
+    expected_memberships = {
+        identity: {"VF9", "MC5" if identity in mc5 else "FO4"}
+        for identity in vf9
+    }
+    if any(
+        set(item.memberships) != expected_memberships[item.strategy_revision_identity]
+        for item in members
+    ):
+        raise ConfigurationViolation("member cohort labels do not match cohort definitions")
+    forward = _object(
+        raw["forward"],
+        {
+            "run_id",
+            "eligible_cohorts",
+            "eligibility",
+            "minimum_decision_trades_per_revision",
+            "interim_trade_counts",
+        },
+        "forward selection",
+    )
+    eligible = tuple(
+        _text(item, "forward eligible cohort")
+        for item in _list(forward["eligible_cohorts"], "forward eligible cohorts")
+    )
+    if set(eligible) != {"VF9", "MC5"}:
+        raise ConfigurationViolation("VF9 and MC5 must both be forward eligible")
+    eligibility = _text(forward["eligibility"], "forward eligibility")
+    if eligibility != "unconditional_pre_oos":
+        raise ConfigurationViolation("forward eligibility must be unconditional_pre_oos")
+    minimum_trades = forward["minimum_decision_trades_per_revision"]
+    interim = tuple(forward["interim_trade_counts"])
+    if minimum_trades != 30 or interim != (10, 20):
+        raise ConfigurationViolation("forward evidence thresholds must remain 10/20 interim and 30 decision-ready")
+    selection = CohortSelection(
+        selection_name=_text(raw["selection_name"], "selection name"),
+        approved_on=_date(raw["approved_on"], "approved_on"),
+        study_bundle_sha256=expected_hash,
+        evidence_window=evidence_window,
+        members=tuple(members),
+        cohorts=cohorts,
+        forward_run_id=_text(forward["run_id"], "forward run id"),
+        forward_eligible_cohorts=eligible,
+        forward_eligibility=eligibility,
+        minimum_decision_trades_per_revision=minimum_trades,
+        interim_trade_counts=interim,
+    )
+    selected = tuple(
+        strategy_by_id[item.strategy_revision_identity] for item in members
+    )
+    return ConfiguredStudy(configured.protocol, "oos", selected), selection
+
+
 def load_preflight_paths(path: Path) -> PreflightPaths:
     raw = _object(
         _read_json(Path(path), "preflight paths"),
@@ -601,9 +779,12 @@ def load_preflight_paths(path: Path) -> PreflightPaths:
 
 
 __all__ = [
+    "CohortMember",
+    "CohortSelection",
     "ConfigurationViolation",
     "ConfiguredStrategy",
     "ConfiguredStudy",
+    "load_cohort_selected_study",
     "load_preflight_paths",
     "load_selected_study",
     "load_study_bundle",

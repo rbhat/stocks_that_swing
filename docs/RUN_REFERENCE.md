@@ -49,6 +49,11 @@ The checked validation selection is
 the frozen development bundle hash without changing the protocol, grammar, or
 strategy revisions.
 
+The checked approved OOS/forward cohort selection is
+`configs/swing_ranking_v1/oos_cohort_selection.json`. It binds the exact nine
+VF9 revisions, five-member MC5 subset, four-member diagnostic FO4 complement,
+and unconditional VF9/MC5 forward eligibility to the frozen bundle before OOS.
+
 ## Rebuilding frozen inputs
 
 Permanent IDs and cache-symbol intervals:
@@ -128,12 +133,53 @@ Execution is a separate opt-in after reviewing preflight:
 The validation execution uses the same command with `--execute`, the checked
 validation selection, and an explicit immutable output directory.
 
-## Current pause point
+## Forward daily operation
+
+Remote/local deployment, single-writer rules, and the forward ledger layout
+are documented in [DEPLOYMENT.md](DEPLOYMENT.md).
+
+Run only after the requested XNYS session is complete. Price snapshots and
+earnings snapshots are immutable per session; never point a later session at
+an earlier snapshot or a mutable research-cache directory.
+
+```bash
+.venv/bin/python scripts/fetch_swing_forward_prices.py \
+  --security-master configs/swing_ranking_v1/security_master.json \
+  --session <YYYY-MM-DD> \
+  --output-root cache/swing_forward_inputs/prices
+
+.venv/bin/python scripts/build_earnings_inputs.py \
+  --security-master configs/swing_ranking_v1/security_master.json \
+  --raw-dir cache/swing_ranking_inputs/raw/investing \
+  --snapshot-output configs/swing_ranking_v1/upcoming_earnings_snapshots/<YYYY-MM-DD>.json \
+  --calendar-output configs/swing_ranking_v1/upcoming_earnings_calendar.json \
+  --coverage-start <YYYY-MM-DD> \
+  --coverage-end-exclusive <future-exclusive-date> \
+  --snapshot-date <YYYY-MM-DD>
+
+.venv/bin/python scripts/advance_swing_forward.py \
+  --bundle configs/swing_ranking_v1/study_bundle.json \
+  --selection configs/swing_ranking_v1/oos_cohort_selection.json \
+  --run runs/swing-ranking-v1-forward-01 \
+  --session <YYYY-MM-DD> \
+  --parquet-root cache/swing_forward_inputs/prices/<YYYY-MM-DD> \
+  --security-master configs/swing_ranking_v1/security_master.json \
+  --earnings-snapshot configs/swing_ranking_v1/upcoming_earnings_snapshots/<YYYY-MM-DD>.json
+```
+
+The advance command accepts only the run's exact next session and the latest
+completed XNYS session. Each commit creates an immutable session artifact,
+then extends the aggregate ledgers without changing any prior record. Signals
+formed at that session's close become candidates for the next session's open.
+Skipped sessions, incomplete bars, non-daily earnings snapshots, changed
+identities, and divergent ledgers fail closed.
+
+## Current state
 
 Resume verification started from clean commit `86f55b8`, aligned with
 `origin/main`. All 250 roster parquets, permanent-ID mappings, source facts,
 historical earnings rows, upcoming schedule snapshot, and derived bundle files
-are present. All 80 repository tests pass. The guarded real-cache preflight
+are present. All 81 repository tests pass. The guarded real-cache preflight
 passes for both authorized evidence selections with protocol identity
 `2efa2dc1035cd84774702acbf4880b6116f92940a662993b95cbbb2858c24be8`
 and resolved-inputs identity
@@ -174,8 +220,8 @@ equity records, and 93,689 events. Every strategy has exactly 60 equity
 sessions and no record reaches the 2026-03-13 study-OOS start. See
 `VALIDATION_RESULTS.md`.
 
-Revision selection is pending. Study OOS remains closed and no forward-paper
-work has started.
+The exact VF9/MC5/FO4 selection was approved on 2026-07-31. The study OOS was
+opened once, evaluated, analyzed, and sealed before forward initialization.
 
 The cross-window audit joins the same 144 revisions by immutable identity and
 recomputes the three study rankings from each artifact's metric records. The
@@ -185,7 +231,24 @@ top-10 revision; top-20 overlaps are two, three, and one respectively. See
 `VALIDATION_RESULTS.md` for the revision-level comparison. These are
 diagnostics only.
 
-The clean pause contains only `development-v1` and `validation-v1` under the
-study run directory. There is no study-OOS selection document or artifact
-directory and no forward-paper path. The next authorized action is
-user-directed revision selection only.
+The one-time OOS run is complete at `runs/swing-ranking-v1/oos-v1`, with
+artifact identity
+`7aa9476364d3916b292cfb4f485f353d54bbbbbb174b655344bdb906dd37b117`.
+The cohort analysis at `runs/swing-ranking-v1/oos-cohort-comparison-v1` has
+identity `22ad251f55fa7106b01b37bc79575c9e0ac3e59fa85f94a5de54924917416796`.
+Both are sealed at `runs/swing-ranking-v1/oos-seal-v1` by identity
+`a9f9e0536f885663190cb2f9adf00482a11b01c371f26c975c4178b6d881b3da`.
+See `OOS_RESULTS.md`.
+
+Forward run `runs/swing-ranking-v1-forward-01` is initialized without
+backfill, with identity
+`5fd0d4a27a8aad5d1e9b47fd43d76fe05c21f61bde569c3ed99bc0fff8e6083d`.
+The first eligible signal session is 2026-08-03. Its append-only ledgers are
+empty until forward evidence arrives. Both VF9 and MC5 retain their pre-OOS
+membership and proceed unchanged.
+
+As of 2026-07-31 07:26 PDT, the latest completed XNYS session is 2026-07-30,
+which precedes the chartered first signal session. The verified continuation
+is therefore a no-op: no candidate, order, trade, equity, or event was added.
+The daily price archive and exact-next-session advance commands are ready for
+the 2026-08-03 close.

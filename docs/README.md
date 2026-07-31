@@ -8,6 +8,8 @@
 4. `RUN_REFERENCE.md` — guarded implementation boundary and required inputs.
 5. `DEVELOPMENT_RESULTS.md` — first frozen development run.
 6. `VALIDATION_RESULTS.md` — frozen validation run.
+7. `OOS_RESULTS.md` — sealed one-time OOS result and cohort comparison.
+8. `DEPLOYMENT.md` — GCP/local deployment and forward ledger operations.
 
 ## Current authority
 
@@ -27,6 +29,7 @@ inventory, permanent IDs, earnings inputs, split contract, and development
 bundle. The development and validation runs and their artifact audits are
 complete. The cross-window audit shows no shared top-five-union member, no
 shared top-10 revision for any metric, and low negative rank persistence
-across all 144 revisions. Revision selection is pending and study OOS remains
-closed; final rankings, user selection, and forward paper testing remain
-incomplete. No live-money trading is authorized.
+across all 144 revisions. The approved VF9/MC5 cohort was evaluated in the
+study's one-time OOS opening, sealed, and reported in `OOS_RESULTS.md`.
+Forward paper is active without backfill from the 2026-08-03 signal session.
+No live-money trading is authorized.

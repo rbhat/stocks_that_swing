@@ -1,0 +1,15 @@
+.git
+.venv
+.scratch
+.env
+secrets
+cache
+logs
+runs
+reports
+tests
+docs
+deploy
+*.log
+__pycache__
+*.pyc

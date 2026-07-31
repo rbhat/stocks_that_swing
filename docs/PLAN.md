@@ -1,9 +1,9 @@
 # Swing Strategy Discovery and Ranking Plan
 
 - **Study:** `swing-ranking-v1`
-- **Status:** development and validation runs and cross-window stability audit
-  complete; user-directed revision selection is pending and study OOS remains
-  closed
+- **Status:** development, validation, approved VF9/MC5 one-time OOS, sealing,
+  and unchanged no-backfill forward initialization complete; forward paper is
+  active from the 2026-08-03 signal session
 - **Authority:** `docs/VISION.md` defines the scope; this is the sole active
   execution plan
 
@@ -186,14 +186,18 @@ in `VALIDATION_RESULTS.md` recomputes all three rankings from the metric
 records. The top-five unions do not overlap, no metric has a common top-10
 revision, and the three full-field rank correlations are low and negative.
 Validation contains 39 entry sessions versus 159 in development, so sample and
-window sensitivity remain material. These diagnostics do not select or
-exclude a revision.
+window sensitivity remain material. The user subsequently selected the exact
+nine-revision VF9 frontier, its five-member MC5 subset, and diagnostic FO4
+complement. The study's one-time OOS opening is complete and sealed. VF9
+returned -0.9379%, MC5 returned -1.4682%, and FO4 returned -0.2750%; these
+results do not change the pre-OOS selection or forward eligibility. See
+`OOS_RESULTS.md`.
 
 ## Next step
 
-Review the independent metrics and cross-window stability in
-`DEVELOPMENT_RESULTS.md` and `VALIDATION_RESULTS.md`, then have the user direct
-which exact revisions, if any, to freeze. Do not create an OOS selection or
-open study OOS until the user explicitly authorizes its one final opening. Do
-not begin forward-paper work before the user selects a mix and explicitly
-authorizes that work.
+Process forward data from the 2026-08-03 signal session onward without
+backfill. Keep VF9, MC5, FO4, all nine revision identities, member weights,
+parameters, execution rules, aggregation, and metrics unchanged. Report 10-
+and 20-closed-trade checkpoints per revision as descriptive only. Treat
+forward evidence as decision-ready only after every revision has at least 30
+closed trades.

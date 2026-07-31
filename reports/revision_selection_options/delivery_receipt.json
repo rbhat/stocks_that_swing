@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "html": "reports/revision_selection_options/report.html",
+  "stages": {
+    "validation": "passed",
+    "package": "passed",
+    "verification": "structural_only"
+  },
+  "browser_warning": {
+    "code": "browser_unavailable",
+    "message": "No compatible installed Chromium executable was available; the builder did not install one."
+  },
+  "counts": {
+    "blocks": 20,
+    "charts": 3,
+    "tables": 4
+  },
+  "headline_detail_links": {
+    "count": 4,
+    "verification": "passed"
+  },
+  "semantic_chart_tables_retained": true,
+  "source_dialog": "not_verified",
+  "source_interaction": "not_verified"
+}

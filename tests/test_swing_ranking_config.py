@@ -11,6 +11,7 @@ import pytest
 from sts import calendar
 from sts.swing_ranking.config import (
     ConfigurationViolation,
+    load_cohort_selected_study,
     load_selected_study,
     load_study_bundle,
 )
@@ -211,6 +212,62 @@ def test_load_selected_study_binds_validation_to_exact_bundle(
     bundle.write_bytes(bundle.read_bytes() + b"\n")
     with pytest.raises(ConfigurationViolation, match="does not match"):
         load_selected_study(bundle, selection)
+
+
+def test_load_cohort_selected_study_binds_exact_oos_subset(tmp_path: Path) -> None:
+    bundle = tmp_path / "study.json"
+    value = _bundle()
+    template = value["strategies"][0]
+    value["strategies"] = [
+        {
+            **template,
+            "name": f"strategy-{index}",
+            "revision": f"r{index}",
+            "program": {
+                **template["program"],
+                "version": f"v{index}",
+            },
+        }
+        for index in range(9)
+    ]
+    _write(bundle, value)
+    frozen = load_study_bundle(bundle)
+    ids = [item.strategy.identity for item in frozen.strategies]
+    selection = tmp_path / "cohort.json"
+    _write(
+        selection,
+        {
+            "schema_version": "swing-ranking-v1.cohort-selection.v1",
+            "selection_name": "fixture-oos-cohorts",
+            "approved_on": "2026-07-31",
+            "study_bundle_sha256": hashlib.sha256(bundle.read_bytes()).hexdigest(),
+            "evidence_window": "oos",
+            "members": [
+                {
+                    "strategy_name": f"strategy-{index}",
+                    "strategy_revision_identity": identity,
+                    "memberships": ["VF9", "MC5" if index < 5 else "FO4"],
+                }
+                for index, identity in enumerate(ids)
+            ],
+            "cohorts": {"VF9": ids, "MC5": ids[:5], "FO4": ids[5:]},
+            "forward": {
+                "run_id": "fixture-forward-01",
+                "eligible_cohorts": ["VF9", "MC5"],
+                "eligibility": "unconditional_pre_oos",
+                "minimum_decision_trades_per_revision": 30,
+                "interim_trade_counts": [10, 20],
+            },
+        },
+    )
+
+    study, cohort = load_cohort_selected_study(bundle, selection)
+
+    assert study.evidence_window == "oos"
+    assert [item.strategy.identity for item in study.strategies] == ids
+    assert cohort.cohorts["MC5"] == tuple(ids[:5])
+    assert cohort.forward_eligibility == "unconditional_pre_oos"
+    assert len(cohort.identity) == 64
 
 
 def test_configured_study_reaches_artifact_implementation_boundary(

@@ -395,7 +395,7 @@ def _session_distance(start: dt.date, end: dt.date) -> int:
     return sum(session.date() > start for session in sessions)
 
 
-def generate_candidates(
+def _generate_candidates(
     *,
     frame: pd.DataFrame,
     permanent_id: str,
@@ -406,8 +406,11 @@ def generate_candidates(
     geometry_fact_names: tuple[str, ...],
     facts_as_of: dict[str, dt.date],
     scheduled_earnings: tuple[ScheduledEarnings, ...],
+    signal_start: dt.date,
+    signal_end_exclusive: dt.date,
+    entry_end_exclusive: dt.date | None,
 ) -> tuple[Candidate, ...]:
-    """Return every triggered intent; eligibility rejections belong to the simulator."""
+    """Generate triggered intents within one explicit causal signal range."""
     strategy.validate_against(protocol)
     allowed_programs = protocol.candidate_grammar.definition.get("program_identities")
     if not isinstance(allowed_programs, tuple) or program.identity not in allowed_programs:
@@ -455,18 +458,14 @@ def generate_candidates(
         if condition.right_feature is not None
     } | {program.priority_feature, *geometry_facts}
     for session in daily.index[mask]:
-        if not (
-            protocol.evaluation_start
-            <= session.date()
-            < protocol.evaluation_end_exclusive
-        ):
+        if not signal_start <= session.date() < signal_end_exclusive:
             continue
         priority = matrix.values.at[session, program.priority_feature]
         dollar_volume = adv.at[session]
         if pd.isna(priority) or pd.isna(dollar_volume):
             continue
         entry_session = _next_session(session)
-        if entry_session >= protocol.evaluation_end_exclusive:
+        if entry_end_exclusive is not None and entry_session >= entry_end_exclusive:
             continue
         next_earnings = next(
             (
@@ -525,4 +524,73 @@ def generate_candidates(
                 item.tie_break,
             ),
         )
+    )
+
+
+def generate_candidates(
+    *,
+    frame: pd.DataFrame,
+    permanent_id: str,
+    symbol: str,
+    protocol: DiscoveryProtocol,
+    strategy: StrategyRevision,
+    program: StrategyProgram,
+    geometry_fact_names: tuple[str, ...],
+    facts_as_of: dict[str, dt.date],
+    scheduled_earnings: tuple[ScheduledEarnings, ...],
+) -> tuple[Candidate, ...]:
+    """Return historical intents; eligibility rejections belong to the simulator."""
+    return _generate_candidates(
+        frame=frame,
+        permanent_id=permanent_id,
+        symbol=symbol,
+        protocol=protocol,
+        strategy=strategy,
+        program=program,
+        geometry_fact_names=geometry_fact_names,
+        facts_as_of=facts_as_of,
+        scheduled_earnings=scheduled_earnings,
+        signal_start=protocol.evaluation_start,
+        signal_end_exclusive=protocol.evaluation_end_exclusive,
+        entry_end_exclusive=protocol.evaluation_end_exclusive,
+    )
+
+
+def generate_forward_candidates(
+    *,
+    frame: pd.DataFrame,
+    permanent_id: str,
+    symbol: str,
+    protocol: DiscoveryProtocol,
+    strategy: StrategyRevision,
+    program: StrategyProgram,
+    geometry_fact_names: tuple[str, ...],
+    facts_as_of: dict[str, dt.date],
+    scheduled_earnings: tuple[ScheduledEarnings, ...],
+    signal_session: dt.date,
+) -> tuple[Candidate, ...]:
+    """Return intents from exactly one completed prospective signal session."""
+    if isinstance(signal_session, dt.datetime) or not isinstance(signal_session, dt.date):
+        raise ContractViolation("forward signal_session must be a date")
+    if any(
+        isinstance(value, dt.datetime)
+        or not isinstance(value, dt.date)
+        or value > signal_session
+        for value in facts_as_of.values()
+    ):
+        raise ContractViolation("forward source facts must be known by the signal session")
+    next_session = _next_session(pd.Timestamp(signal_session))
+    return _generate_candidates(
+        frame=frame,
+        permanent_id=permanent_id,
+        symbol=symbol,
+        protocol=protocol,
+        strategy=strategy,
+        program=program,
+        geometry_fact_names=geometry_fact_names,
+        facts_as_of=facts_as_of,
+        scheduled_earnings=scheduled_earnings,
+        signal_start=signal_session,
+        signal_end_exclusive=next_session,
+        entry_end_exclusive=None,
     )

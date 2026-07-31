@@ -1,0 +1,120 @@
+{
+  "approved_on": "2026-07-31",
+  "cohorts": {
+    "FO4": [
+      "8c6c38ba6f6c54e2ae6ed7614502ee3a3ebecfa44796becef7f16c8d41969785",
+      "17e5de083ecb6ab832333135164d60c238e936b7802660cd2e7d848465c0dd44",
+      "8562be0e31877da7b9cb62754156ab6b895951dc811b54c2fe99850f0a28245a",
+      "fc0b7c9e5a8ad92b2fbff512575c9d7316506515ae307a156adb3bf22422a218"
+    ],
+    "MC5": [
+      "ac431397b2740ade3c9c179562724eb9fc38691447f094aa13fbad15b3c3fa7e",
+      "ad135d51040e9cf5a722c352db120093738102dd5f653b21cca276c853137be6",
+      "f466b2eb8f38ed4896b5012ceeeb179faed12ae663e00be7ecb773e72598e7cc",
+      "cd89dd0d61df5183b03f483aa5b7a1d612160b3fd8bbca26fb781394a6a750ec",
+      "553ee87a43952a43e4f652ada5f9718e10ee05dae53ffc7d91ebda47c9bf6147"
+    ],
+    "VF9": [
+      "8c6c38ba6f6c54e2ae6ed7614502ee3a3ebecfa44796becef7f16c8d41969785",
+      "17e5de083ecb6ab832333135164d60c238e936b7802660cd2e7d848465c0dd44",
+      "ac431397b2740ade3c9c179562724eb9fc38691447f094aa13fbad15b3c3fa7e",
+      "ad135d51040e9cf5a722c352db120093738102dd5f653b21cca276c853137be6",
+      "f466b2eb8f38ed4896b5012ceeeb179faed12ae663e00be7ecb773e72598e7cc",
+      "cd89dd0d61df5183b03f483aa5b7a1d612160b3fd8bbca26fb781394a6a750ec",
+      "553ee87a43952a43e4f652ada5f9718e10ee05dae53ffc7d91ebda47c9bf6147",
+      "8562be0e31877da7b9cb62754156ab6b895951dc811b54c2fe99850f0a28245a",
+      "fc0b7c9e5a8ad92b2fbff512575c9d7316506515ae307a156adb3bf22422a218"
+    ]
+  },
+  "evidence_window": "oos",
+  "forward": {
+    "eligibility": "unconditional_pre_oos",
+    "eligible_cohorts": [
+      "VF9",
+      "MC5"
+    ],
+    "interim_trade_counts": [
+      10,
+      20
+    ],
+    "minimum_decision_trades_per_revision": 30,
+    "run_id": "swing-ranking-v1-forward-01"
+  },
+  "members": [
+    {
+      "memberships": [
+        "VF9",
+        "FO4"
+      ],
+      "strategy_name": "monthly-ema6-below__close-cross-sma10__atr14x1p5__target-risk2p5",
+      "strategy_revision_identity": "8c6c38ba6f6c54e2ae6ed7614502ee3a3ebecfa44796becef7f16c8d41969785"
+    },
+    {
+      "memberships": [
+        "VF9",
+        "FO4"
+      ],
+      "strategy_name": "monthly-ema6-below__close-cross-sma10__rolling-low10__target-risk1p75",
+      "strategy_revision_identity": "17e5de083ecb6ab832333135164d60c238e936b7802660cd2e7d848465c0dd44"
+    },
+    {
+      "memberships": [
+        "VF9",
+        "MC5"
+      ],
+      "strategy_name": "monthly-ema6-below__close-cross-sma10__atr14x1p5__target-rolling-high20",
+      "strategy_revision_identity": "ac431397b2740ade3c9c179562724eb9fc38691447f094aa13fbad15b3c3fa7e"
+    },
+    {
+      "memberships": [
+        "VF9",
+        "MC5"
+      ],
+      "strategy_name": "weekly-ema13-below__close-cross-ema5__atr14x1__target-risk1p75",
+      "strategy_revision_identity": "ad135d51040e9cf5a722c352db120093738102dd5f653b21cca276c853137be6"
+    },
+    {
+      "memberships": [
+        "VF9",
+        "MC5"
+      ],
+      "strategy_name": "monthly-ema6-below__close-cross-sma10__rolling-low20__target-risk2p5",
+      "strategy_revision_identity": "f466b2eb8f38ed4896b5012ceeeb179faed12ae663e00be7ecb773e72598e7cc"
+    },
+    {
+      "memberships": [
+        "VF9",
+        "MC5"
+      ],
+      "strategy_name": "weekly-ema13-below__return5-cross-zero__rolling-low20__target-risk2p5",
+      "strategy_revision_identity": "cd89dd0d61df5183b03f483aa5b7a1d612160b3fd8bbca26fb781394a6a750ec"
+    },
+    {
+      "memberships": [
+        "VF9",
+        "MC5"
+      ],
+      "strategy_name": "monthly-ema6-above__return5-cross-zero__rolling-low20__target-risk1p75",
+      "strategy_revision_identity": "553ee87a43952a43e4f652ada5f9718e10ee05dae53ffc7d91ebda47c9bf6147"
+    },
+    {
+      "memberships": [
+        "VF9",
+        "FO4"
+      ],
+      "strategy_name": "monthly-ema6-below__return5-cross-zero__rolling-low20__target-risk2p5",
+      "strategy_revision_identity": "8562be0e31877da7b9cb62754156ab6b895951dc811b54c2fe99850f0a28245a"
+    },
+    {
+      "memberships": [
+        "VF9",
+        "FO4"
+      ],
+      "strategy_name": "weekly-ema13-below__close-cross-sma10__atr14x1p5__target-risk1p75",
+      "strategy_revision_identity": "fc0b7c9e5a8ad92b2fbff512575c9d7316506515ae307a156adb3bf22422a218"
+    }
+  ],
+  "schema_version": "swing-ranking-v1.cohort-selection.v1",
+  "selection_name": "swing-ranking-v1-oos-cohort-comparison-v1",
+  "study_bundle_sha256": "accf7b209ca94f0e428f62735fceba2627d3ffc9a0b68a51d652ce9548165281"
+}

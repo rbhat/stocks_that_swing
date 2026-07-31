@@ -29,10 +29,10 @@ development bundle are frozen under `configs/swing_ranking_v1/`. The guarded
 read-only real-cache preflight passes. The first development run is complete;
 see [`docs/DEVELOPMENT_RESULTS.md`](docs/DEVELOPMENT_RESULTS.md). The
 validation run is also complete; see
-[`docs/VALIDATION_RESULTS.md`](docs/VALIDATION_RESULTS.md). Revision selection
-is pending. The cross-window audit found no overlap between the two
-nine-strategy top-five unions and low negative rank persistence across all 144
-revisions; see the validation results for the decision-support detail. Study
-OOS remains closed and forward-paper work has not started.
+[`docs/VALIDATION_RESULTS.md`](docs/VALIDATION_RESULTS.md). The user-approved
+VF9/MC5 cohort was evaluated in the study's one-time OOS opening, sealed, and
+reported in [`docs/OOS_RESULTS.md`](docs/OOS_RESULTS.md). Forward run
+`swing-ranking-v1-forward-01` is active without backfill and first admits
+signals on August 3, 2026.
 
 Start the next session with [`prompt_restart.md`](prompt_restart.md).

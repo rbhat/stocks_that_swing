@@ -21,7 +21,12 @@ from sts.swing_ranking.contracts import (
     StrategyRevision,
     swing_ranking_charter,
 )
-from sts.swing_ranking.simulator import DailyBar, simulate
+from sts.swing_ranking.simulator import (
+    DailyBar,
+    advance_session,
+    initial_checkpoint,
+    simulate,
+)
 from sts.swing_ranking.split import derive_evaluation_split
 
 
@@ -291,3 +296,74 @@ def test_earnings_embargo_is_one_specific_terminal_rejection():
     assert result.orders[0].status == "rejected"
     assert result.orders[0].reason == "earnings_blackout"
     assert not result.trades
+
+
+def test_incremental_prospective_step_carries_position_and_event_chain():
+    protocol = _protocol()
+    strategy = _strategy(protocol)
+    sessions = _sessions()
+    candidate = _candidate(
+        protocol,
+        strategy,
+        "A",
+        sessions[0],
+        Decimal(1),
+    )
+    geometry = _geometry(candidate)
+    geometry_program = GeometryProgram(
+        strategy_revision_identity=strategy.identity,
+        geometry_spec_identity=strategy.geometry_spec_identity,
+        program_name="fixture geometry",
+        version="v1",
+        readable_rules=("study supplies every stop and target",),
+        parameters={"fixture": "generic"},
+    )
+    first = advance_session(
+        protocol=protocol,
+        strategy=strategy,
+        geometry_program=geometry_program,
+        session=sessions[0],
+        candidates=(candidate,),
+        geometries_by_candidate_identity={candidate.identity: geometry},
+        bars_by_permanent_id={
+            "A": DailyBar(
+                sessions[0],
+                Decimal(100),
+                Decimal(101),
+                Decimal(99),
+                Decimal(100),
+            )
+        },
+        priority_direction="descending",
+        checkpoint=initial_checkpoint(Decimal(100000)),
+        prospective=True,
+    )
+    assert len(first.checkpoint.positions) == 1
+    assert first.checkpoint.positions[0].sessions_held == 1
+    assert first.events[-1].event_type == "equity_mark"
+
+    second = advance_session(
+        protocol=protocol,
+        strategy=strategy,
+        geometry_program=geometry_program,
+        session=sessions[1],
+        candidates=(),
+        geometries_by_candidate_identity={},
+        bars_by_permanent_id={
+            "A": DailyBar(
+                sessions[1],
+                Decimal(100),
+                Decimal(109),
+                Decimal(99),
+                Decimal(108),
+            )
+        },
+        priority_direction="descending",
+        checkpoint=first.checkpoint,
+        prospective=True,
+    )
+    assert second.trades[0].exit_reason == "target"
+    assert not second.checkpoint.positions
+    assert second.events[0].sequence == first.events[-1].sequence + 1
+    assert second.events[0].previous_hash == first.events[-1].event_hash
+    assert second.equity.equity == Decimal(101200)

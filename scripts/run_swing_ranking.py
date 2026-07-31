@@ -41,6 +41,10 @@ def _parser() -> argparse.ArgumentParser:
         "--selection",
         help="strict evidence-selection JSON bound to the frozen study bundle",
     )
+    parser.add_argument(
+        "--cohort-selection",
+        help="strict approved OOS/forward cohort selection bound to the frozen bundle",
+    )
     parser.add_argument("--paths", help="explicit preflight-paths JSON; required for the built-in real-cache path")
     return parser
 
@@ -67,9 +71,12 @@ def run(
     if args.synthetic_fixture and (
         args.bundle is not None
         or args.selection is not None
+        or args.cohort_selection is not None
         or args.paths is not None
     ):
-        parser.error("--bundle, --selection, and --paths are real-cache inputs")
+        parser.error("--bundle, --selection, --cohort-selection, and --paths are real-cache inputs")
+    if args.selection is not None and args.cohort_selection is not None:
+        parser.error("--selection and --cohort-selection are mutually exclusive")
     if not args.dry_run and not args.execute:
         parser.error("execution is disabled; pass --execute after reviewing the dry-run")
 
@@ -80,6 +87,7 @@ def run(
         if args.bundle is None or args.paths is None:
             parser.error("--bundle and --paths are required for built-in real-cache preflight")
         from sts.swing_ranking.config import (
+            load_cohort_selected_study,
             load_preflight_paths,
             load_selected_study,
             load_study_bundle,
@@ -87,14 +95,21 @@ def run(
         from sts.swing_ranking.preflight import resolve_inputs
         from sts.swing_ranking.runner import evaluate_study
 
-        study = (
-            load_study_bundle(Path(args.bundle))
-            if args.selection is None
-            else load_selected_study(
+        cohort_selection = None
+        if args.cohort_selection is not None:
+            study, cohort_selection = load_cohort_selected_study(
                 Path(args.bundle),
-                Path(args.selection),
+                Path(args.cohort_selection),
             )
-        )
+        else:
+            study = (
+                load_study_bundle(Path(args.bundle))
+                if args.selection is None
+                else load_selected_study(
+                    Path(args.bundle),
+                    Path(args.selection),
+                )
+            )
         paths = load_preflight_paths(Path(args.paths))
         resolved = resolve_inputs(study.protocol, paths)
         summary = {
@@ -106,6 +121,17 @@ def run(
             "evidence_window": study.evidence_window,
             "evidence_window_identity": study.window.sessions_identity,
         }
+        if cohort_selection is not None:
+            summary.update(
+                {
+                    "cohort_selection_identity": cohort_selection.identity,
+                    "cohorts": {
+                        name: len(identities)
+                        for name, identities in cohort_selection.cohorts.items()
+                    },
+                    "forward_eligibility": cohort_selection.forward_eligibility,
+                }
+            )
 
         def built_in_execution(mode: str, destination: Path) -> Mapping[str, Any]:
             if mode != "real_cache":

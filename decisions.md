@@ -47,3 +47,22 @@ guarded read-only real-cache preflight passed for all 250 securities and 144
 frozen strategies with both authorized evidence selections. The development
 and validation runs completed and their artifact audits pass. No study-OOS
 selection or run exists, and no forward-paper work has started.
+
+## 2026-07-31 — VF9/MC5 OOS opening and forward start
+
+The user approved the exact nine-revision VF9 cohort, its MC5 five-revision
+subset, and diagnostic FO4 complement recorded in
+`configs/swing_ranking_v1/oos_cohort_selection.json`. The selection fixed both
+VF9 and MC5 for unchanged forward paper regardless of OOS performance before
+the one final OOS opening.
+
+The nine revisions were evaluated once on the frozen study OOS window. The
+immutable OOS artifact, cohort analysis, and cross-artifact seal pass all
+hash, identity, count, accounting, metric, concentration, leave-one-out, and
+overlap checks. OOS results are recorded in `docs/OOS_RESULTS.md`.
+
+Forward run `swing-ranking-v1-forward-01` is active without backfill. Its first
+eligible signal session is 2026-08-03. Membership, parameters, execution
+rules, aggregation, and metrics remain unchanged. Ten- and twenty-trade views
+are descriptive; forward evidence becomes decision-ready only after every
+revision reaches 30 closed trades.

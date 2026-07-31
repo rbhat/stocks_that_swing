@@ -1,0 +1,45 @@
+name: sts-swing-ranking-v1
+
+services:
+  scheduler:
+    image: ${STS_IMAGE:-sts-swing-ranking-v1:local}
+    command: ["python", "scripts/run_swing_forward_daemon.py"]
+    user: "${STS_UID:-1000}:${STS_GID:-1000}"
+    restart: unless-stopped
+    env_file:
+      - path: ${STS_ROOT:-.}/.env
+        required: false
+    environment:
+      STS_FORWARD_INTERVAL_SECONDS: "${STS_FORWARD_INTERVAL_SECONDS:-3600}"
+      STS_RCLONE_REMOTE: "${STS_RCLONE_REMOTE:-gdrive:}"
+      RCLONE_CONFIG: /app/secrets/rclone.conf
+    volumes: &writer_volumes
+      - ${STS_ROOT:-.}/configs:/app/configs
+      - ${STS_ROOT:-.}/cache:/app/cache
+      - ${STS_ROOT:-.}/runs:/app/runs
+      - ${STS_ROOT:-.}/logs:/app/logs
+      - ${STS_ROOT:-.}/secrets:/app/secrets
+
+  forward-once:
+    image: ${STS_IMAGE:-sts-swing-ranking-v1:local}
+    command: ["python", "scripts/run_swing_forward_daily.py"]
+    user: "${STS_UID:-1000}:${STS_GID:-1000}"
+    profiles: ["manual"]
+    env_file:
+      - path: ${STS_ROOT:-.}/.env
+        required: false
+    environment:
+      STS_RCLONE_REMOTE: "${STS_RCLONE_REMOTE:-gdrive:}"
+      RCLONE_CONFIG: /app/secrets/rclone.conf
+    volumes: *writer_volumes
+
+  viewer:
+    image: ${STS_IMAGE:-sts-swing-ranking-v1:local}
+    command:
+      ["python", "-m", "http.server", "8010", "--bind", "0.0.0.0", "--directory", "/app/runs"]
+    user: "${STS_UID:-1000}:${STS_GID:-1000}"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${STS_VIEWER_PORT:-8010}:8010"
+    volumes:
+      - ${STS_ROOT:-.}/runs:/app/runs:ro

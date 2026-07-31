@@ -25,6 +25,7 @@ from sts.swing_ranking.contracts import (
     _positive_decimal,
     _sha256,
     _text,
+    swing_ranking_charter,
 )
 from sts.swing_ranking.identity import identity_hash
 
@@ -262,18 +263,108 @@ class SimulationResult:
 
 
 @dataclass(frozen=True)
-class _Position:
+class OpenPosition:
+    """One carried position for incremental use of the canonical simulator."""
+
     candidate: Candidate
     order: OrderRecord
     geometry: EntryGeometry
     quantity: Decimal
     entry_price: Decimal
-    entry_index: int
+    sessions_held: int
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.candidate, Candidate):
+            raise ContractViolation("open position candidate must be a Candidate")
+        if not isinstance(self.order, OrderRecord) or self.order.status != "filled":
+            raise ContractViolation("open position requires a filled OrderRecord")
+        if not isinstance(self.geometry, EntryGeometry):
+            raise ContractViolation("open position geometry must be EntryGeometry")
+        if self.order.candidate_identity != self.candidate.identity:
+            raise ContractViolation("open position order does not match candidate")
+        self.geometry.validate_against(self.candidate, swing_ranking_charter())
+        object.__setattr__(self, "quantity", _quantity(self.quantity, "position quantity"))
+        object.__setattr__(self, "entry_price", _positive_decimal(self.entry_price, "position entry_price"))
+        if self.entry_price != self.order.fill_price or self.entry_price != self.geometry.entry_price:
+            raise ContractViolation("open position entry prices do not reconcile")
+        if (
+            isinstance(self.sessions_held, bool)
+            or not isinstance(self.sessions_held, int)
+            or not 1 <= self.sessions_held <= self.geometry.planned_hold_sessions
+        ):
+            raise ContractViolation("open position sessions_held must be within the live hold window")
+
+
+@dataclass(frozen=True)
+class ExecutionCheckpoint:
+    """Cash, positions, and event-chain head between completed sessions."""
+
+    cash: Decimal
+    positions: tuple[OpenPosition, ...]
+    event_sequence: int
+    previous_event_hash: str | None
+
+    def __post_init__(self) -> None:
+        cash = _decimal(self.cash, "checkpoint cash")
+        if cash < D0:
+            raise ContractViolation("checkpoint cash cannot be negative")
+        object.__setattr__(self, "cash", cash)
+        positions = tuple(self.positions)
+        if not all(isinstance(item, OpenPosition) for item in positions):
+            raise ContractViolation("checkpoint positions must contain OpenPosition values")
+        if any(
+            item.sessions_held >= item.geometry.planned_hold_sessions
+            for item in positions
+        ):
+            raise ContractViolation("checkpoint cannot carry a position at its time stop")
+        ids = [item.candidate.permanent_id for item in positions]
+        if len(ids) != len(set(ids)):
+            raise ContractViolation("checkpoint cannot carry duplicate securities")
+        object.__setattr__(
+            self,
+            "positions",
+            tuple(sorted(positions, key=lambda item: item.candidate.permanent_id)),
+        )
+        if (
+            isinstance(self.event_sequence, bool)
+            or not isinstance(self.event_sequence, int)
+            or self.event_sequence < 0
+        ):
+            raise ContractViolation("checkpoint event_sequence must be nonnegative")
+        if self.event_sequence == 0:
+            if self.previous_event_hash is not None:
+                raise ContractViolation("empty event chain cannot have a previous hash")
+        elif self.previous_event_hash is None:
+            raise ContractViolation("non-empty event chain requires a previous hash")
+        if self.previous_event_hash is not None:
+            _sha256(self.previous_event_hash, "checkpoint previous_event_hash")
+
+
+@dataclass(frozen=True)
+class SessionAdvanceResult:
+    """Durable records and checkpoint produced by one completed session."""
+
+    orders: tuple[OrderRecord, ...]
+    trades: tuple[TradeRecord, ...]
+    equity: EquityRecord
+    events: tuple[EventRecord, ...]
+    checkpoint: ExecutionCheckpoint
+
+
+def initial_checkpoint(starting_capital: Decimal) -> ExecutionCheckpoint:
+    return ExecutionCheckpoint(
+        cash=_positive_decimal(starting_capital, "starting_capital"),
+        positions=(),
+        event_sequence=0,
+        previous_event_hash=None,
+    )
 
 
 def _event(
     events: list[EventRecord],
     *,
+    event_sequence: int,
+    previous_event_hash: str | None,
     session: dt.date,
     event_type: Literal["order_filled", "order_rejected", "trade_closed", "equity_mark"],
     candidate_identity: str | None,
@@ -281,8 +372,8 @@ def _event(
     trade_identity: str | None,
     payload: Mapping[str, Any],
 ) -> EventRecord:
-    sequence = len(events) + 1
-    previous = events[-1].event_hash if events else None
+    sequence = event_sequence + len(events) + 1
+    previous = events[-1].event_hash if events else previous_event_hash
     digest = identity_hash(
         "swing-ranking-v1/event/v1",
         {
@@ -347,6 +438,8 @@ def _candidate_rejection_reason(
     candidate: Candidate,
     protocol: DiscoveryProtocol,
     strategy: StrategyRevision,
+    *,
+    prospective: bool,
 ) -> str | None:
     try:
         strategy.validate_against(protocol)
@@ -356,14 +449,15 @@ def _candidate_rejection_reason(
         return "strategy_binding"
     if candidate.input_manifest_identity != protocol.input_manifest_identity:
         return "input_manifest_binding"
-    if not (
-        protocol.evaluation_start
-        <= candidate.signal_session
-        < protocol.evaluation_end_exclusive
-    ) or candidate.entry_session >= protocol.evaluation_end_exclusive:
-        return "outside_evaluation_range"
-    if any(as_of > protocol.data_cutoff for as_of in candidate.facts_as_of.values()):
-        return "source_fact_after_cutoff"
+    if not prospective:
+        if not (
+            protocol.evaluation_start
+            <= candidate.signal_session
+            < protocol.evaluation_end_exclusive
+        ) or candidate.entry_session >= protocol.evaluation_end_exclusive:
+            return "outside_evaluation_range"
+        if any(as_of > protocol.data_cutoff for as_of in candidate.facts_as_of.values()):
+            return "source_fact_after_cutoff"
     if candidate.signal_close < protocol.charter.minimum_price:
         return "minimum_signal_price"
     if (
@@ -381,7 +475,7 @@ def _candidate_rejection_reason(
 
 
 def _open_state(
-    positions: Mapping[str, _Position],
+    positions: Mapping[str, OpenPosition],
     session_bars: Mapping[str, DailyBar],
     cash: Decimal,
 ) -> tuple[Decimal, Decimal]:
@@ -417,6 +511,8 @@ def _order_rejection(
     reason: str,
     orders: list[OrderRecord],
     events: list[EventRecord],
+    event_sequence: int,
+    previous_event_hash: str | None,
 ) -> None:
     order = OrderRecord(
         candidate_identity=candidate.identity,
@@ -431,6 +527,8 @@ def _order_rejection(
     orders.append(order)
     _event(
         events,
+        event_sequence=event_sequence,
+        previous_event_hash=previous_event_hash,
         session=session,
         event_type="order_rejected",
         candidate_identity=candidate.identity,
@@ -442,12 +540,14 @@ def _order_rejection(
 
 def _close_position(
     *,
-    position: _Position,
+    position: OpenPosition,
     session: dt.date,
     exit_price: Decimal,
     exit_reason: Literal["gap_stop", "gap_target", "stop", "target", "time"],
     trades: list[TradeRecord],
     events: list[EventRecord],
+    event_sequence: int,
+    previous_event_hash: str | None,
 ) -> TradeRecord:
     trade = TradeRecord(
         order_identity=position.order.identity,
@@ -466,6 +566,8 @@ def _close_position(
     trades.append(trade)
     _event(
         events,
+        event_sequence=event_sequence,
+        previous_event_hash=previous_event_hash,
         session=session,
         event_type="trade_closed",
         candidate_identity=position.candidate.identity,
@@ -474,6 +576,320 @@ def _close_position(
         payload={"exit_reason": exit_reason, "exit_price": exit_price, "gross_pnl": trade.gross_pnl, "cost": ZERO_COST},
     )
     return trade
+
+
+def advance_session(
+    *,
+    protocol: DiscoveryProtocol,
+    strategy: StrategyRevision,
+    geometry_program: GeometryProgram,
+    session: dt.date,
+    candidates: Sequence[Candidate],
+    geometries_by_candidate_identity: Mapping[str, EntryGeometry],
+    bars_by_permanent_id: Mapping[str, DailyBar],
+    priority_direction: Literal["ascending", "descending"],
+    checkpoint: ExecutionCheckpoint,
+    prospective: bool,
+    pre_rejection_reasons: Mapping[str, str] | None = None,
+) -> SessionAdvanceResult:
+    """Advance the canonical simulator by exactly one completed session."""
+    strategy.validate_against(protocol)
+    geometry_program.validate_against(strategy)
+    session = _date(session, "simulation session")
+    if priority_direction not in ("ascending", "descending"):
+        raise SimulationViolation("priority_direction must be ascending or descending")
+    if not isinstance(checkpoint, ExecutionCheckpoint):
+        raise SimulationViolation("checkpoint must be an ExecutionCheckpoint")
+    if not isinstance(prospective, bool):
+        raise SimulationViolation("prospective must be a bool")
+    triggered = tuple(candidates)
+    if not all(isinstance(candidate, Candidate) for candidate in triggered):
+        raise SimulationViolation("candidates must contain Candidate values")
+    if any(candidate.entry_session != session for candidate in triggered):
+        raise SimulationViolation("session candidates must enter on the advanced session")
+    identities = [candidate.identity for candidate in triggered]
+    if len(identities) != len(set(identities)):
+        raise SimulationViolation("candidates must be unique by immutable identity")
+    if not isinstance(geometries_by_candidate_identity, Mapping):
+        raise SimulationViolation("geometries_by_candidate_identity must be a mapping")
+    active_bars = dict(bars_by_permanent_id)
+    if not all(
+        isinstance(permanent_id, str)
+        and isinstance(bar, DailyBar)
+        and bar.session == session
+        for permanent_id, bar in active_bars.items()
+    ):
+        raise SimulationViolation("session bars must be DailyBar values for the advanced session")
+    positions = {
+        position.candidate.permanent_id: position for position in checkpoint.positions
+    }
+    if any(permanent_id not in active_bars for permanent_id in positions):
+        raise SimulationViolation("a carried position is missing a daily bar")
+
+    geometry_by_identity = dict(geometries_by_candidate_identity)
+    rejection_reasons = dict(pre_rejection_reasons or {})
+    for candidate in triggered:
+        reason = rejection_reasons.get(candidate.identity)
+        if reason is None:
+            reason = _candidate_rejection_reason(
+                candidate,
+                protocol,
+                strategy,
+                prospective=prospective,
+            )
+        geometry = geometry_by_identity.get(candidate.identity)
+        if reason is None and not isinstance(geometry, EntryGeometry):
+            reason = "missing_geometry"
+        if reason is None:
+            assert isinstance(geometry, EntryGeometry)
+            try:
+                geometry.validate_against(candidate, protocol.charter)
+            except ContractViolation:
+                reason = "invalid_geometry"
+        if reason is not None:
+            rejection_reasons[candidate.identity] = reason
+
+    orders: list[OrderRecord] = []
+    trades: list[TradeRecord] = []
+    events: list[EventRecord] = []
+    cash = checkpoint.cash
+    chain_args = {
+        "event_sequence": checkpoint.event_sequence,
+        "previous_event_hash": checkpoint.previous_event_hash,
+    }
+
+    # 1. Carried-position opening gap exits. Their proceeds are opening cash.
+    for permanent_id, position in tuple(positions.items()):
+        bar = active_bars[permanent_id]
+        exit_reason: Literal["gap_stop", "gap_target"] | None = None
+        if bar.open <= position.geometry.initial_stop_price:
+            exit_reason = "gap_stop"
+        elif bar.open >= position.geometry.target_price:
+            exit_reason = "gap_target"
+        if exit_reason is not None:
+            trade = _close_position(
+                position=position,
+                session=session,
+                exit_price=bar.open,
+                exit_reason=exit_reason,
+                trades=trades,
+                events=events,
+                **chain_args,
+            )
+            cash += trade.exit_price * trade.quantity
+            del positions[permanent_id]
+        else:
+            positions[permanent_id] = OpenPosition(
+                candidate=position.candidate,
+                order=position.order,
+                geometry=position.geometry,
+                quantity=position.quantity,
+                entry_price=position.entry_price,
+                sessions_held=position.sessions_held + 1,
+            )
+
+    # 2. Opening fills use static post-gap opening equity and deployment.
+    opening_equity, opening_deployed = _open_state(positions, active_bars, cash)
+    opening_fill_notional = D0
+    day_candidates = sorted(
+        triggered,
+        key=lambda candidate: (
+            -candidate.priority_value
+            if priority_direction == "descending"
+            else candidate.priority_value,
+            candidate.tie_break,
+        ),
+    )
+    for candidate in day_candidates:
+        reason = rejection_reasons.get(candidate.identity)
+        if reason is not None:
+            _order_rejection(
+                candidate=candidate,
+                session=session,
+                reason=reason,
+                orders=orders,
+                events=events,
+                **chain_args,
+            )
+            continue
+        bar = active_bars.get(candidate.permanent_id)
+        if bar is None:
+            _order_rejection(
+                candidate=candidate,
+                session=session,
+                reason="missing_entry_bar",
+                orders=orders,
+                events=events,
+                **chain_args,
+            )
+            continue
+        if candidate.permanent_id in positions:
+            _order_rejection(
+                candidate=candidate,
+                session=session,
+                reason="duplicate_security",
+                orders=orders,
+                events=events,
+                **chain_args,
+            )
+            continue
+        geometry = geometry_by_identity[candidate.identity]
+        assert isinstance(geometry, EntryGeometry)
+        risk_per_share = bar.open - geometry.initial_stop_price
+        reward_per_share = geometry.target_price - bar.open
+        geometry_invalid = (
+            geometry.entry_price != bar.open
+            or bar.open < protocol.charter.minimum_price
+            or risk_per_share <= D0
+            or reward_per_share <= D0
+            or risk_per_share / bar.open > protocol.charter.maximum_stop_fraction
+            or reward_per_share / risk_per_share
+            <= protocol.charter.minimum_planned_reward_risk
+        )
+        if geometry_invalid:
+            reason = (
+                "minimum_price"
+                if bar.open < protocol.charter.minimum_price
+                else "opening_geometry_invalid"
+            )
+            _order_rejection(
+                candidate=candidate,
+                session=session,
+                reason=reason,
+                orders=orders,
+                events=events,
+                **chain_args,
+            )
+            continue
+        if len(positions) >= protocol.charter.maximum_positions:
+            _order_rejection(
+                candidate=candidate,
+                session=session,
+                reason="maximum_positions",
+                orders=orders,
+                events=events,
+                **chain_args,
+            )
+            continue
+        quantity = _fill_quantity(
+            entry_price=bar.open,
+            stop_price=geometry.initial_stop_price,
+            opening_equity=opening_equity,
+            opening_deployed=opening_deployed + opening_fill_notional,
+            cash=cash,
+            protocol=protocol,
+        )
+        if quantity < D1:
+            _order_rejection(
+                candidate=candidate,
+                session=session,
+                reason="portfolio_cap",
+                orders=orders,
+                events=events,
+                **chain_args,
+            )
+            continue
+        order = OrderRecord(
+            candidate_identity=candidate.identity,
+            permanent_id=candidate.permanent_id,
+            session=session,
+            status="filled",
+            reason="filled",
+            quantity=quantity,
+            fill_price=bar.open,
+            cost=ZERO_COST,
+        )
+        orders.append(order)
+        _event(
+            events,
+            session=session,
+            event_type="order_filled",
+            candidate_identity=candidate.identity,
+            order_identity=order.identity,
+            trade_identity=None,
+            payload={"quantity": quantity, "fill_price": bar.open, "cost": ZERO_COST},
+            **chain_args,
+        )
+        cash -= quantity * bar.open
+        opening_fill_notional += quantity * bar.open
+        positions[candidate.permanent_id] = OpenPosition(
+            candidate=candidate,
+            order=order,
+            geometry=geometry,
+            quantity=quantity,
+            entry_price=bar.open,
+            sessions_held=1,
+        )
+
+    # 3. Intraday exits use stop-first collision handling, then the time stop.
+    for permanent_id, position in tuple(positions.items()):
+        bar = active_bars[permanent_id]
+        exit_reason: Literal["stop", "target", "time"] | None = None
+        exit_price: Decimal | None = None
+        if bar.low <= position.geometry.initial_stop_price:
+            exit_reason, exit_price = "stop", position.geometry.initial_stop_price
+        elif bar.high >= position.geometry.target_price:
+            exit_reason, exit_price = "target", position.geometry.target_price
+        elif position.sessions_held == protocol.charter.maximum_hold_sessions:
+            exit_reason, exit_price = "time", bar.close
+        if exit_reason is not None:
+            assert exit_price is not None
+            trade = _close_position(
+                position=position,
+                session=session,
+                exit_price=exit_price,
+                exit_reason=exit_reason,
+                trades=trades,
+                events=events,
+                **chain_args,
+            )
+            cash += trade.exit_price * trade.quantity
+            del positions[permanent_id]
+
+    # 4. Intraday proceeds were unavailable for entries above; mark the close.
+    close_value = sum(
+        (
+            position.quantity * active_bars[permanent_id].close
+            for permanent_id, position in positions.items()
+        ),
+        D0,
+    )
+    total_equity = cash + close_value
+    equity = EquityRecord(
+        session=session,
+        cash=cash,
+        position_value=close_value,
+        equity=total_equity,
+        deployed_fraction=D0 if total_equity == D0 else close_value / total_equity,
+    )
+    _event(
+        events,
+        session=session,
+        event_type="equity_mark",
+        candidate_identity=None,
+        order_identity=None,
+        trade_identity=None,
+        payload={
+            "cash": cash,
+            "position_value": close_value,
+            "equity": total_equity,
+            "deployed_fraction": equity.deployed_fraction,
+        },
+        **chain_args,
+    )
+    next_checkpoint = ExecutionCheckpoint(
+        cash=cash,
+        positions=tuple(positions.values()),
+        event_sequence=events[-1].sequence,
+        previous_event_hash=events[-1].event_hash,
+    )
+    return SessionAdvanceResult(
+        orders=tuple(orders),
+        trades=tuple(trades),
+        equity=equity,
+        events=tuple(events),
+        checkpoint=next_checkpoint,
+    )
 
 
 def simulate(
@@ -486,15 +902,9 @@ def simulate(
     bars_by_permanent_id: Mapping[str, Sequence[DailyBar]],
     priority_direction: Literal["ascending", "descending"],
 ) -> SimulationResult:
-    """Simulate all candidate outcomes in the charter's required execution order.
-
-    Geometry is supplied explicitly by an already-declared generic program;
-    neither a stop nor target formula is selected by this execution layer.
-    """
+    """Simulate a complete historical window through the canonical session step."""
     strategy.validate_against(protocol)
     geometry_program.validate_against(strategy)
-    if priority_direction not in ("ascending", "descending"):
-        raise SimulationViolation("priority_direction must be ascending or descending")
     bars = _indexed_bars(bars_by_permanent_id)
     triggered = tuple(candidates)
     if not all(isinstance(candidate, Candidate) for candidate in triggered):
@@ -502,20 +912,15 @@ def simulate(
     identities = [candidate.identity for candidate in triggered]
     if len(identities) != len(set(identities)):
         raise SimulationViolation("candidates must be unique by immutable identity")
-    if not isinstance(geometries_by_candidate_identity, Mapping):
-        raise SimulationViolation("geometries_by_candidate_identity must be a mapping")
-
-    orders: list[OrderRecord] = []
-    trades: list[TradeRecord] = []
-    equity: list[EquityRecord] = []
-    events: list[EventRecord] = []
-    cash = protocol.charter.starting_capital
-    positions: dict[str, _Position] = {}
     geometry_by_identity = dict(geometries_by_candidate_identity)
-
     pre_rejection_reasons: dict[str, str] = {}
     for candidate in triggered:
-        reason = _candidate_rejection_reason(candidate, protocol, strategy)
+        reason = _candidate_rejection_reason(
+            candidate,
+            protocol,
+            strategy,
+            prospective=False,
+        )
         geometry = geometry_by_identity.get(candidate.identity)
         if reason is None and not isinstance(geometry, EntryGeometry):
             reason = "missing_geometry"
@@ -557,124 +962,44 @@ def simulate(
         permanent_id: {bar.session: bar for bar in per_security}
         for permanent_id, per_security in bars.items()
     }
-
+    checkpoint = initial_checkpoint(protocol.charter.starting_capital)
+    orders: list[OrderRecord] = []
+    trades: list[TradeRecord] = []
+    equity: list[EquityRecord] = []
+    events: list[EventRecord] = []
     for session in sessions:
         active_bars = {
-            permanent_id: by_session_bars[session]
-            for permanent_id, by_session_bars in bar_by_session.items()
-            if session in by_session_bars
+            permanent_id: values[session]
+            for permanent_id, values in bar_by_session.items()
+            if session in values
         }
-        if any(permanent_id not in active_bars for permanent_id in positions):
-            raise SimulationViolation("a carried position is missing a daily bar")
-
-        # 1. Carried-position opening gap exits.  Their proceeds are opening cash.
-        for permanent_id, position in tuple(positions.items()):
-            bar = active_bars[permanent_id]
-            exit_reason: Literal["gap_stop", "gap_target"] | None = None
-            if bar.open <= position.geometry.initial_stop_price:
-                exit_reason = "gap_stop"
-            elif bar.open >= position.geometry.target_price:
-                exit_reason = "gap_target"
-            if exit_reason is not None:
-                trade = _close_position(position=position, session=session, exit_price=bar.open, exit_reason=exit_reason, trades=trades, events=events)
-                cash += trade.exit_price * trade.quantity
-                del positions[permanent_id]
-
-        # 2. Same-session opening fills use static post-gap opening equity and deployment.
-        opening_equity, opening_deployed = _open_state(positions, active_bars, cash)
-        opening_fill_notional = D0
-        day_candidates = by_session.get(session, [])
-        day_candidates = sorted(
-            day_candidates,
-            key=lambda candidate: (
-                -candidate.priority_value if priority_direction == "descending" else candidate.priority_value,
-                candidate.tie_break,
-            ),
+        result = advance_session(
+            protocol=protocol,
+            strategy=strategy,
+            geometry_program=geometry_program,
+            session=session,
+            candidates=tuple(by_session.get(session, ())),
+            geometries_by_candidate_identity=geometry_by_identity,
+            bars_by_permanent_id=active_bars,
+            priority_direction=priority_direction,
+            checkpoint=checkpoint,
+            prospective=False,
+            pre_rejection_reasons=pre_rejection_reasons,
         )
-        for candidate in day_candidates:
-            pre_rejection = pre_rejection_reasons.get(candidate.identity)
-            if pre_rejection is not None:
-                _order_rejection(
-                    candidate=candidate,
-                    session=session,
-                    reason=pre_rejection,
-                    orders=orders,
-                    events=events,
-                )
-                continue
-            bar = active_bars.get(candidate.permanent_id)
-            if bar is None:
-                _order_rejection(candidate=candidate, session=session, reason="missing_entry_bar", orders=orders, events=events)
-                continue
-            if candidate.permanent_id in positions:
-                _order_rejection(candidate=candidate, session=session, reason="duplicate_security", orders=orders, events=events)
-                continue
-            geometry = geometry_by_identity[candidate.identity]
-            assert isinstance(geometry, EntryGeometry)
-            if geometry.entry_price != bar.open:
-                _order_rejection(candidate=candidate, session=session, reason="opening_geometry_invalid", orders=orders, events=events)
-                continue
-            if bar.open < protocol.charter.minimum_price:
-                _order_rejection(candidate=candidate, session=session, reason="minimum_price", orders=orders, events=events)
-                continue
-            risk_per_share = bar.open - geometry.initial_stop_price
-            reward_per_share = geometry.target_price - bar.open
-            if risk_per_share <= D0 or reward_per_share <= D0 or risk_per_share / bar.open > protocol.charter.maximum_stop_fraction or reward_per_share / risk_per_share <= protocol.charter.minimum_planned_reward_risk:
-                _order_rejection(candidate=candidate, session=session, reason="opening_geometry_invalid", orders=orders, events=events)
-                continue
-            if len(positions) >= protocol.charter.maximum_positions:
-                _order_rejection(candidate=candidate, session=session, reason="maximum_positions", orders=orders, events=events)
-                continue
-            quantity = _fill_quantity(
-                entry_price=bar.open,
-                stop_price=geometry.initial_stop_price,
-                opening_equity=opening_equity,
-                opening_deployed=opening_deployed + opening_fill_notional,
-                cash=cash,
-                protocol=protocol,
-            )
-            if quantity < D1:
-                _order_rejection(candidate=candidate, session=session, reason="portfolio_cap", orders=orders, events=events)
-                continue
-            order = OrderRecord(candidate_identity=candidate.identity, permanent_id=candidate.permanent_id, session=session, status="filled", reason="filled", quantity=quantity, fill_price=bar.open, cost=ZERO_COST)
-            orders.append(order)
-            _event(events, session=session, event_type="order_filled", candidate_identity=candidate.identity, order_identity=order.identity, trade_identity=None, payload={"quantity": quantity, "fill_price": bar.open, "cost": ZERO_COST})
-            cash -= quantity * bar.open
-            opening_fill_notional += quantity * bar.open
-            index = next(index for index, value in enumerate(bars[candidate.permanent_id]) if value.session == session)
-            positions[candidate.permanent_id] = _Position(candidate=candidate, order=order, geometry=geometry, quantity=quantity, entry_price=bar.open, entry_index=index)
-
-        # 3. Intraday exits, with stop collision precedence, then 21st-session close.
-        for permanent_id, position in tuple(positions.items()):
-            bar = active_bars[permanent_id]
-            exit_reason: Literal["stop", "target", "time"] | None = None
-            exit_price: Decimal | None = None
-            if bar.low <= position.geometry.initial_stop_price:
-                exit_reason, exit_price = "stop", position.geometry.initial_stop_price
-            elif bar.high >= position.geometry.target_price:
-                exit_reason, exit_price = "target", position.geometry.target_price
-            elif session == bars[permanent_id][position.entry_index + protocol.charter.maximum_hold_sessions - 1].session:
-                exit_reason, exit_price = "time", bar.close
-            if exit_reason is not None:
-                assert exit_price is not None
-                trade = _close_position(position=position, session=session, exit_price=exit_price, exit_reason=exit_reason, trades=trades, events=events)
-                cash += trade.exit_price * trade.quantity
-                del positions[permanent_id]
-
-        # 4. Close mark.  Intraday proceeds were deliberately unavailable for entries above.
-        close_value = sum(
-            (position.quantity * active_bars[permanent_id].close for permanent_id, position in positions.items()),
-            D0,
-        )
-        total_equity = cash + close_value
-        record = EquityRecord(session=session, cash=cash, position_value=close_value, equity=total_equity, deployed_fraction=D0 if total_equity == D0 else close_value / total_equity)
-        equity.append(record)
-        _event(events, session=session, event_type="equity_mark", candidate_identity=None, order_identity=None, trade_identity=None, payload={"cash": cash, "position_value": close_value, "equity": total_equity, "deployed_fraction": record.deployed_fraction})
-
-    result = SimulationResult(orders=tuple(orders), trades=tuple(trades), equity=tuple(equity), events=tuple(events))
-    if len(result.orders) != len(triggered):
+        orders.extend(result.orders)
+        trades.extend(result.trades)
+        equity.append(result.equity)
+        events.extend(result.events)
+        checkpoint = result.checkpoint
+    simulation = SimulationResult(
+        orders=tuple(orders),
+        trades=tuple(trades),
+        equity=tuple(equity),
+        events=tuple(events),
+    )
+    if len(simulation.orders) != len(triggered):
         raise SimulationViolation("every triggered candidate must have one terminal order")
-    if positions:
+    if checkpoint.positions:
         raise SimulationViolation("full-forward validation left an unclosed position")
-    result.assert_reconciled(protocol.charter.starting_capital)
-    return result
+    simulation.assert_reconciled(protocol.charter.starting_capital)
+    return simulation
