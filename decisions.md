@@ -66,3 +66,15 @@ eligible signal session is 2026-08-03. Membership, parameters, execution
 rules, aggregation, and metrics remain unchanged. Ten- and twenty-trade views
 are descriptive; forward evidence becomes decision-ready only after every
 revision reaches 30 closed trades.
+
+The v1 dashboard replaces the placeholder file viewer on 127.0.0.1:8010. It is
+read-only, mounts runs and configs read-only, and never imports the writing
+engine; the scheduler remains the single writer. It requires login, as the
+recovered legacy dashboard did. Its default axis is the cohort, and it reports
+out-of-sample cohort equity and forward equity separately with no endpoint
+that joins them. The curated 54 MB backtest subset is pushed to the VM
+separately from the image; because the raw per-revision projections stay on
+the research machine, a window whose remaining files all match its manifest is
+reported as partial rather than degraded, so the integrity banner still means
+something when it fires. The remote scheduler was started on 2026-07-31 and
+correctly no-ops until the first eligible signal session, 2026-08-03.

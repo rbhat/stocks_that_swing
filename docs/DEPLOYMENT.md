@@ -6,7 +6,7 @@ The existing host is the GCP Compute Engine VM `sts-forward` in project
 `stocks-that-move`, zone `us-west1-b`. The new application is deliberately
 isolated from the legacy deployment:
 
-| System | VM root | Viewer port | Ledger |
+| System | VM root | Dashboard port | Ledger |
 |---|---|---:|---|
 | Legacy | `~/sts` | 8000 | `~/sts/ledger` plus its existing Drive namespace |
 | Swing ranking v1 | `~/sts-swing-ranking-v1` | 8010 | `~/sts-swing-ranking-v1/runs/swing-ranking-v1-forward-01` |
@@ -32,7 +32,7 @@ containers:
 deploy/deploy.sh --stage-only
 ```
 
-Deploy and start the remote scheduler and read-only ledger viewer:
+Deploy and start the remote scheduler and read-only dashboard:
 
 ```bash
 deploy/deploy.sh
@@ -46,12 +46,38 @@ The initial run is copied only when the remote run does not exist. Later
 deployments preserve the remote run directory unchanged. The VM is the sole
 writer once its scheduler is active.
 
-Open an IAP tunnel to the read-only file viewer:
+Push the curated backtest subset the dashboard reads. It is not in the image
+and not in the forward run, so this is a separate step from a machine holding
+`runs/swing-ranking-v1`:
+
+```bash
+deploy/push_backtests.sh --dry-run   # list what would be sent
+deploy/push_backtests.sh
+```
+
+It rsyncs ~54 MB across 38 files — manifests, protocols, rankings, metrics,
+equity, trades, reports, and all of `oos-cohort-comparison-v1` and
+`oos-seal-v1` — into `~/sts-swing-ranking-v1/runs/swing-ranking-v1/`, mounted
+read-only. The 992 MB of raw per-revision detail (`candidates.jsonl`,
+`events.jsonl`, `orders.jsonl`, `strategies/`) stays local; no view reads it.
+The push adds and updates but never deletes remote files.
+
+Because `strategies/` is not shipped, `scripts/export_strategy_names.py` writes
+a compact `strategy_names.json` beside each window so revision identities still
+resolve to strategy names on the VM. `push_backtests.sh` refreshes it first.
+
+Open IAP tunnels to both dashboards:
 
 ```bash
 deploy/open_remote.sh
 deploy/open_remote.sh --stop
 ```
+
+One `gcloud compute ssh` call carries two `-L` forwards, so a single command
+opens the new dashboard on `http://127.0.0.1:8010` and the legacy one on
+`http://127.0.0.1:8000`, and `--stop` reaps both. Readiness treats 8010 as
+required and 8000 as best-effort: a stopped legacy container does not fail the
+new dashboard.
 
 Inspect the remote service and logs directly:
 
@@ -69,13 +95,58 @@ gcloud compute ssh sts-forward \
   --command 'cd ~/sts-swing-ranking-v1 && docker compose stop scheduler'
 ```
 
+## The dashboard
+
+`docs/DASHBOARD_PLAN.md` covers what it shows and why the legacy dashboard is a
+second tunnel rather than a reverse-proxied subpath. Operationally:
+
+- It is read-only. `runs/` and `configs/` are mounted read-only; only `logs/` is
+  writable, and only for the authentication audit trail. The scheduler remains
+  the single writer, and `src/sts/swing_ranking/dashboard/` never imports the
+  writing engine — a test asserts that on the import graph.
+- It verifies each run's manifest content hashes on read. A mismatch renders as
+  a banner over a still-usable degraded run, never as an exception.
+- It requires login, as the legacy dashboard did: signed httponly session
+  cookies, Google OAuth via authlib, and bcrypt password users.
+
+### Access
+
+The access list is `configs/dashboard_users.yaml`, which is **uncommitted**
+because it holds password hashes; `configs/dashboard_users.example.yaml` shows
+the shape. `deploy.sh` copies the whole `configs/` directory, so the real file
+reaches the VM from the working tree without entering git.
+
+Add or rotate a password user (always role `viewer`, enforced server-side),
+then re-run `deploy/deploy.sh` to ship the change:
+
+```bash
+.venv/bin/python scripts/dashboard_user.py
+```
+
+For Google sign-in, add the account under `google:` with role `admin` or
+`viewer`, put `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in the VM's
+`~/sts-swing-ranking-v1/.env`, and register the callback on the Google
+credential. Through an IAP tunnel the browser's host is whatever the operator
+typed, and Google demands an exact match, so pin it:
+
+```
+DASHBOARD_OAUTH_REDIRECT_URI=http://127.0.0.1:8010/auth/google/callback
+```
+
+`DASHBOARD_SECRET` signs the session cookies. `deploy.sh` preserves the one
+already on the VM and generates one only when none exists, so a deploy does not
+invalidate everyone's cookies.
+
 ## Local deployment
 
-Build the image and start only the local read-only viewer:
+Build the image and start only the local read-only dashboard:
 
 ```bash
 deploy/deploy_local.sh
 ```
+
+It sets `DASHBOARD_DEV=1`, which permits a known development signing secret.
+Never set that on the VM.
 
 Starting a local writer is an explicit fallback operation:
 
@@ -165,6 +236,11 @@ The current initialized ledger contains zero candidate, order, trade, equity,
 and event rows. Its first eligible signal session is `2026-08-03`. Historical
 development, validation, OOS artifacts, and the legacy `~/sts/ledger` are not
 part of this forward ledger.
+
+The curated backtests pushed to `~/sts-swing-ranking-v1/runs/swing-ranking-v1/`
+sit beside the forward run under the same `runs/` mount but are not part of it.
+The dashboard reports OOS cohort equity and forward equity separately and
+offers no endpoint that concatenates them; the charter forbids joining them.
 
 ## Durability still to add
 

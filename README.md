@@ -35,4 +35,9 @@ reported in [`docs/OOS_RESULTS.md`](docs/OOS_RESULTS.md). Forward run
 `swing-ranking-v1-forward-01` is active without backfill and first admits
 signals on August 3, 2026.
 
+The forward run is deployed on the `sts-forward` VM with a read-only dashboard
+over the forward ledger and the sealed backtests; see
+[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for operations and
+[`docs/DASHBOARD_PLAN.md`](docs/DASHBOARD_PLAN.md) for what it shows and why.
+
 Start the next session with [`prompt_restart.md`](prompt_restart.md).

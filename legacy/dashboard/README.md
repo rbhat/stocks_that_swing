@@ -20,14 +20,26 @@ new dashboard can be rebuilt without re-deriving the old design.
 
 The React/TypeScript source is unrecoverable. It was never committed and the
 image contains only the built bundle, so `dist/assets/index-CONMRDY2.js` is
-minified with no sourcemap. The frontend must be rewritten from scratch.
+minified with no sourcemap. The frontend was rewritten from scratch in
+`frontend/`.
+
+`dist/` was itself still untracked after recovery, because `.gitignore`
+matched `dist/` — the only surviving copy was sitting in the working tree.
+`.gitignore` now carries a negation for this path, so it is in git.
+
+What the rewrite took from the bundle: the design tokens in
+`dist/assets/index-DXkp7QVQ.css` — both light and dark palettes, the type
+scale, the `0.625rem` radius — and the Geist woff2 files, which are copied
+into `frontend/src/fonts/`. What it could not take: the Tailwind v4 utility
+layer those tokens were applied through, so the rewrite uses the same values
+in hand-written CSS.
 
 The backend is additionally preserved in Artifact Registry as
 `us-central1-docker.pkg.dev/stocks-that-move/sts/sts:latest` (2026-07-17).
 
-## What carries forward
+## What carried forward
 
-Reusable close to as-is:
+Ported nearly as-is into `src/sts/swing_ranking/dashboard/`:
 
 - `auth.py` — signed session cookies, Google OAuth via authlib, bcrypt
   `password_users` from `users.yaml`, auth middleware.
@@ -38,6 +50,11 @@ Reusable close to as-is:
 - `data.py`'s *discipline*, not its schema: every reader is read-only and
   tolerant, missing or corrupt files yield empty results rather than raising,
   and it deliberately never instantiates the writing ledger.
+
+Two deliberate changes on the way over: the users file moved to
+`configs/dashboard_users.yaml`, and the OAuth redirect URI became overridable
+through `DASHBOARD_OAUTH_REDIRECT_URI`, because the new dashboard answers on
+8010 while this one still owns 8000.
 
 Not reusable — schema-bound to the legacy model:
 

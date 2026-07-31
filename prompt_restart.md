@@ -68,10 +68,45 @@ the seeded empty forward run. **The `viewer` service is running on
 `127.0.0.1:8010`; the `scheduler` — the single writer — is deliberately NOT
 started and awaits the user's go-ahead.**
 
-The next task is the dashboard. Read `docs/DASHBOARD_PLAN.md`, then
-`legacy/dashboard/README.md`. The legacy dashboard was recovered from the
-running VM container into `legacy/dashboard/`; it had never been committed
-anywhere, so that container was its only copy. Its Python backend is intact
-and partly reusable, but its SPA source is unrecoverable, so the frontend is a
-rewrite. Three decisions are still open at the top of the plan's open
-questions: auth, frontend stack, and the default view axis.
+## 2026-07-31 dashboard handoff
+
+The v1 dashboard is built and deployed. Read `docs/DASHBOARD_PLAN.md` (its
+open questions are now a resolved-questions section) and `docs/DEPLOYMENT.md`.
+
+The legacy dashboard was recovered from the running VM container into
+`legacy/dashboard/`; it had never been committed anywhere, so that container
+was its only copy, and its `dist/` was still untracked because `.gitignore`
+matched `dist/`. That is fixed by a negation, so the only surviving legacy
+bundle is now in git. Its SPA source remains unrecoverable.
+
+All three open decisions were answered "retain what was in legacy": login is
+required (`auth.py` and `audit.py` ported nearly as-is), the frontend is Vite +
+React + TypeScript reusing the legacy design tokens and Geist fonts recovered
+from that bundle, and the default axis is cohort-level (VF9/MC5/FO4), the
+analogue of legacy's `h1`/`h2` family split.
+
+`src/sts/swing_ranking/dashboard/` is read-only, tolerant of missing and
+corrupt files, verifies manifest content hashes into a banner rather than an
+exception, and never imports the writing engine — asserted on the import graph
+in `tests/test_swing_ranking_dashboard.py`. The SPA lives in `frontend/` and is
+built by a node stage in the `Dockerfile`, not committed.
+
+The `viewer` compose service is replaced by `dashboard` on the same
+`127.0.0.1:8010` loopback bind. `deploy/open_remote.sh` now carries two `-L`
+forwards in one ssh invocation — 8010 required, 8000 best-effort — so one
+command opens both dashboards and `--stop` reaps both. The legacy dashboard is
+linked, never reverse-proxied: it sets cookies at `/` and owns its OAuth
+redirect URI.
+
+The curated 54 MB backtest subset is pushed by `deploy/push_backtests.sh`
+(rsync; it installs rsync on the VM if absent) into
+`~/sts-swing-ranking-v1/runs/swing-ranking-v1/`, mounted read-only. The 992 MB
+of raw per-revision detail stays local. Because `strategies/` is not shipped,
+`scripts/export_strategy_names.py` writes a compact `strategy_names.json`
+beside each window so identities still resolve to names.
+
+`configs/dashboard_users.yaml` is uncommitted (password hashes);
+`configs/dashboard_users.example.yaml` is the template. `DASHBOARD_SECRET`
+lives only on the VM and `deploy.sh` preserves it across deploys.
+
+**The `scheduler` — the single writer — was started on the user's go-ahead.**

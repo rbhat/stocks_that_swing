@@ -8,8 +8,14 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 dist/
+# The recovered legacy bundle is the only surviving copy of that frontend and
+# is reference material, not build output.
+!legacy/dashboard/dist/
 build/
+node_modules/
 *.log
 runs/
 logs/
 secrets/
+configs/dashboard_users.yaml
+*.tsbuildinfo

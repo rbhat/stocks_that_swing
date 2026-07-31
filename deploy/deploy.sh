@@ -37,10 +37,13 @@ vm_ssh() {
 }
 
 echo "-- building ${IMAGE} directly on ${INSTANCE} --"
+# frontend/ ships as sources; the image's node stage builds the bundle. Its
+# node_modules and dist are excluded so the context stays small.
 tar -C "${REPO_ROOT}" \
     --exclude=.git --exclude=.venv --exclude=.scratch --exclude=cache \
     --exclude=logs --exclude=runs --exclude=reports --exclude=tests \
-    --exclude=.env --exclude=secrets \
+    --exclude=.env --exclude=secrets --exclude=legacy \
+    --exclude=frontend/node_modules --exclude=frontend/dist \
     -czf - . | vm_ssh "build_dir=\$(mktemp -d ~/${REMOTE_ROOT}-build.XXXXXX) && \
         trap 'rm -rf \"\${build_dir}\"' EXIT && tar -xzf - -C \"\${build_dir}\" && \
         docker build -t ${IMAGE} \"\${build_dir}\""
@@ -51,11 +54,26 @@ gcloud compute scp --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap 
     "${REPO_ROOT}/deploy/docker-compose.yml" "${INSTANCE}:~/${REMOTE_ROOT}/docker-compose.yml"
 gcloud compute scp --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap --recurse \
     "${REPO_ROOT}/configs" "${INSTANCE}:~/${REMOTE_ROOT}/"
+# The dashboard's session secret lives only on the VM: it must survive a
+# deploy, or every signed cookie is invalidated on each push. Capture it before
+# the local .env (which does not carry it) can overwrite the remote one.
+EXISTING_SECRET="$(vm_ssh "sed -n 's/^DASHBOARD_SECRET=//p' ~/${REMOTE_ROOT}/.env 2>/dev/null | head -1" || true)"
+EXISTING_SECRET="$(printf '%s' "${EXISTING_SECRET}" | tr -d '\r\n')"
 if [ -f "${REPO_ROOT}/.env" ]; then
     gcloud compute scp --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap \
         "${REPO_ROOT}/.env" "${INSTANCE}:~/${REMOTE_ROOT}/.env"
     vm_ssh "chmod 600 ~/${REMOTE_ROOT}/.env"
 fi
+if [ -z "${EXISTING_SECRET}" ]; then
+    EXISTING_SECRET="$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+    echo "-- generating a new dashboard session secret --"
+else
+    echo "-- preserving the existing dashboard session secret --"
+fi
+vm_ssh "touch ~/${REMOTE_ROOT}/.env; chmod 600 ~/${REMOTE_ROOT}/.env; \
+    if ! grep -q '^DASHBOARD_SECRET=' ~/${REMOTE_ROOT}/.env; then \
+        printf 'DASHBOARD_SECRET=%s\n' '${EXISTING_SECRET}' >> ~/${REMOTE_ROOT}/.env; \
+    fi"
 if vm_ssh "test -f ~/${REMOTE_ROOT}/secrets/rclone.conf"; then
     echo "-- preserving the new deployment's rclone credentials --"
 elif vm_ssh "test -f ~/sts/secrets/rclone.conf"; then
@@ -78,11 +96,13 @@ REMOTE_IDS="$(vm_ssh "id -u; id -g")"
 STS_UID="$(printf '%s\n' "${REMOTE_IDS}" | sed -n '1p')"
 STS_GID="$(printf '%s\n' "${REMOTE_IDS}" | sed -n '2p')"
 if [ "${STAGE_ONLY}" -eq 1 ]; then
-    echo "Deployment staged; scheduler and viewer were not started."
+    echo "Deployment staged; the scheduler and dashboard were not started."
 else
+    # The scheduler is the single writer; start it deliberately, not here.
     vm_ssh "cd ~/${REMOTE_ROOT} && STS_ROOT=. STS_IMAGE=${IMAGE} STS_UID=${STS_UID} STS_GID=${STS_GID} \
-        docker compose up -d viewer scheduler"
+        docker compose up -d dashboard scheduler"
     echo "Deployment active. Open it with deploy/open_remote.sh"
+    echo "Backtests are not part of the image; push them with deploy/push_backtests.sh"
 fi
 
 echo "Legacy ~/sts and its Drive ledger were not modified."

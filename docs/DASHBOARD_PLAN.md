@@ -119,13 +119,58 @@ dashboard does not fail the new one.
 8. Update `docs/DEPLOYMENT.md`: the 8010 service is a dashboard, not a file
    listing, and record the backtest push step.
 
-## Open questions
+## Resolved questions
 
-- **Auth on the new dashboard?** The legacy one required login. The current
-  8010 viewer has none, relying on the loopback bind plus IAP. Reusing
-  `legacy/dashboard/py/auth.py` is cheap if login is wanted; skipping it is
-  defensible while access is IAP-only.
-- **Frontend stack** — server-rendered v1 versus Vite + React (task 4).
-- **Cohort-level or revision-level default view?** The charter keeps nine
-  revisions and three cohorts distinct; the landing page has to pick one as its
-  primary axis.
+All three were settled the same way on 2026-07-31: **retain what was in
+legacy.**
+
+- **Auth.** Login is required. `auth.py` and `audit.py` are ported nearly
+  as-is into `src/sts/swing_ranking/dashboard/`: signed httponly session
+  cookies, Google OAuth via authlib, bcrypt password users that are always
+  `viewer`, and `SessionMiddleware` added last so it wraps outermost. Two
+  deliberate changes: the users file moved to `configs/dashboard_users.yaml`
+  (uncommitted, with a committed `.example.yaml`), and the OAuth redirect URI
+  is overridable through `DASHBOARD_OAUTH_REDIRECT_URI` because the new
+  dashboard answers on 8010 while the legacy one still owns 8000.
+- **Frontend stack.** Vite + React + TypeScript, as before. The legacy design
+  tokens were recovered from the surviving `dist/assets/index-DXkp7QVQ.css` —
+  both palettes, the type scale, the `0.625rem` radius — and the Geist woff2
+  files were copied out of that bundle, so the rewrite matches the original
+  look without a CDN. The one departure: legacy applied those tokens through a
+  Tailwind v4 utility layer whose source is unrecoverable, so this uses the
+  same token values in hand-written CSS rather than reconstructing a utility
+  layer against a design nobody can see.
+- **Default view axis.** Cohort-level. Legacy's primary axis was its `h1`/`h2`
+  family split, and VF9/MC5/FO4 is its analogue. The landing page leads with
+  three cohort cards; the nine revision identities stay one click away under
+  each cohort and in the forward book table, so neither level is lost.
+
+## What shipped
+
+- `src/sts/swing_ranking/dashboard/{data,api,app,auth,audit}.py`, plus
+  `scripts/run_swing_dashboard.py`, `scripts/dashboard_user.py`, and
+  `scripts/export_strategy_names.py`.
+- `frontend/` — the SPA, built by a node stage in the Dockerfile rather than
+  committed.
+- `tests/test_swing_ranking_dashboard.py` — missing, empty, corrupt, and
+  hash-mismatched runs; charter order, eligibility and evidence tiers; route
+  shapes and auth gating; and an import-graph assertion that the read layer
+  cannot reach the writing engine.
+- `deploy/push_backtests.sh`, the `dashboard` compose service, the second `-L`
+  in `open_remote.sh`, and the node build stage in the `Dockerfile`.
+
+Charts are hand-rolled SVG — a multi-series line and a signed-profit bar — so
+there is no charting dependency. Cohort series colours are a fixed,
+never-cycled categorical set validated for colourblind separation and contrast
+against both the light and dark surfaces, with a legend and end-of-line direct
+labels so identity never rests on colour alone.
+
+### Still open for v2
+
+- `metrics.jsonl` is pushed (20 MB of the 54) but nothing reads it yet; the
+  obvious next view is the all-144 per-revision metrics table.
+- No view of the per-session immutable packages beyond a count; `/api/forward/sessions`
+  already returns them.
+- The forward ledger had processed zero sessions when this was built, so every
+  forward view was exercised against its empty state and against synthetic
+  fixtures, not against real filled trades.

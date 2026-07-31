@@ -1,0 +1,17 @@
+# Access list for the swing-ranking-v1 dashboard.
+#
+# Copy to `configs/dashboard_users.yaml`, which is uncommitted because it holds
+# password hashes. `deploy/deploy.sh` scp's the whole configs/ directory, so the
+# real file reaches the VM from the working tree without ever entering git.
+#
+# google:         email -> role. Roles are `admin` or `viewer`. Requires
+#                 GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in the VM's .env,
+#                 and the callback registered on the Google credential (see
+#                 DASHBOARD_OAUTH_REDIRECT_URI in docs/DEPLOYMENT.md).
+# password_users: added by `python scripts/dashboard_user.py`. Password users
+#                 are ALWAYS viewer, enforced server-side whatever this says.
+
+google:
+  you@example.com: admin
+
+password_users: {}
