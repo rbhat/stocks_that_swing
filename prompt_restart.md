@@ -56,3 +56,22 @@ artifacts, carries open positions through the sole event simulator, and fails
 closed on skipped sessions or backfill. At 2026-07-31 07:26 PDT, 2026-07-30
 was the latest completed XNYS session, so the active book remains a verified
 no-op awaiting its first eligible 2026-08-03 signal close.
+
+## 2026-07-31 deployment and dashboard handoff
+
+The forward deployment is live on GCP VM `sts-forward`
+(`stocks-that-move` / `us-west1-b`), isolated from the legacy `~/sts` app.
+`deploy/` holds `deploy.sh`, `deploy_local.sh`, `docker-compose.yml`, and
+`open_remote.sh`; `docs/DEPLOYMENT.md` is the runbook. The remote root
+`~/sts-swing-ranking-v1` is staged with the image, configs, credentials, and
+the seeded empty forward run. **The `viewer` service is running on
+`127.0.0.1:8010`; the `scheduler` — the single writer — is deliberately NOT
+started and awaits the user's go-ahead.**
+
+The next task is the dashboard. Read `docs/DASHBOARD_PLAN.md`, then
+`legacy/dashboard/README.md`. The legacy dashboard was recovered from the
+running VM container into `legacy/dashboard/`; it had never been committed
+anywhere, so that container was its only copy. Its Python backend is intact
+and partly reusable, but its SPA source is unrecoverable, so the frontend is a
+rewrite. Three decisions are still open at the top of the plan's open
+questions: auth, frontend stack, and the default view axis.
