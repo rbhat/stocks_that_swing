@@ -91,12 +91,10 @@ exception, and never imports the writing engine — asserted on the import graph
 in `tests/test_swing_ranking_dashboard.py`. The SPA lives in `frontend/` and is
 built by a node stage in the `Dockerfile`, not committed.
 
-The `viewer` compose service is replaced by `dashboard` on the same
-`127.0.0.1:8010` loopback bind. `deploy/open_remote.sh` now carries two `-L`
-forwards in one ssh invocation — 8010 required, 8000 best-effort — so one
-command opens both dashboards and `--stop` reaps both. The legacy dashboard is
-linked, never reverse-proxied: it sets cookies at `/` and owns its OAuth
-redirect URI.
+The `dashboard` service uses the `127.0.0.1:8010` loopback bind.
+`deploy/open_remote.sh` carries one `-L` forward, so one command opens the
+unified dashboard and `--stop` reaps it. Legacy views are integrated under
+`/legacy` with the v1 cookie, OAuth callback, logout, roles, and audit log.
 
 The curated 54 MB backtest subset is pushed by `deploy/push_backtests.sh`
 (rsync; it installs rsync on the VM if absent) into

@@ -1,10 +1,8 @@
 """Sessions, users.yaml role map, password login, auth middleware.
 
-Carried over from the legacy dashboard, which required login; the swing
-ranking dashboard keeps that requirement. Behaviour is unchanged apart from
-the users file moving to `configs/dashboard_users.yaml` and the OAuth redirect
-URI becoming overridable, because the new dashboard answers on 8010 while the
-legacy one still answers on 8000.
+Carried over from the legacy dashboard. The unified application keeps one
+cookie, OAuth callback, logout action, role gate, and audit trail for both the
+v1 and namespaced legacy views.
 
 - Signed httponly session cookie (`sts_swing_session`, itsdangerous
   URLSafeTimedSerializer); `Secure` iff env DASHBOARD_TLS=1.
@@ -14,9 +12,7 @@ legacy one still answers on 8000.
 - Middleware: every route except /healthz, /login, /auth/*, /assets/*
   requires a session; unauthenticated /api/* -> 401 JSON, others ->
   redirect /login; mutating methods (POST/PUT/PATCH/DELETE) require
-  role=admin -> else 403. The swing ranking dashboard is read-only and
-  registers no mutating route outside the open /auth/ prefix, so that gate
-  currently guards nothing; it is kept so adding one cannot open a hole.
+  role=admin -> else 403.
 - Secret from env DASHBOARD_SECRET; a dev default is permitted only
   when DASHBOARD_DEV=1.
 """

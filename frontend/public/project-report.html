@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Swing Ranking V1 Project Report</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <style>
+      :root {
+        --background: #fafafc;
+        --surface: #fff;
+        --raised: #f2f2f7;
+        --foreground: #141824;
+        --muted: #5b6478;
+        --border: #e3e4ea;
+        --primary: #6c5ce7;
+        --accent: #159f8f;
+        --gain: #12925a;
+        --loss: #d9425a;
+        --series-1: #6c5ce7;
+        --series-2: #159f8f;
+        --series-3: #c2410c;
+        color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --background: #0b0e14;
+          --surface: #131722;
+          --raised: #1a2030;
+          --foreground: #e6eaf2;
+          --muted: #8b94a8;
+          --border: #232b3d;
+          --primary: #7c6cff;
+          --accent: #2dd4bf;
+          --gain: #34d399;
+          --loss: #fb7185;
+          --series-1: #7c6cff;
+          --series-2: #0d9488;
+          --series-3: #d97706;
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--background);
+        color: var(--foreground);
+        font: 14px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 24px;
+        border-bottom: 1px solid var(--border);
+        background: color-mix(in srgb, var(--surface) 92%, transparent);
+        backdrop-filter: blur(8px);
+      }
+      header img { width: 20px; height: 20px; }
+      header strong { font-weight: 650; }
+      main {
+        max-width: 1344px;
+        margin: 0 auto;
+        padding: 28px 24px 64px;
+      }
+      h1 { margin: 0 0 4px; font-size: 24px; font-weight: 650; }
+      h2 {
+        margin: 0 0 10px;
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      p { margin: 0; }
+      code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+      .muted { color: var(--muted); }
+      .intro {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+        gap: 16px;
+        margin: 20px 0;
+      }
+      .panel, details {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface);
+      }
+      .panel { padding: 18px 20px; }
+      .panel p + p { margin-top: 6px; }
+      details { margin-top: 16px; overflow: clip; }
+      summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 13px 16px;
+        cursor: pointer;
+        font-weight: 650;
+      }
+      summary::-webkit-details-marker { display: none; }
+      summary small { color: var(--muted); font-weight: 500; text-align: right; }
+      .body { padding: 0 16px 16px; border-top: 1px solid var(--border); }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .tile {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface);
+        padding: 14px 16px;
+      }
+      .label {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+      .value {
+        margin-top: 4px;
+        font-size: 22px;
+        font-weight: 650;
+        font-variant-numeric: tabular-nums;
+      }
+      .hint { margin-top: 2px; color: var(--muted); font-size: 12px; }
+      .gain { color: var(--gain); }
+      .loss { color: var(--loss); }
+      .flat { color: var(--foreground); }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 16px;
+        font-variant-numeric: tabular-nums;
+      }
+      th, td {
+        padding: 8px 10px;
+        border-top: 1px solid var(--border);
+        text-align: left;
+        white-space: nowrap;
+      }
+      th {
+        color: var(--muted);
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .num { text-align: right; }
+      .strategy {
+        margin-top: 12px;
+        background: var(--background);
+      }
+      .strategy .body { background: var(--surface); }
+      .badges, .rules, .facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-top: 12px;
+      }
+      .badge, .rules span, .facts span {
+        display: inline-flex;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        background: var(--raised);
+        padding: 3px 8px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .examples {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+      }
+      .example {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px;
+        background: var(--surface);
+      }
+      .example-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+      .example h3 { margin: 0; font-size: 15px; }
+      .example-head p { margin-top: 2px; color: var(--muted); font-size: 12px; }
+      .example-head strong { white-space: nowrap; font-variant-numeric: tabular-nums; }
+      .chart { width: 100%; overflow-x: auto; }
+      .chart svg { display: block; width: 100%; min-width: 760px; height: auto; }
+      .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; color: var(--muted); font-size: 12px; }
+      .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 5px; }
+      .axis text { fill: var(--muted); font-size: 10px; }
+      .grid-line { stroke: var(--border); stroke-width: 1; }
+      .empty {
+        margin-top: 24px;
+        padding: 32px;
+        text-align: center;
+        color: var(--muted);
+      }
+      @media (max-width: 760px) {
+        header { padding: 0 16px; }
+        main { padding: 20px 16px 48px; }
+        .intro, .examples { grid-template-columns: 1fr; }
+        summary, .example-head { align-items: flex-start; flex-direction: column; }
+        summary small { text-align: left; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="/favicon.svg" alt="" />
+      <strong>Swing ranking v1</strong>
+      <span class="muted">Project report</span>
+    </header>
+    <main id="app"><p class="empty">Loading report...</p></main>
+    <script>
+      const app = document.getElementById("app");
+      const cohortOrder = ["VF9", "MC5", "FO4"];
+      const indicatorColors = ["var(--series-1)", "var(--series-2)", "var(--series-3)", "var(--accent)"];
+
+      const esc = (value) =>
+        String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+      const num = (value) => {
+        const parsed = Number(value);
+        return Number.isFinite(parsed) ? parsed : null;
+      };
+      const money = (value, digits = 0) => {
+        const parsed = num(value);
+        return parsed === null ? "-" : parsed.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: digits, maximumFractionDigits: digits });
+      };
+      const signedMoney = (value) => {
+        const parsed = num(value);
+        return parsed === null ? "-" : `${parsed > 0 ? "+" : ""}${money(parsed)}`;
+      };
+      const percent = (value, digits = 2) => {
+        const parsed = num(value);
+        return parsed === null ? "-" : `${(parsed * 100).toFixed(digits)}%`;
+      };
+      const ratio = (value, digits = 2) => {
+        const parsed = num(value);
+        return parsed === null ? "-" : parsed.toFixed(digits);
+      };
+      const count = (value) => value === null || value === undefined ? "-" : Number(value).toLocaleString("en-US");
+      const sign = (value) => {
+        const parsed = num(value);
+        return parsed === null || parsed === 0 ? "flat" : parsed > 0 ? "gain" : "loss";
+      };
+      const shortId = (identity) => !identity ? "-" : identity.length <= 16 ? identity : `${identity.slice(0, 8)}...${identity.slice(-4)}`;
+      const shortStrategy = (name) => (name || "-")
+        .replace(/^monthly-ema(\d+)-/, "M$1-")
+        .replace(/^weekly-ema(\d+)-/, "W$1-")
+        .replace(/__target-/g, "__")
+        .split("__")
+        .join(" / ");
+      const compact = (value) => {
+        if (Math.abs(value) >= 1e9) return `${(value / 1e9).toFixed(1)}B`;
+        if (Math.abs(value) >= 1e6) return `${(value / 1e6).toFixed(1)}M`;
+        if (Math.abs(value) >= 1e3) return `${(value / 1e3).toFixed(1)}K`;
+        return value.toFixed(0);
+      };
+
+      function niceTicks(min, max, count = 5) {
+        if (!Number.isFinite(min) || !Number.isFinite(max) || min === max) return [min || 0];
+        const raw = (max - min) / count;
+        const magnitude = 10 ** Math.floor(Math.log10(raw));
+        const step = ([1, 2, 2.5, 5, 10].map((m) => m * magnitude).find((s) => s >= raw)) || magnitude * 10;
+        const ticks = [];
+        for (let t = Math.ceil(min / step) * step; t <= max + step / 1000; t += step) ticks.push(t);
+        return ticks;
+      }
+
+      function candleChart(example) {
+        const candles = example.candles || [];
+        if (!candles.length) return `<p class="empty">No OHLCV bars available for this trade.</p>`;
+        const width = 880, height = 370;
+        const pad = { top: 16, right: 88, bottom: 28, left: 58 };
+        const priceH = 250, volumeTop = pad.top + priceH + 14, volumeH = 56;
+        const plotW = width - pad.left - pad.right;
+        const sessions = candles.map((c) => c.session);
+        const xStep = candles.length <= 1 ? plotW : plotW / (candles.length - 1);
+        const bodyW = Math.max(4, Math.min(12, xStep * 0.56));
+        const xAt = (i) => pad.left + (candles.length === 1 ? plotW / 2 : i * xStep);
+        const levelValues = [example.trade.entry_price, example.trade.exit_price, example.geometry.target_price, example.geometry.initial_stop_price].map(num).filter((v) => v !== null);
+        const indicatorValues = candles.flatMap((c) => (example.plotted_indicators || []).map((name) => num(c.indicators[name])).filter((v) => v !== null));
+        const priceValues = candles.flatMap((c) => [num(c.high), num(c.low)]).filter((v) => v !== null);
+        const allPrices = priceValues.concat(indicatorValues, levelValues);
+        const min = Math.min(...allPrices), max = Math.max(...allPrices);
+        const pricePad = (max - min) * 0.08 || Math.abs(max || 1) * 0.04;
+        const lo = min - pricePad, hi = max + pricePad;
+        const yAt = (v) => pad.top + priceH - ((v - lo) / (hi - lo)) * priceH;
+        const maxVol = Math.max(...candles.map((c) => c.volume), 1);
+        const volY = (v) => volumeTop + volumeH - (v / maxVol) * volumeH;
+        const xTickEvery = Math.max(1, Math.ceil(candles.length / 6));
+        const levels = [
+          ["entry", num(example.trade.entry_price), "var(--foreground)", ""],
+          ["target", num(example.geometry.target_price), "var(--gain)", "4 3"],
+          ["stop", num(example.geometry.initial_stop_price), "var(--loss)", "4 3"],
+          ["exit", num(example.trade.exit_price), "var(--accent)", "4 3"],
+        ].filter((level) => level[1] !== null);
+        let svg = `<div class="chart"><svg viewBox="0 0 ${width} ${height}" role="img">`;
+        for (const tick of niceTicks(lo, hi)) {
+          svg += `<g class="axis"><line class="grid-line" x1="${pad.left}" x2="${pad.left + plotW}" y1="${yAt(tick)}" y2="${yAt(tick)}"></line><text x="${pad.left - 8}" y="${yAt(tick)}" text-anchor="end" dominant-baseline="middle">${tick.toFixed(2)}</text></g>`;
+        }
+        sessions.forEach((session, i) => {
+          if (i % xTickEvery === 0 || i === sessions.length - 1) svg += `<text class="axis" x="${xAt(i)}" y="${height - 8}" text-anchor="middle">${esc(session.slice(5))}</text>`;
+        });
+        candles.forEach((c, i) => {
+          const open = num(c.open) || 0, high = num(c.high) || open, low = num(c.low) || open, close = num(c.close) || open;
+          const color = close >= open ? "var(--gain)" : "var(--loss)";
+          const x = xAt(i), y1 = yAt(Math.max(open, close)), y2 = yAt(Math.min(open, close));
+          svg += `<line x1="${x}" x2="${x}" y1="${yAt(high)}" y2="${yAt(low)}" stroke="${color}" stroke-width="1.3"></line>`;
+          svg += `<rect x="${x - bodyW / 2}" y="${y1}" width="${bodyW}" height="${Math.max(1, y2 - y1)}" fill="${color}" opacity="${close >= open ? 0.72 : 0.92}"></rect>`;
+          svg += `<rect x="${x - bodyW / 2}" y="${volY(c.volume)}" width="${bodyW}" height="${volumeTop + volumeH - volY(c.volume)}" fill="${color}" opacity="0.26"></rect>`;
+        });
+        (example.plotted_indicators || []).forEach((name, slot) => {
+          let path = "", pen = false;
+          candles.forEach((c, i) => {
+            const value = num(c.indicators[name]);
+            if (value === null) { pen = false; return; }
+            path += `${pen ? "L" : "M"}${xAt(i).toFixed(2)},${yAt(value).toFixed(2)}`;
+            pen = true;
+          });
+          svg += `<path d="${path}" fill="none" stroke="${indicatorColors[slot % indicatorColors.length]}" stroke-width="1.6"></path>`;
+        });
+        levels.forEach(([name, value, color, dash]) => {
+          svg += `<line x1="${pad.left}" x2="${pad.left + plotW}" y1="${yAt(value)}" y2="${yAt(value)}" stroke="${color}" stroke-width="1.2" stroke-dasharray="${dash}" opacity="0.85"></line>`;
+          svg += `<text x="${pad.left + plotW + 8}" y="${yAt(value)}" dominant-baseline="middle" font-size="10.5" font-weight="600" fill="${color}">${name} ${value.toFixed(2)}</text>`;
+        });
+        [["entry", example.trade.entry_session, "var(--foreground)"], ["exit", example.trade.exit_session, "var(--accent)"]].forEach(([label, session, color]) => {
+          const index = sessions.indexOf(session);
+          if (index >= 0) {
+            svg += `<line x1="${xAt(index)}" x2="${xAt(index)}" y1="${pad.top}" y2="${volumeTop + volumeH}" stroke="${color}" stroke-width="1" stroke-dasharray="3 3" opacity="0.7"></line>`;
+            svg += `<text x="${xAt(index) + 4}" y="${pad.top + 10}" font-size="10.5" fill="${color}" font-weight="600">${label}</text>`;
+          }
+        });
+        svg += `<text x="${pad.left}" y="${volumeTop - 4}" font-size="10.5" fill="var(--muted)">volume max ${compact(maxVol)}</text>`;
+        svg += `</svg></div><div class="legend"><span><i class="swatch" style="background:var(--gain)"></i>up candle / volume</span><span><i class="swatch" style="background:var(--loss)"></i>down candle / volume</span>`;
+        (example.plotted_indicators || []).forEach((name, slot) => {
+          svg += `<span><i class="swatch" style="background:${indicatorColors[slot % indicatorColors.length]}"></i>${esc(name.replace("daily_", ""))}</span>`;
+        });
+        return svg + `</div>`;
+      }
+
+      function cohortStats(metrics) {
+        return `<table><thead><tr><th>Metric</th><th class="num">Value</th><th>Metric</th><th class="num">Value</th></tr></thead><tbody>
+          <tr><td>Starting capital</td><td class="num">${money(metrics.starting_capital)}</td><td>Ending equity</td><td class="num">${money(metrics.ending_equity)}</td></tr>
+          <tr><td>Gross P&L</td><td class="num ${sign(metrics.gross_profit)}">${signedMoney(metrics.gross_profit)}</td><td>Return</td><td class="num ${sign(metrics.gross_return)}">${percent(metrics.gross_return)}</td></tr>
+          <tr><td>Max drawdown</td><td class="num">${percent(metrics.maximum_drawdown)}</td><td>Profit / drawdown</td><td class="num">${ratio(metrics.profit_drawdown)}</td></tr>
+          <tr><td>Positive / negative / flat</td><td class="num">${metrics.positive_revision_count} / ${metrics.negative_revision_count} / ${metrics.flat_revision_count}</td><td>Closed trades</td><td class="num">${count(metrics.closed_trades)}</td></tr>
+        </tbody></table>`;
+      }
+
+      function tradeExample(example) {
+        const label = example.fallback ? `${example.kind} fallback` : example.kind === "win" ? "Largest win" : "Largest loss";
+        return `<article class="example">
+          <div class="example-head"><div><h3>${esc(label)}: ${esc(example.trade.symbol)}</h3><p>${esc(example.trade.entry_session)} to ${esc(example.trade.exit_session)} - ${esc(example.trade.exit_reason)}</p></div><strong class="${sign(example.trade.gross_pnl)}">${signedMoney(example.trade.gross_pnl)}</strong></div>
+          ${candleChart(example)}
+          <div class="facts"><span>Entry ${money(example.trade.entry_price)}</span><span>Exit ${money(example.trade.exit_price)}</span><span>TP ${money(example.geometry.target_price)}</span><span>SL ${money(example.geometry.initial_stop_price)}</span><span>Qty ${count(example.trade.quantity)}</span></div>
+          <div class="facts">${Object.entries(example.signal.facts || {}).map(([name, value]) => `<span>${esc(name.replace("daily_", "").replace("weekly_", "").replace("monthly_", ""))}: ${ratio(value)}</span>`).join("")}</div>
+        </article>`;
+      }
+
+      function strategySection(strategy) {
+        return `<details class="strategy">
+          <summary><span>${esc(shortStrategy(strategy.display_name || strategy.strategy_name))}</span><small>${signedMoney(strategy.stats.gross_profit)} - ${count(strategy.stats.closed_trades)} trades - DD ${percent(strategy.stats.maximum_drawdown)}</small></summary>
+          <div class="body">
+            <p class="muted" style="margin-top:14px">${esc(strategy.description || strategy.strategy_name)}</p>
+            <div class="badges"><span class="badge ${sign(strategy.stats.gross_profit)}">${signedMoney(strategy.stats.gross_profit)}</span><span class="badge">Return ${percent(strategy.stats.gross_return)}</span><span class="badge">Drawdown ${percent(strategy.stats.maximum_drawdown)}</span><span class="badge">W/L/F ${strategy.stats.wins}/${strategy.stats.losses}/${strategy.stats.flats}</span><span class="badge">Turnover ${ratio(strategy.stats.turnover)}</span></div>
+            <div class="rules">${(strategy.rules || []).map((rule) => `<span>${esc(rule)}</span>`).join("")}</div>
+            <div class="examples">${(strategy.examples || []).map(tradeExample).join("")}</div>
+          </div>
+        </details>`;
+      }
+
+      function render(data) {
+        if (!data.present) {
+          app.innerHTML = `<p class="empty">The project report is not present on this host.</p>`;
+          return;
+        }
+        app.innerHTML = `
+          <h1>${esc(data.title)}</h1>
+          <p class="muted">Sealed OOS evidence ${esc(data.source.evidence_start)} to ${esc(data.source.evidence_end_exclusive)}; outcomes through ${esc(data.source.outcome_end_exclusive)}.</p>
+          <section class="intro"><div class="panel"><h2>Goal</h2><p>${esc(data.goal)}</p></div><div class="panel"><h2>Conclusion</h2>${data.conclusion.map((line) => `<p>${esc(line)}</p>`).join("")}</div></section>
+          <details open><summary><span>Overall OOS Evidence</span><small>${esc(shortId(data.source.analysis_identity))}</small></summary><div class="body"><div class="grid">${data.cohorts.map((c) => `<div class="tile"><div class="label">${esc(c.cohort)}</div><div class="value ${sign(c.metrics.gross_profit)}">${signedMoney(c.metrics.gross_profit)}</div><div class="hint">${count(c.metrics.member_count)} books - ${count(c.metrics.closed_trades)} trades - DD ${percent(c.metrics.maximum_drawdown)}</div></div>`).join("")}</div></div></details>
+          ${data.cohorts.map((cohort) => `<details ${cohort.cohort !== "VF9" ? "open" : ""}><summary><span>${esc(cohort.cohort)}</span><small>${signedMoney(cohort.metrics.gross_profit)} - ${count(cohort.metrics.closed_trades)} trades</small></summary><div class="body"><p class="muted" style="margin-top:14px">${esc(cohort.description)}</p>${cohortStats(cohort.metrics)}${cohort.strategies.map(strategySection).join("")}</div></details>`).join("")}
+          ${data.limitations.length ? `<details><summary><span>Limitations</span><small>${data.limitations.length} recorded</small></summary><div class="body">${data.limitations.map((l) => `<p class="muted" style="margin-top:12px"><code>${esc(l.kind)}</code> ${esc(l.statement)}</p>`).join("")}</div></details>` : ""}
+        `;
+      }
+
+      fetch("/api/backtests/project-report", { credentials: "same-origin" })
+        .then((response) => {
+          if (!response.ok) throw new Error(`Report failed: ${response.status}`);
+          return response.json();
+        })
+        .then(render)
+        .catch((error) => {
+          app.innerHTML = `<p class="empty">${esc(error.message)}</p>`;
+        });
+    </script>
+  </body>
+</html>

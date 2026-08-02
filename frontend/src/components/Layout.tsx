@@ -4,11 +4,9 @@ import { logout } from "../api";
 
 export function Shell({
   email,
-  legacyUrl,
   children,
 }: {
   email: string | null;
-  legacyUrl: string;
   children: React.ReactNode;
 }) {
   return (
@@ -24,14 +22,10 @@ export function Shell({
           <Link to="/">Overview</Link>
           <Link to="/forward">Forward</Link>
           <Link to="/backtests">Backtests</Link>
+          <Link to="/project-report">Report</Link>
+          <Link to="/legacy">Legacy</Link>
         </nav>
         <div className="topbar-end">
-          {/* The legacy dashboard is its own app on its own tunnel (8000). It
-           * is not proxied under a subpath: it sets cookies at / and owns its
-           * OAuth redirect URI, both of which a subpath mount breaks. */}
-          <a className="button link" href={legacyUrl} target="_blank" rel="noreferrer">
-            Legacy dashboard ↗
-          </a>
           {email && <span className="muted">{email}</span>}
           <button
             className="button link"

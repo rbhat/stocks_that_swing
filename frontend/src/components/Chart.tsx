@@ -1,4 +1,5 @@
 import { useId, useMemo, useRef, useState } from "react";
+import type { ReportTradeExample } from "../types";
 
 /* Hand-rolled SVG charts. Two forms cover everything the dashboard plots:
  * a multi-series line for change-over-time, and a polarity bar for signed
@@ -351,6 +352,226 @@ export function BarChart({ bars, formatValue, title }: BarChartProps) {
           <i className="swatch" style={{ background: "var(--loss)" }} />
           gross loss
         </span>
+      </figcaption>
+    </figure>
+  );
+}
+
+type CandleChartProps = {
+  example: ReportTradeExample;
+  title: string;
+};
+
+const INDICATOR_TOKENS = ["var(--series-1)", "var(--series-2)", "var(--series-3)", "var(--accent)"];
+
+function f(value: string | number | null | undefined): number | null {
+  if (value === null || value === undefined || value === "") return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function compactNumber(value: number): string {
+  if (Math.abs(value) >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(1)}B`;
+  if (Math.abs(value) >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
+  if (Math.abs(value) >= 1_000) return `${(value / 1_000).toFixed(1)}K`;
+  return value.toFixed(0);
+}
+
+export function CandlestickChart({ example, title }: CandleChartProps) {
+  const width = 880;
+  const height = 370;
+  const pad = { top: 16, right: 88, bottom: 28, left: 58 };
+  const priceH = 250;
+  const volumeTop = pad.top + priceH + 14;
+  const volumeH = 56;
+  const candles = example.candles;
+
+  if (!candles.length) {
+    return <p className="empty">No OHLCV bars available for this trade.</p>;
+  }
+
+  const sessions = candles.map((c) => c.session);
+  const plotW = width - pad.left - pad.right;
+  const xStep = candles.length <= 1 ? plotW : plotW / (candles.length - 1);
+  const bodyW = Math.max(4, Math.min(12, xStep * 0.56));
+  const xAt = (index: number) => pad.left + (candles.length === 1 ? plotW / 2 : index * xStep);
+
+  const levelValues = [
+    f(example.trade.entry_price),
+    f(example.trade.exit_price),
+    f(example.geometry.target_price),
+    f(example.geometry.initial_stop_price),
+  ];
+  const indicatorValues = candles.flatMap((c) =>
+    example.plotted_indicators.map((name) => f(c.indicators[name])).filter((v): v is number => v !== null),
+  );
+  const priceValues = candles.flatMap((c) => [f(c.high), f(c.low)]).filter((v): v is number => v !== null);
+  const allPrices = [...priceValues, ...indicatorValues, ...levelValues.filter((v): v is number => v !== null)];
+  const min = Math.min(...allPrices);
+  const max = Math.max(...allPrices);
+  const pricePad = (max - min) * 0.08 || Math.abs(max || 1) * 0.04;
+  const lo = min - pricePad;
+  const hi = max + pricePad;
+  const yAt = (value: number) => pad.top + priceH - ((value - lo) / (hi - lo)) * priceH;
+
+  const maxVolume = Math.max(...candles.map((c) => c.volume), 1);
+  const volumeY = (value: number) => volumeTop + volumeH - (value / maxVolume) * volumeH;
+  const ticks = niceTicks(lo, hi, 5);
+  const xTickEvery = Math.max(1, Math.ceil(candles.length / 6));
+  const entryIndex = sessions.indexOf(example.trade.entry_session);
+  const exitIndex = sessions.indexOf(example.trade.exit_session);
+
+  const levels = [
+    { name: "entry", value: f(example.trade.entry_price), color: "var(--foreground)" },
+    { name: "target", value: f(example.geometry.target_price), color: "var(--gain)" },
+    { name: "stop", value: f(example.geometry.initial_stop_price), color: "var(--loss)" },
+    { name: "exit", value: f(example.trade.exit_price), color: "var(--accent)" },
+  ].filter((level): level is { name: string; value: number; color: string } => level.value !== null);
+
+  return (
+    <figure className="chart candle-chart" style={{ margin: 0 }}>
+      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={title}>
+        <g className="axis">
+          {ticks.map((tick) => (
+            <g key={tick}>
+              <line className="grid-line" x1={pad.left} x2={pad.left + plotW} y1={yAt(tick)} y2={yAt(tick)} />
+              <text x={pad.left - 8} y={yAt(tick)} textAnchor="end" dominantBaseline="middle">
+                {tick.toFixed(2)}
+              </text>
+            </g>
+          ))}
+          {sessions.map((session, index) =>
+            index % xTickEvery === 0 || index === sessions.length - 1 ? (
+              <text key={session} x={xAt(index)} y={height - 8} textAnchor="middle">
+                {session.slice(5)}
+              </text>
+            ) : null,
+          )}
+        </g>
+
+        <line x1={pad.left} x2={pad.left + plotW} y1={volumeTop + volumeH} y2={volumeTop + volumeH} stroke="var(--border)" />
+
+        {candles.map((candle, index) => {
+          const open = f(candle.open) ?? 0;
+          const high = f(candle.high) ?? open;
+          const low = f(candle.low) ?? open;
+          const close = f(candle.close) ?? open;
+          const up = close >= open;
+          const color = up ? "var(--gain)" : "var(--loss)";
+          const x = xAt(index);
+          const y1 = yAt(Math.max(open, close));
+          const y2 = yAt(Math.min(open, close));
+          const bodyH = Math.max(1, y2 - y1);
+          return (
+            <g key={candle.session}>
+              <line x1={x} x2={x} y1={yAt(high)} y2={yAt(low)} stroke={color} strokeWidth={1.3} />
+              <rect x={x - bodyW / 2} y={y1} width={bodyW} height={bodyH} fill={color} opacity={up ? 0.72 : 0.92} />
+              <rect
+                x={x - bodyW / 2}
+                y={volumeY(candle.volume)}
+                width={bodyW}
+                height={volumeTop + volumeH - volumeY(candle.volume)}
+                fill={color}
+                opacity={0.26}
+              />
+            </g>
+          );
+        })}
+
+        {example.plotted_indicators.map((name, slot) => {
+          let path = "";
+          let pen = false;
+          candles.forEach((candle, index) => {
+            const value = f(candle.indicators[name]);
+            if (value === null) {
+              pen = false;
+              return;
+            }
+            path += `${pen ? "L" : "M"}${xAt(index).toFixed(2)},${yAt(value).toFixed(2)}`;
+            pen = true;
+          });
+          return (
+            <path
+              key={name}
+              d={path}
+              fill="none"
+              stroke={INDICATOR_TOKENS[slot % INDICATOR_TOKENS.length]}
+              strokeWidth={1.6}
+              strokeLinejoin="round"
+            />
+          );
+        })}
+
+        {levels.map((level, index) => (
+          <g key={level.name}>
+            <line
+              x1={pad.left}
+              x2={pad.left + plotW}
+              y1={yAt(level.value)}
+              y2={yAt(level.value)}
+              stroke={level.color}
+              strokeWidth={1.2}
+              strokeDasharray={level.name === "entry" ? "none" : "4 3"}
+              opacity={0.85}
+            />
+            <text
+              x={pad.left + plotW + 8}
+              y={yAt(level.value) + index * 2}
+              dominantBaseline="middle"
+              fontSize={10.5}
+              fontWeight={600}
+              fill={level.color}
+            >
+              {level.name} {level.value.toFixed(2)}
+            </text>
+          </g>
+        ))}
+
+        {[
+          { index: entryIndex, label: "entry", color: "var(--foreground)" },
+          { index: exitIndex, label: "exit", color: "var(--accent)" },
+        ]
+          .filter((marker) => marker.index >= 0)
+          .map((marker) => (
+            <g key={marker.label}>
+              <line
+                x1={xAt(marker.index)}
+                x2={xAt(marker.index)}
+                y1={pad.top}
+                y2={volumeTop + volumeH}
+                stroke={marker.color}
+                strokeWidth={1}
+                strokeDasharray="3 3"
+                opacity={0.7}
+              />
+              <text x={xAt(marker.index) + 4} y={pad.top + 10} fontSize={10.5} fill={marker.color} fontWeight={600}>
+                {marker.label}
+              </text>
+            </g>
+          ))}
+
+        <text x={pad.left - 8} y={volumeTop + volumeH / 2} textAnchor="end" dominantBaseline="middle" className="axis">
+          Vol
+        </text>
+        <text x={pad.left} y={volumeTop - 4} fontSize={10.5} fill="var(--muted-foreground)">
+          max {compactNumber(maxVolume)}
+        </text>
+      </svg>
+      <figcaption className="chart-legend">
+        <span>
+          <i className="swatch" style={{ background: "var(--gain)" }} />
+          up candle / volume
+        </span>
+        <span>
+          <i className="swatch" style={{ background: "var(--loss)" }} />
+          down candle / volume
+        </span>
+        {example.plotted_indicators.map((name, slot) => (
+          <span key={name}>
+            <i className="swatch" style={{ background: INDICATOR_TOKENS[slot % INDICATOR_TOKENS.length] }} />
+            {name.replace("daily_", "")}
+          </span>
+        ))}
       </figcaption>
     </figure>
   );

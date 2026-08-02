@@ -26,6 +26,7 @@ RUN pip install --no-cache-dir ".[dashboard]"
 
 COPY src ./src
 RUN pip install --no-cache-dir --no-deps .
+RUN python -c "from sts.swing_ranking.dashboard.legacy import LegacyRoots"
 
 COPY scripts ./scripts
 COPY configs ./configs

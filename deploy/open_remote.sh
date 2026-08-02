@@ -1,12 +1,5 @@
 #!/usr/bin/env bash
-# Open an IAP tunnel to the swing-ranking-v1 dashboard on sts-forward, and to
-# the legacy dashboard beside it.
-#
-# One ssh invocation carries both forwards. The new dashboard links to the
-# legacy one as plain markup rather than reverse-proxying it: the legacy app
-# does Google OAuth through authlib, sets signed cookies at `/`, and
-# 303-redirects unauthenticated requests, all of which break under a subpath.
-# Two -L forwards in one process group means --stop still reaps both.
+# Open one IAP tunnel to the unified dashboard on sts-forward.
 set -euo pipefail
 
 PROJECT="${STS_PROJECT:-stocks-that-move}"
@@ -14,12 +7,13 @@ ZONE="${STS_ZONE:-us-west1-b}"
 INSTANCE="${STS_INSTANCE:-sts-forward}"
 LOCAL_PORT="${STS_DASHBOARD_LOCAL_PORT:-8010}"
 REMOTE_PORT="${STS_DASHBOARD_REMOTE_PORT:-8010}"
-LEGACY_LOCAL_PORT="${STS_LEGACY_LOCAL_PORT:-8000}"
-LEGACY_REMOTE_PORT="${STS_LEGACY_REMOTE_PORT:-8000}"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PIDFILE="${TMPDIR:-/tmp}/sts-swing-ranking-dashboard-${LOCAL_PORT}.pid"
 LOGFILE="${TMPDIR:-/tmp}/sts-swing-ranking-dashboard-${LOCAL_PORT}.log"
 URL="http://127.0.0.1:${LOCAL_PORT}"
-LEGACY_URL="http://127.0.0.1:${LEGACY_LOCAL_PORT}"
+
+# shellcheck source=deploy/port_utils.sh
+. "${REPO_ROOT}/deploy/port_utils.sh"
 
 # /healthz answers without a session on both apps; / redirects to a login page.
 probe() {
@@ -54,6 +48,36 @@ stop_tunnel() {
     rm -f "${PIDFILE}"
 }
 
+ours_on_port() {
+    local pid
+    pid="$1"
+    is_project_tunnel_process "${pid}" "${INSTANCE}" "${LOCAL_PORT}" "${REMOTE_PORT}" ||
+        is_repo_dashboard_process "${pid}" "${REPO_ROOT}"
+}
+
+reclaim_project_port() {
+    local pid found=0
+    for pid in $(port_pids "${LOCAL_PORT}"); do
+        if ours_on_port "${pid}"; then
+            echo "Stopping stale dashboard process on port ${LOCAL_PORT} (pid ${pid})."
+            kill_process_group_or_pid "${pid}"
+            found=1
+        fi
+    done
+    if [ "${found}" -eq 0 ]; then
+        return 1
+    fi
+    if wait_port_free "${LOCAL_PORT}"; then
+        return 0
+    fi
+    for pid in $(port_pids "${LOCAL_PORT}"); do
+        if ours_on_port "${pid}"; then
+            kill_process_group_or_pid_hard "${pid}"
+        fi
+    done
+    wait_port_free "${LOCAL_PORT}"
+}
+
 if [ "${1:-}" = "--stop" ]; then
     stop_tunnel
     echo "Remote dashboard tunnels stopped."
@@ -76,37 +100,29 @@ fi
 if tunnel_pid >/dev/null; then
     echo "Tunnel already running."
 else
-    # A dead pidfile may still have left ssh bound to either port.
+    # A dead pidfile may still have left ssh bound to the local port.
     rm -f "${PIDFILE}"
-    for port in "${LOCAL_PORT}" "${LEGACY_LOCAL_PORT}"; do
-        if (exec 3<>"/dev/tcp/127.0.0.1/${port}") 2>/dev/null; then
-            exec 3>&- 3<&-
-            echo "ERROR: port ${port} is already held by an untracked process." >&2
+    if (exec 3<>"/dev/tcp/127.0.0.1/${LOCAL_PORT}") 2>/dev/null; then
+        exec 3>&- 3<&-
+        if ! reclaim_project_port; then
+            echo "ERROR: port ${LOCAL_PORT} is already held by an untracked process." >&2
             echo "Stop whatever owns it, then retry." >&2
             exit 1
         fi
-    done
+    fi
     # setsid puts the tunnel in its own process group so --stop can signal
     # gcloud and its ssh child together.
     setsid gcloud compute ssh "${INSTANCE}" \
         --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap \
         -- -N \
         -L "${LOCAL_PORT}:127.0.0.1:${REMOTE_PORT}" \
-        -L "${LEGACY_LOCAL_PORT}:127.0.0.1:${LEGACY_REMOTE_PORT}" \
         >"${LOGFILE}" 2>&1 &
     echo $! >"${PIDFILE}"
 fi
 
-# 8010 is required; 8000 is best-effort, so a stopped legacy container never
-# fails the new dashboard.
 for _ in $(seq 1 30); do
     if probe "${URL}"; then
-        echo "Swing ranking dashboard: ${URL}"
-        if probe "${LEGACY_URL}"; then
-            echo "Legacy dashboard:          ${LEGACY_URL}"
-        else
-            echo "Legacy dashboard:          not answering on ${LEGACY_URL} (tunnel is open)." >&2
-        fi
+        echo "Unified swing dashboard: ${URL}"
         exit 0
     fi
     if ! tunnel_pid >/dev/null; then

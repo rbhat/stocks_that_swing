@@ -9,6 +9,24 @@ async function get<T>(path: string): Promise<T> {
   return (await response.json()) as T;
 }
 
+async function mutate<T>(path: string, method: "POST" | "PUT", body?: unknown): Promise<T> {
+  const response = await fetch(path, {
+    method,
+    credentials: "same-origin",
+    headers: body === undefined ? undefined : { "Content-Type": "application/json" },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+  if (response.status === 401) throw new Unauthenticated("unauthenticated");
+  const detail = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const message = Array.isArray(detail.detail)
+      ? detail.detail.join("; ")
+      : detail.detail || detail.error || `${path} failed: ${response.status}`;
+    throw new Error(message);
+  }
+  return detail as T;
+}
+
 export type Loaded<T> = {
   data: T | null;
   error: Error | null;
@@ -64,4 +82,12 @@ export async function passwordLogin(
 
 export async function logout(): Promise<void> {
   await fetch("/auth/logout", { method: "POST", credentials: "same-origin" });
+}
+
+export function post<T>(path: string): Promise<T> {
+  return mutate<T>(path, "POST");
+}
+
+export function put<T>(path: string, body: unknown): Promise<T> {
+  return mutate<T>(path, "PUT", body);
 }

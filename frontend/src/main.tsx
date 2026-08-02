@@ -8,8 +8,14 @@ import { Shell, ErrorCard, Loading } from "./components/Layout";
 import { Overview } from "./views/Overview";
 import { Forward } from "./views/Forward";
 import { Backtests } from "./views/Backtests";
+import { ProjectReportView } from "./views/ProjectReport";
+import { LegacyBacktests } from "./views/LegacyBacktests";
+import { LegacyConfig } from "./views/LegacyConfig";
+import { LegacyForward } from "./views/LegacyForward";
+import { LegacyJobs } from "./views/LegacyJobs";
+import { LegacyOverview } from "./views/LegacyOverview";
 import { Login } from "./views/Login";
-import type { Me, Overview as OverviewPayload } from "./types";
+import type { Me } from "./types";
 
 function Routes({ path }: { path: string }) {
   if (path === "/" || path === "") return <Overview />;
@@ -18,15 +24,23 @@ function Routes({ path }: { path: string }) {
   if (path === "/backtests") return <Backtests window={null} />;
   if (path.startsWith("/backtests/"))
     return <Backtests window={path.slice("/backtests/".length)} />;
+  if (path === "/project-report") return <ProjectReportView />;
+  if (path === "/legacy") return <LegacyOverview />;
+  if (path === "/legacy/forward" || path === "/legacy/forward/")
+    return <LegacyForward family="h1" />;
+  if (path.startsWith("/legacy/forward/"))
+    return <LegacyForward family={path.slice("/legacy/forward/".length)} />;
+  if (path === "/legacy/backtests") return <LegacyBacktests family={null} />;
+  if (path.startsWith("/legacy/backtests/"))
+    return <LegacyBacktests family={path.slice("/legacy/backtests/".length)} />;
+  if (path === "/legacy/config") return <LegacyConfig />;
+  if (path === "/legacy/jobs") return <LegacyJobs />;
   return <p className="empty">No such page.</p>;
 }
 
 function App() {
   const { path } = useRouter();
   const me = useApi<Me>(path === "/login" ? null : "/api/me");
-  // The overview is fetched here only for the legacy link, which the shell
-  // renders on every page; the views fetch their own data.
-  const overview = useApi<OverviewPayload>(path === "/login" ? null : "/api/overview");
 
   if (path === "/login") return <Login />;
   if (me.error instanceof Unauthenticated) {
@@ -37,10 +51,7 @@ function App() {
   if (me.error) return <ErrorCard error={me.error} />;
 
   return (
-    <Shell
-      email={me.data?.email ?? null}
-      legacyUrl={overview.data?.legacy_dashboard_url ?? "http://127.0.0.1:8000"}
-    >
+    <Shell email={me.data?.email ?? null}>
       <Routes path={path} />
     </Shell>
   );

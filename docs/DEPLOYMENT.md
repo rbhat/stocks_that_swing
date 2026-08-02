@@ -1,15 +1,15 @@
-# Swing ranking forward deployment
+# Unified swing dashboard and forward deployment
 
 ## Host and isolation
 
-The existing host is the GCP Compute Engine VM `sts-forward` in project
-`stocks-that-move`, zone `us-west1-b`. The new application is deliberately
-isolated from the legacy deployment:
+The host is the GCP Compute Engine VM `sts-forward` in project
+`stocks-that-move`, zone `us-west1-b`. One dashboard reads two isolated data
+roots:
 
-| System | VM root | Dashboard port | Ledger |
-|---|---|---:|---|
-| Legacy | `~/sts` | 8000 | `~/sts/ledger` plus its existing Drive namespace |
-| Swing ranking v1 | `~/sts-swing-ranking-v1` | 8010 | `~/sts-swing-ranking-v1/runs/swing-ranking-v1-forward-01` |
+| Scope | VM root | Unified route | Ledger |
+|---|---|---|---|
+| Legacy | `~/sts` | `/legacy` | `~/sts/ledger` plus its existing Drive namespace |
+| Swing ranking v1 | `~/sts-swing-ranking-v1` | `/` | `~/sts-swing-ranking-v1/runs/swing-ranking-v1-forward-01` |
 
 The deployment scripts never delete, truncate, copy over, or synchronize the
 legacy ledger. Rename/archive the old Drive files independently.
@@ -32,7 +32,8 @@ containers:
 deploy/deploy.sh --stage-only
 ```
 
-Deploy and start the remote scheduler and read-only dashboard:
+Deploy and start the remote scheduler, unified dashboard, and bounded legacy
+admin sidecar:
 
 ```bash
 deploy/deploy.sh
@@ -66,18 +67,15 @@ Because `strategies/` is not shipped, `scripts/export_strategy_names.py` writes
 a compact `strategy_names.json` beside each window so revision identities still
 resolve to strategy names on the VM. `push_backtests.sh` refreshes it first.
 
-Open IAP tunnels to both dashboards:
+Open the single IAP tunnel:
 
 ```bash
 deploy/open_remote.sh
 deploy/open_remote.sh --stop
 ```
 
-One `gcloud compute ssh` call carries two `-L` forwards, so a single command
-opens the new dashboard on `http://127.0.0.1:8010` and the legacy one on
-`http://127.0.0.1:8000`, and `--stop` reaps both. Readiness treats 8010 as
-required and 8000 as best-effort: a stopped legacy container does not fail the
-new dashboard.
+The dashboard opens at `http://127.0.0.1:8010`; legacy views are under
+`/legacy`. `--stop` reaps the tunnel process group and leaves no SSH listener.
 
 Inspect the remote service and logs directly:
 
@@ -97,13 +95,16 @@ gcloud compute ssh sts-forward \
 
 ## The dashboard
 
-`docs/DASHBOARD_PLAN.md` covers what it shows and why the legacy dashboard is a
-second tunnel rather than a reverse-proxied subpath. Operationally:
+`docs/DASHBOARD_PLAN.md` records the route and isolation boundaries.
+Operationally:
 
-- It is read-only. `runs/` and `configs/` are mounted read-only; only `logs/` is
-  writable, and only for the authentication audit trail. The scheduler remains
-  the single writer, and `src/sts/swing_ranking/dashboard/` never imports the
-  writing engine — a test asserts that on the import graph.
+- V1 `runs/` and `configs/` are read-only; only v1 `logs/` is writable for the
+  unified audit trail. Legacy ledger, runs, summaries, logs, and configs are
+  read-only in the dashboard container. The scheduler remains the sole v1
+  writer.
+- Admin-only legacy settings/sync controls cross to the private
+  `legacy-admin` sidecar. It exposes no host port or Docker socket and can run
+  only the fixed legacy sync command or allowlisted atomic settings update.
 - It verifies each run's manifest content hashes on read. A mismatch renders as
   a banner over a still-usable degraded run, never as an exception.
 - It requires login, as the legacy dashboard did: signed httponly session
@@ -139,7 +140,7 @@ invalidate everyone's cookies.
 
 ## Local deployment
 
-Build the image and start only the local read-only dashboard:
+Build the image and start the local unified dashboard:
 
 ```bash
 deploy/deploy_local.sh

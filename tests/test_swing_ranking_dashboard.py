@@ -6,14 +6,16 @@ from pathlib import Path
 import pytest
 
 from sts.swing_ranking.dashboard import data
+from sts.swing_ranking.dashboard.legacy import LegacyRoots
+from sts.swing_ranking.dashboard.legacy import admin as legacy_admin
 from sts.swing_ranking.identity import sha256_hex
 
 pytest.importorskip("fastapi")
 
-from fastapi.testclient import TestClient  # noqa: E402
+from fastapi.testclient import TestClient
 
-from sts.swing_ranking.dashboard.app import create_app  # noqa: E402
-from sts.swing_ranking.dashboard.auth import SESSION_COOKIE, make_session  # noqa: E402
+from sts.swing_ranking.dashboard.app import create_app
+from sts.swing_ranking.dashboard.auth import SESSION_COOKIE, make_session
 
 SECRET = "test-secret"
 
@@ -184,6 +186,157 @@ def _backtest_window(runs_root: Path, window: str) -> Path:
         record_counts={"trades": 7},
     )
     return root
+
+
+def _metric_row(cohort: str) -> dict[str, object]:
+    return {
+        "cohort": cohort,
+        "member_count": 1,
+        "closed_trades": 1,
+        "starting_capital": "100000",
+        "ending_equity": "101000",
+        "gross_profit": "1000",
+        "gross_return": "0.01",
+        "maximum_drawdown": "0.02",
+        "maximum_drawdown_dollars": "2000",
+        "profit_drawdown": "0.5",
+        "positive_revision_count": 1,
+        "negative_revision_count": 0,
+        "flat_revision_count": 0,
+    }
+
+
+def _project_report_artifacts(runs_root: Path) -> None:
+    identity = "a" * 64
+    comparison = runs_root / data.BACKTEST_ROOT_NAME / data.COHORT_COMPARISON_DIR
+    _write(
+        comparison / "manifest.json",
+        {
+            "analysis_identity": "q" * 64,
+            "source": {
+                "evidence_start": "2026-03-13",
+                "evidence_end_exclusive": "2026-06-09",
+                "outcome_end_exclusive": "2026-07-10",
+                "oos_artifact_identity": "o" * 64,
+                "cohort_selection_identity": "s" * 64,
+            },
+        },
+    )
+    _write(
+        comparison / "cohort_metrics.json",
+        {"rows": [_metric_row("VF9"), _metric_row("MC5"), _metric_row("FO4")]},
+    )
+    _write(
+        comparison / "strategy_metrics.json",
+        {
+            "rows": [
+                {
+                    "strategy_revision_identity": identity,
+                    "strategy_name": "monthly-ema6-above__return5-cross-zero__rolling-low20__target-risk1p75",
+                    "display_name": "M6-above__return5-cross-zero__rolling-low20__target-risk1p75",
+                    "membership": "MC5",
+                    "closed_trades": 1,
+                    "gross_profit": "1000",
+                    "gross_return": "0.01",
+                    "maximum_drawdown": "0.02",
+                    "maximum_drawdown_dollars": "2000",
+                    "profit_drawdown": "0.5",
+                    "turnover": "1.2",
+                    "exposure_mean": "0.5",
+                    "exposure_maximum": "0.8",
+                    "break_even_proportional_cost": "0.001",
+                }
+            ]
+        },
+    )
+    (comparison / "cohort_equity.jsonl").write_text(
+        "\n".join(
+            json.dumps(
+                {
+                    "session": "2026-03-13",
+                    "cohort": cohort,
+                    "normalized_index": "100",
+                    "drawdown": "0",
+                }
+            )
+            for cohort in data.COHORT_ORDER
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    oos = runs_root / data.BACKTEST_ROOT_NAME / "oos-v1"
+    _write(oos / "manifest.json", {"limitations": [{"kind": "sample", "statement": "sample limitation"}]})
+    (oos / "candidates.jsonl").write_text(
+        json.dumps(
+            {
+                "identity": "candidate-1",
+                "record": {
+                    "strategy_revision_identity": identity,
+                    "symbol": "AAA",
+                    "signal_session": "2026-03-13",
+                    "signal_close": "10",
+                    "average_dollar_volume": "100000000",
+                    "priority_value": "0.1",
+                    "signal_facts": {
+                        "daily_return5": {"value": "0.1"},
+                        "daily_rolling_low20": {"value": "9"},
+                    },
+                },
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (oos / "trades.jsonl").write_text(
+        json.dumps(
+            {
+                "identity": "trade-1",
+                "record": {
+                    "candidate_identity": "candidate-1",
+                    "symbol": "AAA",
+                    "permanent_id": "pid",
+                    "entry_session": "2026-03-16",
+                    "exit_session": "2026-03-20",
+                    "entry_price": "10",
+                    "exit_price": "11",
+                    "quantity": "100",
+                    "gross_pnl": "1000",
+                    "exit_reason": "target",
+                },
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    _write(
+        oos / "strategies" / f"{identity}.json",
+        {
+            "geometries": [
+                {
+                    "candidate_identity": "candidate-1",
+                    "initial_stop_price": "9",
+                    "target_price": "11",
+                    "planned_hold_sessions": 21,
+                }
+            ],
+            "strategy": {
+                "strategy_name": "monthly-ema6-above__return5-cross-zero__rolling-low20__target-risk1p75",
+                "readable_rules": [
+                    "monthly close is above its EMA6",
+                    "5-session return crosses above zero",
+                ],
+                "parameters": {
+                    "program": {
+                        "features": [
+                            {"name": "daily_return5"},
+                            {"name": "daily_rolling_low20"},
+                        ]
+                    }
+                },
+            },
+        },
+    )
 
 
 @pytest.fixture
@@ -392,11 +545,11 @@ def test_a_forged_cookie_does_not_authenticate(runs_root: Path, tmp_path: Path, 
     assert forged.get("/api/overview").status_code == 401
 
 
-def test_overview_route_carries_forward_backtests_and_legacy_link(client: TestClient):
+def test_overview_route_carries_forward_and_backtests(client: TestClient):
     payload = client.get("/api/overview").json()
     assert payload["forward"]["run_id"] == data.FORWARD_RUN_ID
     assert [w["window"] for w in payload["backtests"]] == list(data.BACKTEST_WINDOWS)
-    assert payload["legacy_dashboard_url"] == "http://127.0.0.1:8000"
+    assert "legacy_dashboard_url" not in payload
     assert payload["degraded"] == []
 
 
@@ -412,6 +565,41 @@ def test_backtest_cohorts_path_wins_over_the_window_placeholder(client: TestClie
     body = client.get("/api/backtests/cohorts").json()
     assert "cohort_metrics" in body
     assert client.get("/api/backtests/nope").status_code == 404
+
+
+def test_project_report_api_and_standalone_route(
+    client: TestClient,
+    runs_root: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    _project_report_artifacts(runs_root)
+
+    body = client.get("/api/backtests/project-report").json()
+    assert body["present"] is True
+    assert [(c["cohort"], len(c["strategies"])) for c in body["cohorts"]] == [
+        ("VF9", 1),
+        ("MC5", 1),
+        ("FO4", 0),
+    ]
+    example = body["cohorts"][1]["strategies"][0]["examples"][0]
+    assert example["kind"] == "win"
+    assert example["trade"]["symbol"] == "AAA"
+    assert example["geometry"]["target_price"] == "11"
+
+    dist = tmp_path / "dist"
+    dist.mkdir()
+    (dist / "project-report.html").write_text(
+        "<!doctype html><title>report</title>",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("DASHBOARD_SECRET", SECRET)
+    app = create_app(runs_root=runs_root, repo_root=tmp_path, dist_dir=dist)
+    standalone = TestClient(app)
+    standalone.cookies.set(SESSION_COOKIE, make_session("t@example.com", "viewer", SECRET))
+    response = standalone.get("/project-report.html")
+    assert response.status_code == 200
+    assert "<title>report</title>" in response.text
 
 
 def test_degraded_run_still_serves_the_overview(client: TestClient, runs_root: Path):
@@ -440,10 +628,243 @@ def test_the_dashboard_never_imports_the_writing_engine():
 
     source = Path(__file__).resolve().parents[1] / "src/sts/swing_ranking/dashboard"
     forbidden = {"sts.swing_ranking.forward", "sts.swing_ranking.runner"}
-    for path in sorted(source.glob("*.py")):
+    for path in sorted(source.rglob("*.py")):
         tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 assert not {alias.name for alias in node.names} & forbidden, path
             elif isinstance(node, ast.ImportFrom):
                 assert node.module not in forbidden, path
+
+
+# ------------------------------------------------------------- unified legacy
+
+
+@pytest.fixture
+def legacy_roots(tmp_path: Path) -> LegacyRoots:
+    roots = LegacyRoots.under(tmp_path / "legacy")
+    roots.ledger.mkdir(parents=True)
+    roots.runs.mkdir(parents=True)
+    roots.runs_summary.mkdir(parents=True)
+    roots.logs.mkdir(parents=True)
+    roots.configs.mkdir(parents=True)
+    (roots.ledger / "equity.jsonl").write_text(
+        '\n'.join(
+            [
+                json.dumps({"book": "shared", "date": "2026-07-10", "equity": 100000}),
+                "corrupt",
+                json.dumps({"book": "h1solo", "date": "2026-07-10", "equity": 100100}),
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (roots.ledger / "h1.jsonl").write_text(
+        "\n".join(
+            [
+                json.dumps(
+                    {
+                        "entry_id": "one",
+                        "seq": 1,
+                        "family": "h1",
+                        "status": "open",
+                        "usd_deployed": 1000,
+                    }
+                ),
+                json.dumps(
+                    {
+                        "entry_id": "two",
+                        "seq": 2,
+                        "family": "h1",
+                        "status": "closed",
+                        "pnl_usd": 125,
+                    }
+                ),
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (roots.ledger / "h2.jsonl").write_text("", encoding="utf-8")
+    (roots.ledger / "signals.jsonl").write_text(
+        json.dumps({"date": "2026-07-10", "kind": "upkeep_done"}) + "\n",
+        encoding="utf-8",
+    )
+    _write(
+        roots.runs_summary / "h1.json",
+        {
+            "family": "h1",
+            "verdict": "PROCEED",
+            "metrics": {"layer_b": {"gross": {"expectancy_r": 0.2}}},
+            "trades": [{"symbol": "A"}],
+            "equity_curve": [{"date": "2026-01-01"}],
+        },
+    )
+    _write(roots.runs_summary / "h2.json", {"family": "h2", "verdict": "PARK"})
+    (roots.runs_summary / "broken.json").write_text("{", encoding="utf-8")
+    (roots.configs / "study_roster.yaml").write_text("symbols: [AAPL, SPY]\n", encoding="utf-8")
+    (roots.configs / "dashboard_settings.yaml").write_text(
+        "discord_alerts: true\nmonitor_gap_alert_pct: 0.1\n", encoding="utf-8"
+    )
+    (roots.configs.parent / "universe.yaml").write_text("seeds: [SPY]\n", encoding="utf-8")
+    assert roots.env_file is not None
+    roots.env_file.write_text("GOOGLE_CLIENT_SECRET=secret\nTZ=America/Los_Angeles\n", encoding="utf-8")
+    (roots.logs / "eod.log").write_text("complete\n", encoding="utf-8")
+    (roots.logs / "fill.log").write_text("fatal error\n", encoding="utf-8")
+    return roots
+
+
+@pytest.fixture
+def legacy_client(
+    runs_root: Path,
+    legacy_roots: LegacyRoots,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> TestClient:
+    monkeypatch.setenv("DASHBOARD_SECRET", SECRET)
+    app = create_app(runs_root=runs_root, repo_root=tmp_path, legacy_roots=legacy_roots)
+    result = TestClient(app)
+    result.cookies.set(SESSION_COOKIE, make_session("viewer@example.com", "viewer", SECRET))
+    return result
+
+
+def test_legacy_get_routes_match_recovered_contract(legacy_client: TestClient):
+    overview = legacy_client.get("/api/legacy/overview")
+    assert overview.status_code == 200
+    assert overview.json()["tiles"] == {
+        "total_pnl": 125.0,
+        "open_count": 1,
+        "usd_deployed": 1000.0,
+        "win_rate": 1.0,
+    }
+    assert [row["book"] for row in overview.json()["equity"]] == ["h1solo", "shared"]
+
+    assert legacy_client.get("/api/legacy/forward/h1").json()["open"][0]["entry_id"] == "one"
+    assert legacy_client.get("/api/legacy/forward/h2").json() == {"rows": [], "open": []}
+    assert legacy_client.get("/api/legacy/forward/h3").status_code == 404
+
+    summaries = legacy_client.get("/api/legacy/backtests").json()
+    assert [summary["family"] for summary in summaries] == ["h1", "h2"]
+    assert "trades" not in summaries[0]
+    assert "equity_curve" not in summaries[0]
+    assert legacy_client.get("/api/legacy/backtests/h1").json()["trades"] == [{"symbol": "A"}]
+    assert legacy_client.get("/api/legacy/backtests/missing").status_code == 404
+
+    config = legacy_client.get("/api/legacy/config").json()
+    assert config["env"] == {"GOOGLE_CLIENT_SECRET": "•••", "TZ": "America/Los_Angeles"}
+    assert config["universe"] == {"seeds": ["SPY"]}
+    assert config["editable"]["discord_alerts"] is True
+    assert set(config["schema"]) == {
+        "discord_alerts",
+        "monitor_gap_alert_pct",
+        "monitor_dd_alert_pct",
+    }
+
+    statuses = {row["name"]: row["status"] for row in legacy_client.get("/api/legacy/jobs").json()}
+    assert statuses == {"eod": "ok", "fill": "failed", "monitor": "unknown", "sync": "unknown"}
+
+
+def test_missing_and_corrupt_legacy_files_degrade_without_500(
+    runs_root: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setenv("DASHBOARD_SECRET", SECRET)
+    roots = LegacyRoots.under(tmp_path / "absent")
+    client = TestClient(create_app(runs_root=runs_root, repo_root=tmp_path, legacy_roots=roots))
+    client.cookies.set(SESSION_COOKIE, make_session("v@example.com", "viewer", SECRET))
+    assert client.get("/api/legacy/overview").json()["tiles"]["open_count"] == 0
+    assert client.get("/api/legacy/backtests").json() == []
+    assert client.get("/api/legacy/config").json()["editable"] == {}
+    assert all(row["status"] == "unknown" for row in client.get("/api/legacy/jobs").json())
+
+
+def test_one_session_authenticates_both_api_families_and_logout_invalidates_it(
+    legacy_client: TestClient,
+):
+    assert legacy_client.get("/api/overview").status_code == 200
+    assert legacy_client.get("/api/legacy/overview").status_code == 200
+    response = legacy_client.post("/auth/logout")
+    assert response.status_code == 200
+    assert "Max-Age=0" in response.headers["set-cookie"]
+    # TestClient does not evict a cookie inserted manually without a domain;
+    # a browser applies the expiry header above.
+    legacy_client.cookies.clear()
+    assert legacy_client.get("/api/overview").status_code == 401
+    assert legacy_client.get("/api/legacy/overview").status_code == 401
+
+
+def test_viewer_cannot_mutate_legacy_resources(legacy_client: TestClient):
+    assert legacy_client.post("/api/legacy/sync").status_code == 403
+    assert legacy_client.put("/api/legacy/config/safe", json={"discord_alerts": False}).status_code == 403
+
+
+def test_admin_config_update_is_validated_and_audited(
+    legacy_client: TestClient,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    legacy_client.cookies.set(SESSION_COOKIE, make_session("admin@example.com", "admin", SECRET))
+    assert legacy_client.put("/api/legacy/config/safe", json={"strategy": "changed"}).status_code == 422
+
+    monkeypatch.setattr(
+        legacy_admin,
+        "update_config",
+        lambda base_url, token, updates: {
+            "old": {"discord_alerts": True},
+            "new": {"discord_alerts": updates["discord_alerts"]},
+        },
+    )
+    response = legacy_client.put("/api/legacy/config/safe", json={"discord_alerts": False})
+    assert response.status_code == 200
+    assert response.json() == {"discord_alerts": False}
+    record = json.loads((tmp_path / "logs" / "dashboard-audit.log").read_text().splitlines()[-1])
+    assert record["scope"] == "legacy"
+    assert record["target"] == "configs/dashboard_settings.yaml"
+    assert record["detail"]["before"] == {"discord_alerts": True}
+    assert record["detail"]["after"] == {"discord_alerts": False}
+
+
+def test_admin_sync_success_and_contention_are_bounded(
+    legacy_client: TestClient, monkeypatch: pytest.MonkeyPatch
+):
+    legacy_client.cookies.set(SESSION_COOKIE, make_session("admin@example.com", "admin", SECRET))
+    monkeypatch.setattr(
+        legacy_admin, "start_sync", lambda base_url, token: {"id": "123456789abc"}
+    )
+    assert legacy_client.post("/api/legacy/sync").json() == {"id": "123456789abc"}
+
+    def contention(base_url, token):
+        raise FileExistsError
+
+    monkeypatch.setattr(legacy_admin, "start_sync", contention)
+    assert legacy_client.post("/api/legacy/sync").status_code == 409
+
+
+def test_every_legacy_page_direct_load_uses_the_spa_fallback(
+    runs_root: Path,
+    legacy_roots: LegacyRoots,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setenv("DASHBOARD_SECRET", SECRET)
+    dist = tmp_path / "dist"
+    dist.mkdir()
+    (dist / "index.html").write_text("<main>unified</main>", encoding="utf-8")
+    client = TestClient(
+        create_app(
+            runs_root=runs_root,
+            repo_root=tmp_path,
+            legacy_roots=legacy_roots,
+            dist_dir=dist,
+        )
+    )
+    client.cookies.set(SESSION_COOKIE, make_session("v@example.com", "viewer", SECRET))
+    for path in (
+        "/legacy",
+        "/legacy/forward/h1",
+        "/legacy/forward/h2",
+        "/legacy/backtests",
+        "/legacy/backtests/h1",
+        "/legacy/config",
+        "/legacy/jobs",
+    ):
+        assert client.get(path).text == "<main>unified</main>"

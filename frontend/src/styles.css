@@ -554,7 +554,8 @@ td.wide {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="number"] {
   width: 100%;
   padding: 0.5rem 0.75rem;
   border-radius: calc(var(--radius) * 0.8);
@@ -562,6 +563,18 @@ input[type="password"] {
   background: var(--background);
   color: var(--foreground);
   font: inherit;
+}
+
+input:disabled,
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--primary);
 }
 
 input:focus {
@@ -642,6 +655,206 @@ input:focus {
   overflow: auto;
 }
 
+/* ---------------------------------------------------------- project report */
+
+.report-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.report-intro > div {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 1.125rem 1.25rem;
+}
+
+.report-intro h2 {
+  margin: 0 0 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.report-intro p {
+  margin: 0;
+  max-width: 70rem;
+}
+
+.report-intro p + p {
+  margin-top: 0.4rem;
+}
+
+.collapsible,
+.strategy-report {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: clip;
+}
+
+.collapsible > summary,
+.strategy-report > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 650;
+}
+
+.collapsible > summary::-webkit-details-marker,
+.strategy-report > summary::-webkit-details-marker {
+  display: none;
+}
+
+.collapsible > summary::before,
+.strategy-report > summary::before {
+  content: "›";
+  color: var(--muted-foreground);
+  font-size: 1rem;
+  transform: rotate(0deg);
+  transition: transform 0.12s ease;
+}
+
+.collapsible[open] > summary::before,
+.strategy-report[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.collapsible > summary span,
+.strategy-report > summary span {
+  flex: 1;
+}
+
+.collapsible > summary small,
+.strategy-report > summary small {
+  color: var(--muted-foreground);
+  font-weight: 500;
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+.collapsible-body,
+.strategy-body {
+  padding: 0 1rem 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.collapsible-body > .grid,
+.report-chart-grid,
+.report-wide-chart {
+  margin-top: 1rem;
+}
+
+.report-description {
+  margin: 1rem 0;
+  color: var(--muted-foreground);
+}
+
+.compact-table td,
+.compact-table th {
+  padding: 0.45rem 0.75rem;
+}
+
+.strategy-stack {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.strategy-report {
+  margin-top: 0;
+  background: var(--background);
+}
+
+.strategy-body {
+  background: var(--surface);
+}
+
+.strategy-meta,
+.trade-facts,
+.signal-facts,
+.rules-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.rules-grid {
+  margin: 0.875rem 0 1rem;
+}
+
+.rules-grid span,
+.trade-facts span,
+.signal-facts span {
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) * 0.7);
+  background: var(--raised);
+  padding: 0.25rem 0.5rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+
+.trade-example-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+.trade-example {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.875rem;
+  background: var(--surface);
+}
+
+.trade-example-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.trade-example-head h4 {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+.trade-example-head p {
+  margin: 0.125rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+
+.trade-example-head strong {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.candle-chart {
+  margin-top: 0.5rem;
+}
+
+.trade-facts,
+.signal-facts {
+  margin-top: 0.625rem;
+}
+
+.limitation-list p {
+  margin: 0.75rem 0 0;
+  color: var(--muted-foreground);
+}
+
 .footnote {
   margin-top: 2.5rem;
   padding-top: 1rem;
@@ -652,4 +865,99 @@ input:focus {
 
 .footnote p {
   margin: 0.25rem 0;
+}
+
+/* --------------------------------------------------------------- legacy */
+
+.legacy-marker {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 0.75rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+
+.legacy-tabs {
+  overflow-x: auto;
+}
+
+.key-values > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.key-values > div:last-child {
+  border-bottom: 0;
+}
+
+.admin-action {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-action > div {
+  flex: 1;
+}
+
+.admin-action p {
+  margin: 0.2rem 0 0;
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    height: auto;
+    min-height: 3.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    padding: 0.625rem 1rem;
+  }
+
+  .nav {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .topbar-end {
+    margin-left: auto;
+  }
+
+  .topbar-end > .muted {
+    display: none;
+  }
+
+  main {
+    padding: 1.25rem 1rem 3rem;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .report-intro,
+  .trade-example-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .collapsible > summary,
+  .strategy-report > summary,
+  .trade-example-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .collapsible > summary small,
+  .strategy-report > summary small {
+    text-align: left;
+  }
+
+  .admin-action {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }

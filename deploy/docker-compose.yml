@@ -47,16 +47,62 @@ services:
     environment:
       STS_RUNS_ROOT: /app/runs
       STS_REPO_ROOT: /app
+      STS_LEGACY_ROOT: /app/legacy
       DASHBOARD_PORT: "8010"
       # Only deploy_local.sh sets this to 1; without it the app refuses to
       # start unless DASHBOARD_SECRET is present, which deploy.sh guarantees.
       DASHBOARD_DEV: "${DASHBOARD_DEV:-}"
-      # The legacy dashboard is reached by its own -L forward on 8000, not by
-      # proxying it under a subpath; see docs/DASHBOARD_PLAN.md.
-      STS_LEGACY_DASHBOARD_URL: "${STS_LEGACY_DASHBOARD_URL:-http://127.0.0.1:8000}"
+      STS_LEGACY_ADMIN_URL: "${STS_LEGACY_ADMIN_URL:-http://legacy-admin:8020}"
+      LEGACY_ADMIN_TOKEN: "${LEGACY_ADMIN_TOKEN:-}"
     ports:
       - "127.0.0.1:${STS_DASHBOARD_PORT:-8010}:8010"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8010/healthz', timeout=5)"]
+      interval: 10s
+      timeout: 6s
+      retries: 6
+      start_period: 5s
     volumes:
       - ${STS_ROOT:-.}/runs:/app/runs:ro
       - ${STS_ROOT:-.}/configs:/app/configs:ro
       - ${STS_ROOT:-.}/logs:/app/logs
+      - ${STS_LEGACY_ROOT:-./legacy-data}/ledger:/app/legacy/ledger:ro
+      - ${STS_LEGACY_ROOT:-./legacy-data}/runs:/app/legacy/runs:ro
+      - ${STS_LEGACY_ROOT:-./legacy-data}/runs-summary:/app/legacy/runs-summary:ro
+      - ${STS_LEGACY_ROOT:-./legacy-data}/logs:/app/legacy/logs:ro
+      - ${STS_LEGACY_ROOT:-./legacy-data}/configs:/app/legacy/configs:ro
+      - ${STS_LEGACY_ROOT:-./legacy-data}/universe.yaml:/app/legacy/universe.yaml:ro
+      - ${STS_ROOT:-.}/legacy-env.redacted:/app/legacy/.env:ro
+
+  # Bounded mutation boundary. This runs in the retained legacy image so the
+  # fixed forward_sync.py command remains available. It has no host port and
+  # accepts only token-authenticated config/sync requests from the dashboard.
+  legacy-admin:
+    image: ${STS_LEGACY_IMAGE:-us-central1-docker.pkg.dev/stocks-that-move/sts/sts:latest}
+    command: ["python", "/runner/run_legacy_admin_runner.py"]
+    user: "${STS_UID:-1000}:${STS_GID:-1000}"
+    restart: unless-stopped
+    profiles: ["legacy-admin"]
+    env_file:
+      - path: ${STS_LEGACY_ROOT:-./legacy-data}/.env
+        required: false
+    environment:
+      LEGACY_ADMIN_TOKEN: "${LEGACY_ADMIN_TOKEN:-}"
+      RCLONE_CONFIG: /app/secrets/rclone.conf
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8020/healthz', timeout=5)"]
+      interval: 10s
+      timeout: 6s
+      retries: 6
+      start_period: 5s
+    volumes:
+      - ${STS_LEGACY_ADMIN_RUNNER:-./scripts/run_legacy_admin_runner.py}:/runner/run_legacy_admin_runner.py:ro
+      - ${STS_LEGACY_ROOT:-./legacy-data}/ledger:/app/ledger
+      - ${STS_LEGACY_ROOT:-./legacy-data}/cache:/app/cache
+      - ${STS_LEGACY_ROOT:-./legacy-data}/logs:/app/logs
+      - ${STS_LEGACY_ROOT:-./legacy-data}/runs:/app/runs
+      - ${STS_LEGACY_ROOT:-./legacy-data}/configs:/app/configs
+      - ${STS_LEGACY_ROOT:-./legacy-data}/runs-summary:/app/runs-summary:ro
+      - ${STS_LEGACY_ROOT:-./legacy-data}/.env:/app/.env:ro
+      - ${STS_LEGACY_ROOT:-./legacy-data}/secrets:/app/secrets:ro
+      - ${STS_LEGACY_ROOT:-./legacy-data}/docs:/app/docs:ro

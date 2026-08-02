@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build, push, and deploy swing-ranking-v1 beside (not over) the legacy VM app.
+# Build and deploy the unified dashboard while preserving legacy data in place.
 set -euo pipefail
 
 PROJECT="${STS_PROJECT:-stocks-that-move}"
@@ -42,7 +42,8 @@ echo "-- building ${IMAGE} directly on ${INSTANCE} --"
 tar -C "${REPO_ROOT}" \
     --exclude=.git --exclude=.venv --exclude=.scratch --exclude=cache \
     --exclude=logs --exclude=runs --exclude=reports --exclude=tests \
-    --exclude=.env --exclude=secrets --exclude=legacy \
+    --exclude=.env --exclude=secrets --exclude=legacy/dashboard \
+    --exclude=__pycache__ --exclude='*.pyc' \
     --exclude=frontend/node_modules --exclude=frontend/dist \
     -czf - . | vm_ssh "build_dir=\$(mktemp -d ~/${REMOTE_ROOT}-build.XXXXXX) && \
         trap 'rm -rf \"\${build_dir}\"' EXIT && tar -xzf - -C \"\${build_dir}\" && \
@@ -50,8 +51,12 @@ tar -C "${REPO_ROOT}" \
 
 echo "-- staging isolated remote root ~/${REMOTE_ROOT} --"
 vm_ssh "mkdir -p ~/${REMOTE_ROOT}/cache ~/${REMOTE_ROOT}/configs ~/${REMOTE_ROOT}/logs ~/${REMOTE_ROOT}/runs ~/${REMOTE_ROOT}/secrets"
+vm_ssh "mkdir -p ~/${REMOTE_ROOT}/scripts ~/sts/logs/dashboard; test -f ~/sts/universe.yaml"
 gcloud compute scp --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap \
     "${REPO_ROOT}/deploy/docker-compose.yml" "${INSTANCE}:~/${REMOTE_ROOT}/docker-compose.yml"
+gcloud compute scp --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap \
+    "${REPO_ROOT}/scripts/run_legacy_admin_runner.py" \
+    "${INSTANCE}:~/${REMOTE_ROOT}/scripts/run_legacy_admin_runner.py"
 gcloud compute scp --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap --recurse \
     "${REPO_ROOT}/configs" "${INSTANCE}:~/${REMOTE_ROOT}/"
 # The dashboard's session secret lives only on the VM: it must survive a
@@ -59,6 +64,8 @@ gcloud compute scp --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap 
 # the local .env (which does not carry it) can overwrite the remote one.
 EXISTING_SECRET="$(vm_ssh "sed -n 's/^DASHBOARD_SECRET=//p' ~/${REMOTE_ROOT}/.env 2>/dev/null | head -1" || true)"
 EXISTING_SECRET="$(printf '%s' "${EXISTING_SECRET}" | tr -d '\r\n')"
+EXISTING_LEGACY_TOKEN="$(vm_ssh "sed -n 's/^LEGACY_ADMIN_TOKEN=//p' ~/${REMOTE_ROOT}/.env 2>/dev/null | head -1" || true)"
+EXISTING_LEGACY_TOKEN="$(printf '%s' "${EXISTING_LEGACY_TOKEN}" | tr -d '\r\n')"
 if [ -f "${REPO_ROOT}/.env" ]; then
     gcloud compute scp --project "${PROJECT}" --zone "${ZONE}" --tunnel-through-iap \
         "${REPO_ROOT}/.env" "${INSTANCE}:~/${REMOTE_ROOT}/.env"
@@ -71,9 +78,16 @@ else
     echo "-- preserving the existing dashboard session secret --"
 fi
 vm_ssh "touch ~/${REMOTE_ROOT}/.env; chmod 600 ~/${REMOTE_ROOT}/.env; \
-    if ! grep -q '^DASHBOARD_SECRET=' ~/${REMOTE_ROOT}/.env; then \
-        printf 'DASHBOARD_SECRET=%s\n' '${EXISTING_SECRET}' >> ~/${REMOTE_ROOT}/.env; \
-    fi"
+    sed -i '/^DASHBOARD_SECRET=/d' ~/${REMOTE_ROOT}/.env; \
+    printf 'DASHBOARD_SECRET=%s\n' '${EXISTING_SECRET}' >> ~/${REMOTE_ROOT}/.env"
+if [ -z "${EXISTING_LEGACY_TOKEN}" ]; then
+    EXISTING_LEGACY_TOKEN="$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+fi
+vm_ssh "sed -i '/^LEGACY_ADMIN_TOKEN=/d' ~/${REMOTE_ROOT}/.env; \
+    printf 'LEGACY_ADMIN_TOKEN=%s\n' '${EXISTING_LEGACY_TOKEN}' >> ~/${REMOTE_ROOT}/.env"
+# The unified dashboard needs legacy environment key/status parity, not the
+# secret values. Generate a redacted snapshot without copying the legacy .env.
+vm_ssh "if test -f ~/sts/.env; then awk -F= '/^[A-Za-z_][A-Za-z0-9_]*=/{if (\$1==\"TZ\" || \$1==\"DASHBOARD_PORT\") print; else print \$1\"=redacted\"}' ~/sts/.env > ~/${REMOTE_ROOT}/legacy-env.redacted; else : > ~/${REMOTE_ROOT}/legacy-env.redacted; fi"
 if vm_ssh "test -f ~/${REMOTE_ROOT}/secrets/rclone.conf"; then
     echo "-- preserving the new deployment's rclone credentials --"
 elif vm_ssh "test -f ~/sts/secrets/rclone.conf"; then
@@ -99,10 +113,10 @@ if [ "${STAGE_ONLY}" -eq 1 ]; then
     echo "Deployment staged; the scheduler and dashboard were not started."
 else
     # The scheduler is the single writer; start it deliberately, not here.
-    vm_ssh "cd ~/${REMOTE_ROOT} && STS_ROOT=. STS_IMAGE=${IMAGE} STS_UID=${STS_UID} STS_GID=${STS_GID} \
-        docker compose up -d dashboard scheduler"
+    vm_ssh "cd ~/${REMOTE_ROOT} && STS_ROOT=. STS_LEGACY_ROOT=../sts STS_IMAGE=${IMAGE} STS_UID=${STS_UID} STS_GID=${STS_GID} \
+        docker compose --profile legacy-admin up -d --wait --wait-timeout 120 dashboard scheduler legacy-admin"
     echo "Deployment active. Open it with deploy/open_remote.sh"
     echo "Backtests are not part of the image; push them with deploy/push_backtests.sh"
 fi
 
-echo "Legacy ~/sts and its Drive ledger were not modified."
+echo "Legacy ~/sts ledger and study data remain in place; the unified dashboard reads them on 8010."

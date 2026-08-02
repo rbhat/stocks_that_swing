@@ -225,6 +225,91 @@ export type CohortComparison = {
   integrity: Integrity;
 };
 
+export type ReportCandle = {
+  session: string;
+  open: string;
+  high: string;
+  low: string;
+  close: string;
+  volume: number;
+  indicators: Record<string, string>;
+};
+
+export type ReportTradeExample = {
+  kind: "win" | "loss";
+  fallback: boolean;
+  trade: {
+    trade_identity: string;
+    candidate_identity: string;
+    symbol: string;
+    permanent_id: string;
+    entry_session: string;
+    exit_session: string;
+    entry_price: string;
+    exit_price: string;
+    quantity: string;
+    gross_pnl: string;
+    exit_reason: string;
+  };
+  geometry: {
+    initial_stop_price: string;
+    target_price: string;
+    planned_hold_sessions: number | null;
+  };
+  signal: {
+    signal_session: string;
+    signal_close: string;
+    average_dollar_volume: string;
+    priority_value: string;
+    facts: Record<string, string>;
+  };
+  candles: ReportCandle[];
+  plotted_indicators: string[];
+};
+
+export type ReportStrategy = {
+  strategy_revision_identity: string;
+  strategy_name: string;
+  display_name: string;
+  membership: string;
+  description: string;
+  rules: string[];
+  features: string[];
+  stats: {
+    closed_trades: number;
+    wins: number;
+    losses: number;
+    flats: number;
+    gross_profit: string;
+    gross_return: string;
+    maximum_drawdown: string;
+    maximum_drawdown_dollars: string;
+    profit_drawdown: string;
+    turnover: string;
+    exposure_mean: string;
+    exposure_maximum: string;
+    break_even_proportional_cost: string | null;
+  };
+  examples: ReportTradeExample[];
+};
+
+export type ProjectReport = {
+  present: boolean;
+  title: string;
+  goal: string;
+  conclusion: string[];
+  source: Record<string, string>;
+  cohort_equity: EquityPoint[];
+  cohorts: {
+    cohort: string;
+    description: string;
+    metrics: CohortMetric;
+    strategies: ReportStrategy[];
+  }[];
+  limitations: { kind: string; statement: string }[];
+  integrity: Integrity;
+};
+
 export type Overview = {
   forward: ForwardOverview;
   backtests: WindowSummary[];
@@ -233,7 +318,47 @@ export type Overview = {
   integrity: Record<string, Integrity>;
   degraded: string[];
   partial: string[];
-  legacy_dashboard_url: string;
 };
 
 export type Me = { email: string | null; role: string | null };
+
+export type LegacyRow = Record<string, unknown>;
+
+export type LegacyOverview = {
+  equity: LegacyRow[];
+  tiles: {
+    total_pnl: number;
+    open_count: number;
+    usd_deployed: number;
+    win_rate: number | null;
+  };
+  open_positions: LegacyRow[];
+  recent_signals: LegacyRow[];
+};
+
+export type LegacyForward = { rows: LegacyRow[]; open: LegacyRow[] };
+
+export type LegacyBacktest = {
+  family: string;
+  generated_at?: string;
+  verdict?: string | null;
+  metrics?: LegacyRow;
+  trades?: LegacyRow[] | null;
+  equity_curve?: LegacyRow[] | null;
+  source_paths?: string[];
+};
+
+export type LegacyConfig = {
+  universe: unknown;
+  study_roster: unknown;
+  env: Record<string, string>;
+  editable: Record<string, boolean | number>;
+  schema: Record<string, string>;
+};
+
+export type LegacyJob = {
+  name: string;
+  status: string;
+  last_run: string | null;
+  next_run: string | null;
+};

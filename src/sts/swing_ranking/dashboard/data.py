@@ -104,6 +104,11 @@ def _decimal(value: object) -> Decimal | None:
             return None
     if isinstance(value, int):
         return Decimal(value)
+    if isinstance(value, float):
+        try:
+            return Decimal(str(value))
+        except InvalidOperation:
+            return None
     return None
 
 
@@ -720,6 +725,431 @@ def cohort_comparison(runs_root: Path) -> dict[str, Any]:
         "charts": _rows(chart_map.get("charts")),
         "report": report,
         "integrity": verify_manifest(root),
+    }
+
+
+_COHORT_DESCRIPTIONS: dict[str, str] = {
+    "VF9": (
+        "Validation Frontier 9: every revision selected from the validation "
+        "frontier. This is the broadest sealed cohort and contains MC5 plus FO4."
+    ),
+    "MC5": (
+        "Multi-criterion 5: the five revisions that appeared in at least two "
+        "validation top-five lists. This is one of the forward-eligible cohorts."
+    ),
+    "FO4": (
+        "Frontier-only 4: the four VF9 revisions outside MC5. It is diagnostic "
+        "OOS evidence, not a forward-eligible cohort."
+    ),
+}
+
+_PRICE_INDICATORS = frozenset(
+    {
+        "daily_ema5",
+        "daily_sma10",
+        "daily_rolling_low10",
+        "daily_rolling_low20",
+        "daily_rolling_high20",
+    }
+)
+
+
+def _read_strategy(window_root: Path, identity: str) -> dict[str, Any]:
+    return read_json(window_root / "strategies" / f"{identity}.json") or {}
+
+
+def _strategy_rules(strategy_file: dict[str, Any]) -> list[str]:
+    strategy = strategy_file.get("strategy")
+    rules = strategy.get("readable_rules") if isinstance(strategy, dict) else None
+    if isinstance(rules, list):
+        return [rule for rule in rules if isinstance(rule, str)]
+    return []
+
+
+def _strategy_program(strategy_file: dict[str, Any]) -> dict[str, Any]:
+    strategy = strategy_file.get("strategy")
+    parameters = strategy.get("parameters") if isinstance(strategy, dict) else None
+    program = parameters.get("program") if isinstance(parameters, dict) else None
+    return program if isinstance(program, dict) else {}
+
+
+def _geometry_by_candidate(strategy_file: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    return {
+        _text(row.get("candidate_identity")): row
+        for row in _rows(strategy_file.get("geometries"))
+        if _text(row.get("candidate_identity"))
+    }
+
+
+def _oos_candidates(window_root: Path) -> dict[str, dict[str, Any]]:
+    return {
+        _text(row.get("identity")): record
+        for row in read_jsonl(window_root / "candidates.jsonl")
+        for record in [row.get("record")]
+        if _text(row.get("identity")) and isinstance(record, dict)
+    }
+
+
+def _oos_trades_by_strategy(window_root: Path) -> dict[str, list[dict[str, Any]]]:
+    candidates = _oos_candidates(window_root)
+    by_strategy: dict[str, list[dict[str, Any]]] = {}
+    for row in read_jsonl(window_root / "trades.jsonl"):
+        record = row.get("record")
+        if not isinstance(record, dict):
+            continue
+        candidate = candidates.get(_text(record.get("candidate_identity")))
+        if not candidate:
+            continue
+        identity = _text(candidate.get("strategy_revision_identity"))
+        if not identity:
+            continue
+        by_strategy.setdefault(identity, []).append(
+            {
+                "trade_identity": _text(row.get("identity")),
+                "strategy_revision_identity": identity,
+                **record,
+            }
+        )
+    for rows in by_strategy.values():
+        rows.sort(key=lambda t: (_text(t.get("entry_session")), _text(t.get("exit_session"))))
+    return by_strategy
+
+
+def _float(value: object) -> float | None:
+    decimal = _decimal(value)
+    return float(decimal) if decimal is not None else None
+
+
+def _format_decimal(value: object, places: int = 2) -> str:
+    decimal = _decimal(value)
+    if decimal is None:
+        return ""
+    return f"{decimal:.{places}f}"
+
+
+def _selected_trade_examples(trades: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    if not trades:
+        return []
+    winners = [trade for trade in trades if (_float(trade.get("gross_pnl")) or 0) > 0]
+    losers = [trade for trade in trades if (_float(trade.get("gross_pnl")) or 0) < 0]
+    examples: list[dict[str, Any]] = []
+    if winners:
+        examples.append(
+            {
+                "kind": "win",
+                "fallback": False,
+                "trade": max(winners, key=lambda t: _float(t.get("gross_pnl")) or 0),
+            }
+        )
+    elif losers:
+        examples.append(
+            {
+                "kind": "win",
+                "fallback": True,
+                "trade": min(losers, key=lambda t: _float(t.get("gross_pnl")) or 0),
+            }
+        )
+    if losers:
+        examples.append(
+            {
+                "kind": "loss",
+                "fallback": False,
+                "trade": min(losers, key=lambda t: _float(t.get("gross_pnl")) or 0),
+            }
+        )
+    elif winners:
+        examples.append(
+            {
+                "kind": "loss",
+                "fallback": True,
+                "trade": max(winners, key=lambda t: _float(t.get("gross_pnl")) or 0),
+            }
+        )
+    return examples
+
+
+def _feature_names(program: dict[str, Any]) -> list[str]:
+    names: list[str] = []
+    for feature in _rows(program.get("features")):
+        name = _text(feature.get("name"))
+        if name:
+            names.append(name)
+    return names
+
+
+def _indicator_frame(frame: Any, names: list[str]) -> dict[str, Any]:
+    indicators: dict[str, Any] = {}
+    for name in names:
+        if name == "daily_ema5":
+            indicators[name] = frame["close"].ewm(span=5, adjust=False).mean()
+        elif name == "daily_sma10":
+            indicators[name] = frame["close"].rolling(10).mean()
+        elif name == "daily_rolling_low10":
+            indicators[name] = frame["low"].rolling(10).min()
+        elif name == "daily_rolling_low20":
+            indicators[name] = frame["low"].rolling(20).min()
+        elif name == "daily_rolling_high20":
+            indicators[name] = frame["high"].rolling(20).max()
+    return indicators
+
+
+def _ohlcv_window(
+    repo_root: Path,
+    trade: dict[str, Any],
+    indicator_names: list[str],
+    *,
+    pad_sessions: int = 8,
+) -> tuple[list[dict[str, Any]], list[str]]:
+    """Read a compact OHLCV chart window from the local parquet cache.
+
+    Missing pandas, missing parquet, absent sessions, or unreadable data simply
+    produce an empty candle list; the report still renders the trade stats.
+    """
+    symbol = _text(trade.get("symbol"))
+    if not symbol:
+        return [], []
+    path = Path(repo_root) / "cache" / "study_frames" / f"{symbol.upper()}.parquet"
+    if not path.is_file():
+        return [], []
+    try:
+        import pandas as pd
+        from pyarrow.lib import ArrowException
+
+    except ImportError:
+        return [], []
+    try:
+        frame = pd.read_parquet(path)
+    except (OSError, ValueError, ArrowException):
+        return [], []
+    if frame.empty:
+        return [], []
+
+    try:
+        entry = pd.Timestamp(_text(trade.get("entry_session")))
+        exit_ = pd.Timestamp(_text(trade.get("exit_session")))
+    except (TypeError, ValueError):
+        return [], []
+
+    index = list(frame.index)
+    entry_positions = [i for i, value in enumerate(index) if value >= entry]
+    exit_positions = [i for i, value in enumerate(index) if value <= exit_]
+    if not entry_positions or not exit_positions:
+        return [], []
+    start = max(0, entry_positions[0] - pad_sessions)
+    end = min(len(frame), exit_positions[-1] + pad_sessions + 1)
+    chart_frame = frame.iloc[start:end].copy()
+    indicators = _indicator_frame(frame.iloc[:end].copy(), indicator_names)
+    plotted = [name for name in indicator_names if name in indicators]
+
+    candles: list[dict[str, Any]] = []
+    for session, row in chart_frame.iterrows():
+        candle = {
+            "session": session.date().isoformat(),
+            "open": _format_decimal(row.open),
+            "high": _format_decimal(row.high),
+            "low": _format_decimal(row.low),
+            "close": _format_decimal(row.close),
+            "volume": int(row.volume),
+            "indicators": {},
+        }
+        offset = frame.index.get_loc(session)
+        for name in plotted:
+            value = indicators[name].iloc[offset]
+            if getattr(value, "__class__", None).__name__ == "NAType":
+                continue
+            if pd.isna(value):
+                continue
+            candle["indicators"][name] = _format_decimal(value)
+        candles.append(candle)
+    return candles, plotted
+
+
+def _signal_facts(candidate: dict[str, Any]) -> dict[str, str]:
+    facts: dict[str, str] = {}
+    for name, fact in (candidate.get("signal_facts") or {}).items():
+        if isinstance(fact, dict):
+            facts[str(name)] = _text(fact.get("value"))
+    return facts
+
+
+def _trade_payload(
+    repo_root: Path,
+    example: dict[str, Any],
+    candidate: dict[str, Any],
+    geometry: dict[str, Any],
+    indicator_names: list[str],
+) -> dict[str, Any]:
+    trade = example["trade"]
+    candles, plotted = _ohlcv_window(repo_root, trade, indicator_names)
+    return {
+        "kind": example["kind"],
+        "fallback": example["fallback"],
+        "trade": {
+            "trade_identity": _text(trade.get("trade_identity")),
+            "candidate_identity": _text(trade.get("candidate_identity")),
+            "symbol": _text(trade.get("symbol")),
+            "permanent_id": _text(trade.get("permanent_id")),
+            "entry_session": _text(trade.get("entry_session")),
+            "exit_session": _text(trade.get("exit_session")),
+            "entry_price": _text(trade.get("entry_price")),
+            "exit_price": _text(trade.get("exit_price")),
+            "quantity": _text(trade.get("quantity")),
+            "gross_pnl": _text(trade.get("gross_pnl")),
+            "exit_reason": _text(trade.get("exit_reason")),
+        },
+        "geometry": {
+            "initial_stop_price": _text(geometry.get("initial_stop_price")),
+            "target_price": _text(geometry.get("target_price")),
+            "planned_hold_sessions": geometry.get("planned_hold_sessions"),
+        },
+        "signal": {
+            "signal_session": _text(candidate.get("signal_session")),
+            "signal_close": _text(candidate.get("signal_close")),
+            "average_dollar_volume": _text(candidate.get("average_dollar_volume")),
+            "priority_value": _text(candidate.get("priority_value")),
+            "facts": _signal_facts(candidate),
+        },
+        "candles": candles,
+        "plotted_indicators": plotted,
+    }
+
+
+def _strategy_report(
+    repo_root: Path,
+    window_root: Path,
+    metric: dict[str, Any],
+    trades: list[dict[str, Any]],
+    candidates: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    identity = _text(metric.get("strategy_revision_identity"))
+    strategy_file = _read_strategy(window_root, identity)
+    program = _strategy_program(strategy_file)
+    feature_names = _feature_names(program)
+    price_indicators = [name for name in feature_names if name in _PRICE_INDICATORS]
+    geometries = _geometry_by_candidate(strategy_file)
+    examples: list[dict[str, Any]] = []
+    for selected in _selected_trade_examples(trades):
+        trade = selected["trade"]
+        candidate_identity = _text(trade.get("candidate_identity"))
+        candidate = candidates.get(candidate_identity, {})
+        examples.append(
+            _trade_payload(
+                repo_root,
+                selected,
+                candidate,
+                geometries.get(candidate_identity, {}),
+                price_indicators,
+            )
+        )
+    wins = sum(1 for trade in trades if (_float(trade.get("gross_pnl")) or 0) > 0)
+    losses = sum(1 for trade in trades if (_float(trade.get("gross_pnl")) or 0) < 0)
+    flats = max(0, len(trades) - wins - losses)
+    return {
+        "strategy_revision_identity": identity,
+        "strategy_name": _text(metric.get("strategy_name")),
+        "display_name": _text(metric.get("display_name")),
+        "membership": _text(metric.get("membership")),
+        "description": " ".join(_strategy_rules(strategy_file)[:2]),
+        "rules": _strategy_rules(strategy_file),
+        "features": feature_names,
+        "stats": {
+            "closed_trades": metric.get("closed_trades"),
+            "wins": wins,
+            "losses": losses,
+            "flats": flats,
+            "gross_profit": _text(metric.get("gross_profit")),
+            "gross_return": _text(metric.get("gross_return")),
+            "maximum_drawdown": _text(metric.get("maximum_drawdown")),
+            "maximum_drawdown_dollars": _text(metric.get("maximum_drawdown_dollars")),
+            "profit_drawdown": _text(metric.get("profit_drawdown")),
+            "turnover": _text(metric.get("turnover")),
+            "exposure_mean": _text(metric.get("exposure_mean")),
+            "exposure_maximum": _text(metric.get("exposure_maximum")),
+            "break_even_proportional_cost": metric.get("break_even_proportional_cost"),
+        },
+        "examples": examples,
+    }
+
+
+def project_report(runs_root: Path, repo_root: Path) -> dict[str, Any]:
+    """Readable OOS report payload for the dashboard and standalone HTML."""
+    comparison = cohort_comparison(runs_root)
+    root = Path(runs_root) / BACKTEST_ROOT_NAME / "oos-v1"
+    if not comparison.get("present") or not root.exists():
+        return {"present": False}
+
+    candidates = _oos_candidates(root)
+    trades_by_strategy = _oos_trades_by_strategy(root)
+    strategy_rows = sorted(
+        comparison["strategy_metrics"],
+        key=lambda row: _text(row.get("display_name")) or _text(row.get("strategy_name")),
+    )
+    strategy_reports = {
+        _text(row.get("strategy_revision_identity")): _strategy_report(
+            repo_root,
+            root,
+            row,
+            trades_by_strategy.get(_text(row.get("strategy_revision_identity")), []),
+            candidates,
+        )
+        for row in strategy_rows
+    }
+
+    cohorts: list[dict[str, Any]] = []
+    for metric in sorted(
+        comparison["cohort_metrics"],
+        key=lambda row: COHORT_ORDER.index(_text(row.get("cohort")))
+        if _text(row.get("cohort")) in COHORT_ORDER
+        else 99,
+    ):
+        cohort = _text(metric.get("cohort"))
+        if cohort == "VF9":
+            members = list(strategy_reports.values())
+        else:
+            members = [
+                report
+                for report in strategy_reports.values()
+                if report["membership"] == cohort
+            ]
+        cohorts.append(
+            {
+                "cohort": cohort,
+                "description": _COHORT_DESCRIPTIONS.get(cohort, ""),
+                "metrics": metric,
+                "strategies": members,
+            }
+        )
+
+    positive = sum(1 for row in strategy_rows if (_float(row.get("gross_profit")) or 0) > 0)
+    total = len(strategy_rows)
+    source = comparison.get("source") if isinstance(comparison.get("source"), dict) else {}
+    return {
+        "present": True,
+        "title": "Swing Ranking V1 Project Report",
+        "goal": (
+            "Build a daily-data swing-trading engine that finds and paper-trades "
+            "3-21 session moves in liquid US stocks using readable multi-timeframe "
+            "setups, fixed entry risk, sealed historical studies, and a forward "
+            "paper book as the final evidence."
+        ),
+        "conclusion": [
+            "The sealed one-time OOS opening was weak: VF9, MC5, and FO4 all finished negative.",
+            f"Only {positive} of {total} independent $100,000 strategy books were profitable.",
+            "FO4 lost less than MC5, but it remains diagnostic because forward eligibility was fixed before OOS.",
+            "The practical conclusion is to run the approved forward paper cohorts unchanged and judge them only after the chartered trade-count checkpoints.",
+        ],
+        "source": {
+            "evidence_start": _text(source.get("evidence_start")),
+            "evidence_end_exclusive": _text(source.get("evidence_end_exclusive")),
+            "outcome_end_exclusive": _text(source.get("outcome_end_exclusive")),
+            "oos_artifact_identity": _text(source.get("oos_artifact_identity")),
+            "cohort_selection_identity": _text(source.get("cohort_selection_identity")),
+            "analysis_identity": _text(comparison.get("analysis_identity")),
+        },
+        "cohort_equity": comparison["cohort_equity"],
+        "cohorts": cohorts,
+        "limitations": _rows((read_json(root / "manifest.json") or {}).get("limitations")),
+        "integrity": comparison["integrity"],
     }
 
 

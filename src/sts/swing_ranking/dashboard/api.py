@@ -27,6 +27,10 @@ def _runs_root(request: Request) -> Path:
     return Path(request.app.state.runs_root)
 
 
+def _repo_root(request: Request) -> Path:
+    return Path(request.app.state.repo_root)
+
+
 @router.get("/me")
 def me(request: Request) -> dict[str, Any]:
     session = getattr(request.state, "session", None) or {}
@@ -36,9 +40,7 @@ def me(request: Request) -> dict[str, Any]:
 @router.get("/overview")
 def overview(request: Request) -> dict[str, Any]:
     """The landing payload: forward run first, then the backtest evidence."""
-    payload = data.overview(_runs_root(request))
-    payload["legacy_dashboard_url"] = request.app.state.legacy_dashboard_url
-    return payload
+    return data.overview(_runs_root(request))
 
 
 @router.get("/forward")
@@ -83,6 +85,12 @@ def backtest_cohorts(request: Request) -> dict[str, Any]:
     the forward curve, so no endpoint offers the two concatenated.
     """
     return data.cohort_comparison(_runs_root(request))
+
+
+@router.get("/backtests/project-report")
+def project_report(request: Request) -> dict[str, Any]:
+    """Readable sealed OOS report with trade examples and chart payloads."""
+    return data.project_report(_runs_root(request), _repo_root(request))
 
 
 @router.get("/backtests/{window}")

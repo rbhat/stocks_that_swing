@@ -41,7 +41,7 @@ type LinkProps = {
 
 export function Link({ to, className, children }: LinkProps) {
   const { path, navigate } = useRouter();
-  const active = path === to || (to !== "/" && path.startsWith(`${to}/`));
+  const active = path === to || (to !== "/" && to !== "/legacy" && path.startsWith(`${to}/`));
   return (
     <a
       href={to}
