@@ -208,6 +208,27 @@
         color: var(--muted);
         font-size: 12px;
       }
+      .provenance {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .provenance div {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--raised);
+        padding: 10px;
+      }
+      .provenance h3 {
+        margin: 0 0 5px;
+        color: var(--foreground);
+        font-size: 12px;
+      }
+      .provenance p {
+        color: var(--muted);
+        font-size: 12px;
+      }
       .examples {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
@@ -244,7 +265,7 @@
       @media (max-width: 760px) {
         header { padding: 0 16px; }
         main { padding: 20px 16px 48px; }
-        .intro, .examples { grid-template-columns: 1fr; }
+        .intro, .provenance, .examples { grid-template-columns: 1fr; }
         summary, .example-head { align-items: flex-start; flex-direction: column; }
         summary small { text-align: left; }
       }
@@ -410,10 +431,16 @@
       }
 
       function strategySection(strategy) {
+        const provenance = strategy.provenance || {};
         return `<details class="strategy">
           ${sectionSummary(esc(shortStrategy(strategy.display_name || strategy.strategy_name)), `${signedMoney(strategy.stats.gross_profit)} - ${count(strategy.stats.closed_trades)} trades - DD ${percent(strategy.stats.maximum_drawdown)}`)}
           <div class="body">
             <p class="muted" style="margin-top:14px">${esc(strategy.description || strategy.strategy_name)}</p>
+            <div class="provenance" aria-label="Strategy provenance">
+              <div><h3>Why Chosen</h3><p>${esc(provenance.why_chosen || "")}</p></div>
+              <div><h3>Found By</h3><p>${esc(provenance.found_by || "")}</p></div>
+              <div><h3>How Tested</h3><p>${esc(provenance.tested_by || "")}</p></div>
+            </div>
             <div class="badges"><span class="badge ${sign(strategy.stats.gross_profit)}">${signedMoney(strategy.stats.gross_profit)}</span><span class="badge">Return ${percent(strategy.stats.gross_return)}</span><span class="badge">Drawdown ${percent(strategy.stats.maximum_drawdown)}</span><span class="badge">W/L/F ${strategy.stats.wins}/${strategy.stats.losses}/${strategy.stats.flats}</span><span class="badge">Turnover ${ratio(strategy.stats.turnover)}</span></div>
             <div class="rules">${(strategy.rules || []).map((rule) => `<span>${esc(rule)}</span>`).join("")}</div>
             <div class="examples">${(strategy.examples || []).map(tradeExample).join("")}</div>

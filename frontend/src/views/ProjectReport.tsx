@@ -261,6 +261,21 @@ function StrategySection({ strategy }: { strategy: ReportStrategy }) {
       <div className="strategy-body">
         <p className="report-description">{strategy.description || strategy.strategy_name}</p>
 
+        <div className="provenance-grid" aria-label="Strategy provenance">
+          <div>
+            <h4>Why Chosen</h4>
+            <p>{strategy.provenance.why_chosen}</p>
+          </div>
+          <div>
+            <h4>Found By</h4>
+            <p>{strategy.provenance.found_by}</p>
+          </div>
+          <div>
+            <h4>How Tested</h4>
+            <p>{strategy.provenance.tested_by}</p>
+          </div>
+        </div>
+
         <div className="strategy-meta">
           <span className={`badge ${sign(strategy.stats.gross_profit)}`}>
             {signedMoney(strategy.stats.gross_profit)}

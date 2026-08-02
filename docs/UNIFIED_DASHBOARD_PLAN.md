@@ -162,6 +162,8 @@ For each cohort:
 For each strategy:
 
 - briefly describe what the strategy is and show the readable rules;
+- explain why the strategy was chosen, who or what discovery process found it,
+  and how it was tested before inclusion in the active study;
 - show profit/loss, return, drawdown, number of trades, wins/losses/flats,
   turnover, and exposure;
 - show two actual OOS backtest trade candlestick charts: a winning trade when

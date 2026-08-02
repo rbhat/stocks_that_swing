@@ -273,6 +273,11 @@ export type ReportStrategy = {
   display_name: string;
   membership: string;
   description: string;
+  provenance: {
+    why_chosen: string;
+    found_by: string;
+    tested_by: string;
+  };
   rules: string[];
   features: string[];
   stats: {

@@ -877,6 +877,52 @@ def _feature_names(program: dict[str, Any]) -> list[str]:
     return names
 
 
+def _strategy_provenance(metric: dict[str, Any], source: dict[str, Any]) -> dict[str, str]:
+    membership = _text(metric.get("membership"))
+    if membership == "MC5":
+        why_chosen = (
+            "Chosen for MC5 because this revision appeared in at least two "
+            "validation top-five lists, then carried into VF9 and the "
+            "pre-OOS forward-eligible cohorts."
+        )
+    elif membership == "FO4":
+        why_chosen = (
+            "Chosen for VF9 because it was on the validation frontier, then "
+            "kept in FO4 as frontier-only diagnostic evidence outside the "
+            "forward-eligible MC5 set."
+        )
+    else:
+        why_chosen = (
+            "Chosen by the sealed cohort-selection artifact before OOS was "
+            "opened, using the validation evidence available at selection time."
+        )
+
+    evidence_start = _text(source.get("evidence_start"))
+    evidence_end = _text(source.get("evidence_end_exclusive"))
+    outcome_end = _text(source.get("outcome_end_exclusive"))
+    if evidence_start and evidence_end and outcome_end:
+        oos_window = (
+            f" one-time OOS window {evidence_start} to {evidence_end} "
+            f"with outcomes through {outcome_end}"
+        )
+    else:
+        oos_window = " one-time OOS window"
+
+    return {
+        "why_chosen": why_chosen,
+        "found_by": (
+            "Found by the swing-ranking-v1 deterministic discovery grammar and "
+            "study bundle, which generated readable monthly/weekly context, "
+            "daily trigger, stop, and target combinations."
+        ),
+        "tested_by": (
+            "Tested through sealed historical studies: discovery and validation "
+            f"selected the revision before OOS, then the{oos_window} measured "
+            "its trades without changing the rule."
+        ),
+    }
+
+
 def _indicator_frame(frame: Any, names: list[str]) -> dict[str, Any]:
     indicators: dict[str, Any] = {}
     for name in names:
@@ -1020,6 +1066,7 @@ def _strategy_report(
     metric: dict[str, Any],
     trades: list[dict[str, Any]],
     candidates: dict[str, dict[str, Any]],
+    source: dict[str, Any],
 ) -> dict[str, Any]:
     identity = _text(metric.get("strategy_revision_identity"))
     strategy_file = _read_strategy(window_root, identity)
@@ -1050,6 +1097,7 @@ def _strategy_report(
         "display_name": _text(metric.get("display_name")),
         "membership": _text(metric.get("membership")),
         "description": " ".join(_strategy_rules(strategy_file)[:2]),
+        "provenance": _strategy_provenance(metric, source),
         "rules": _strategy_rules(strategy_file),
         "features": feature_names,
         "stats": {
@@ -1084,6 +1132,7 @@ def project_report(runs_root: Path, repo_root: Path) -> dict[str, Any]:
         comparison["strategy_metrics"],
         key=lambda row: _text(row.get("display_name")) or _text(row.get("strategy_name")),
     )
+    source = comparison.get("source") if isinstance(comparison.get("source"), dict) else {}
     strategy_reports = {
         _text(row.get("strategy_revision_identity")): _strategy_report(
             repo_root,
@@ -1091,6 +1140,7 @@ def project_report(runs_root: Path, repo_root: Path) -> dict[str, Any]:
             row,
             trades_by_strategy.get(_text(row.get("strategy_revision_identity")), []),
             candidates,
+            source,
         )
         for row in strategy_rows
     }
@@ -1122,7 +1172,6 @@ def project_report(runs_root: Path, repo_root: Path) -> dict[str, Any]:
 
     positive = sum(1 for row in strategy_rows if (_float(row.get("gross_profit")) or 0) > 0)
     total = len(strategy_rows)
-    source = comparison.get("source") if isinstance(comparison.get("source"), dict) else {}
     return {
         "present": True,
         "title": "Swing Ranking V1 Project Report",

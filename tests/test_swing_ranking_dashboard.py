@@ -586,6 +586,10 @@ def test_project_report_api_and_standalone_route(
     assert example["kind"] == "win"
     assert example["trade"]["symbol"] == "AAA"
     assert example["geometry"]["target_price"] == "11"
+    provenance = body["cohorts"][1]["strategies"][0]["provenance"]
+    assert "why_chosen" in provenance
+    assert "found_by" in provenance
+    assert "tested_by" in provenance
 
     dist = tmp_path / "dist"
     dist.mkdir()

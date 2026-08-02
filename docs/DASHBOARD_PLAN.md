@@ -72,6 +72,8 @@ the supporting sections.
 - For every strategy, state what it is, show profit/loss, return, drawdown,
   number of trades, wins/losses/flats, turnover, exposure, and the readable
   rules.
+- For every strategy, explain why it was chosen, who or what discovery process
+  found it, and how it was tested before inclusion in the active study.
 - For every strategy, show two actual OOS backtest trade charts: a winning
   trade if available and a losing trade. If one side does not exist, label the
   fallback clearly.
