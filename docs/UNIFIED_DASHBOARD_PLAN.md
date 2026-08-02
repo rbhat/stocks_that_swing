@@ -5,6 +5,9 @@
 Expose one dashboard at `http://127.0.0.1:8010`:
 
 - Swing Ranking v1 remains the default landing page at `/`.
+- A first-class `Report` navigation item opens the project report at
+  `/project-report`, with the same content also loadable independently at
+  `/project-report.html`.
 - A `Legacy` item in the primary navigation opens legacy views in the same
   shell and browser tab under `/legacy`.
 - One Google OAuth callback, session cookie, sign-out action, and audit trail
@@ -31,6 +34,9 @@ The existing v1 routes remain unchanged:
 - `/` — v1 overview
 - `/forward` and `/forward/:cohort` — v1 forward book
 - `/backtests` and `/backtests/:window` — v1 backtests
+- `/project-report` — collapsible project report with OOS evidence and trade
+  charts
+- `/project-report.html` — standalone version of the same report
 
 Legacy routes use a dedicated namespace:
 
@@ -77,6 +83,9 @@ The new dashboard container needs explicit mounts for the legacy root:
 - `~/sts/runs` -> `/app/legacy/runs:ro`
 - `~/sts/logs` -> `/app/legacy/logs:ro` for the read-only milestone
 - `~/sts/configs` -> `/app/legacy/configs:ro` for the read-only milestone
+- the pushed OOS backtest artifacts and validated parquet cache must be
+  readable, including `/app/cache/study_frames`, so the report can render
+  actual OHLCV candles for historical trades
 
 Ship read-only parity first. Preserve configuration edits and manual sync on
 the port-8000 rollback dashboard until a separate admin milestone adds only
@@ -129,6 +138,44 @@ match the legacy service for all decision-relevant fields.
 
 Exit criterion: an authenticated operator can traverse all read-only legacy
 views without leaving port 8010 or signing in again.
+
+### 3a. Build the project report
+
+- Add `Report` as a first-class navigation item in the dashboard.
+- Serve the same report as a self-contained standalone HTML page.
+- Use the dashboard favicon on the standalone page.
+- Start the report with the goal of the project, followed by a short 3-4 line
+  conclusion, then supporting analysis sections.
+- Use collapsible sections, with page-level icon buttons to expand all and
+  collapse all sections.
+- Use the same disclosure icon pattern on every collapsible cohort and
+  strategy section.
+- Cover overall OOS evidence, each cohort, each member strategy, limitations,
+  and source/integrity context in a coherent order.
+
+For each cohort:
+
+- briefly describe what the cohort is;
+- show profit/loss, return, drawdown, number of trades, member count, and
+  positive/negative/flat member breadth.
+
+For each strategy:
+
+- briefly describe what the strategy is and show the readable rules;
+- show profit/loss, return, drawdown, number of trades, wins/losses/flats,
+  turnover, and exposure;
+- show two actual OOS backtest trade candlestick charts: a winning trade when
+  available and a losing trade;
+- if a win or loss is unavailable, show the best available fallback and label
+  it clearly;
+- draw actual OHLCV candles from the backtest trade symbol/session window, not
+  synthetic examples;
+- draw entry, exit, target, stop, volume, and any price-scale indicators used
+  by the strategy when those inputs are available.
+
+Exit criterion: authenticated operators can open `/project-report`, direct-load
+`/project-report.html`, expand/collapse the report sections, and inspect actual
+backtest trade charts for every cohort strategy with available data.
 
 ### 4. Restore bounded admin operations
 

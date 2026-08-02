@@ -68,6 +68,7 @@ export STS_UID="$(id -u)"
 export STS_GID="$(id -g)"
 export STS_LEGACY_ROOT="${LEGACY_ROOT}"
 export STS_LEGACY_ADMIN_RUNNER="${REPO_ROOT}/scripts/run_legacy_admin_runner.py"
+export STS_DASHBOARD_CACHE_ROOT="${REPO_ROOT}/cache"
 
 docker compose -f "${COMPOSE_FILE}" up -d dashboard
 if [ "${ACTIVATE_WRITER}" -eq 1 ]; then

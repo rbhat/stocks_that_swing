@@ -3,10 +3,11 @@
 #
 # `runs/swing-ranking-v1` is ~992 MB locally and exists only on this machine;
 # deploy.sh excludes runs/ from the build context, so the VM has no backtest
-# artifacts at all. Almost all of that bulk is per-revision raw detail
-# (candidates.jsonl 381 MB, events.jsonl 205 MB, orders.jsonl 97 MB, and the
-# strategies/ geometries) that no view reads. The curated set below is ~54 MB
-# across 38 files.
+# artifacts at all. Almost all of that bulk is development/validation
+# per-revision raw detail (candidates.jsonl 381 MB, events.jsonl 205 MB,
+# orders.jsonl 97 MB, and the strategies/ geometries). The curated set below
+# keeps compact window evidence plus the small OOS candidate/geometry files
+# needed for report trade charts.
 #
 # It adds and updates; it never deletes remote files, matching the discipline
 # in scripts/sync_swing_artifacts.py. The remote copy is read-only evidence:
@@ -77,6 +78,8 @@ done >>"${MANIFEST}"
 for dir in "${WHOLE_DIRS[@]}"; do
     test -d "${LOCAL_ROOT}/${dir}" && printf '%s/\n' "${dir}"
 done >>"${MANIFEST}"
+test -f "${LOCAL_ROOT}/oos-v1/candidates.jsonl" && printf '%s\n' "oos-v1/candidates.jsonl" >>"${MANIFEST}"
+test -d "${LOCAL_ROOT}/oos-v1/strategies" && printf '%s/\n' "oos-v1/strategies" >>"${MANIFEST}"
 
 FILE_COUNT="$(wc -l <"${MANIFEST}")"
 BYTES="$(cd "${LOCAL_ROOT}" && du -cb $(sed 's:/$::' "${MANIFEST}") 2>/dev/null | tail -1 | cut -f1)"

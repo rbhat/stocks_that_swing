@@ -657,6 +657,57 @@ input:focus {
 
 /* ---------------------------------------------------------- project report */
 
+.project-report {
+  position: relative;
+}
+
+.report-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  margin: -0.75rem 0 1rem;
+}
+
+.icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) * 0.7);
+  background: var(--surface);
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  background: var(--raised);
+  color: var(--foreground);
+}
+
+.action-icon,
+.disclosure-icon {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.disclosure-icon {
+  flex: 0 0 auto;
+  color: var(--muted-foreground);
+  transition: transform 0.12s ease;
+}
+
+.collapsible[open] > summary .disclosure-icon,
+.strategy-report[open] > summary .disclosure-icon {
+  transform: rotate(90deg);
+}
+
 .report-intro {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
@@ -713,20 +764,6 @@ input:focus {
 .collapsible > summary::-webkit-details-marker,
 .strategy-report > summary::-webkit-details-marker {
   display: none;
-}
-
-.collapsible > summary::before,
-.strategy-report > summary::before {
-  content: "›";
-  color: var(--muted-foreground);
-  font-size: 1rem;
-  transform: rotate(0deg);
-  transition: transform 0.12s ease;
-}
-
-.collapsible[open] > summary::before,
-.strategy-report[open] > summary::before {
-  transform: rotate(90deg);
 }
 
 .collapsible > summary span,

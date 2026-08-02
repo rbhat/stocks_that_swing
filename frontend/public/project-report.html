@@ -77,6 +77,43 @@
       p { margin: 0; }
       code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
       .muted { color: var(--muted); }
+      .report-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 6px;
+        margin: 12px 0 18px;
+      }
+      .icon-button {
+        display: inline-grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        background: var(--surface);
+        color: var(--muted);
+        cursor: pointer;
+      }
+      .icon-button:hover {
+        background: var(--raised);
+        color: var(--foreground);
+      }
+      .action-icon, .disclosure-icon {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .disclosure-icon {
+        flex: 0 0 auto;
+        color: var(--muted);
+        transition: transform 0.12s ease;
+      }
+      details[open] > summary .disclosure-icon { transform: rotate(90deg); }
       .intro {
         display: grid;
         grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
@@ -259,6 +296,11 @@
         .replace(/__target-/g, "__")
         .split("__")
         .join(" / ");
+      const disclosureIcon = () => `<svg class="disclosure-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5"></path></svg>`;
+      const chevronsIcon = (direction) => direction === "down"
+        ? `<svg class="action-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 6 5 5 5-5"></path><path d="m5 11 5 5 5-5"></path></svg>`
+        : `<svg class="action-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 9 5-5 5 5"></path><path d="m5 14 5-5 5 5"></path></svg>`;
+      const sectionSummary = (title, meta = "") => `<summary>${disclosureIcon()}<span>${title}</span>${meta ? `<small>${meta}</small>` : ""}</summary>`;
       const compact = (value) => {
         if (Math.abs(value) >= 1e9) return `${(value / 1e9).toFixed(1)}B`;
         if (Math.abs(value) >= 1e6) return `${(value / 1e6).toFixed(1)}M`;
@@ -369,7 +411,7 @@
 
       function strategySection(strategy) {
         return `<details class="strategy">
-          <summary><span>${esc(shortStrategy(strategy.display_name || strategy.strategy_name))}</span><small>${signedMoney(strategy.stats.gross_profit)} - ${count(strategy.stats.closed_trades)} trades - DD ${percent(strategy.stats.maximum_drawdown)}</small></summary>
+          ${sectionSummary(esc(shortStrategy(strategy.display_name || strategy.strategy_name)), `${signedMoney(strategy.stats.gross_profit)} - ${count(strategy.stats.closed_trades)} trades - DD ${percent(strategy.stats.maximum_drawdown)}`)}
           <div class="body">
             <p class="muted" style="margin-top:14px">${esc(strategy.description || strategy.strategy_name)}</p>
             <div class="badges"><span class="badge ${sign(strategy.stats.gross_profit)}">${signedMoney(strategy.stats.gross_profit)}</span><span class="badge">Return ${percent(strategy.stats.gross_return)}</span><span class="badge">Drawdown ${percent(strategy.stats.maximum_drawdown)}</span><span class="badge">W/L/F ${strategy.stats.wins}/${strategy.stats.losses}/${strategy.stats.flats}</span><span class="badge">Turnover ${ratio(strategy.stats.turnover)}</span></div>
@@ -387,11 +429,14 @@
         app.innerHTML = `
           <h1>${esc(data.title)}</h1>
           <p class="muted">Sealed OOS evidence ${esc(data.source.evidence_start)} to ${esc(data.source.evidence_end_exclusive)}; outcomes through ${esc(data.source.outcome_end_exclusive)}.</p>
+          <div class="report-actions" aria-label="Report section controls"><button class="icon-button" type="button" id="expand-all" title="Expand all" aria-label="Expand all">${chevronsIcon("down")}</button><button class="icon-button" type="button" id="collapse-all" title="Collapse all" aria-label="Collapse all">${chevronsIcon("up")}</button></div>
           <section class="intro"><div class="panel"><h2>Goal</h2><p>${esc(data.goal)}</p></div><div class="panel"><h2>Conclusion</h2>${data.conclusion.map((line) => `<p>${esc(line)}</p>`).join("")}</div></section>
-          <details open><summary><span>Overall OOS Evidence</span><small>${esc(shortId(data.source.analysis_identity))}</small></summary><div class="body"><div class="grid">${data.cohorts.map((c) => `<div class="tile"><div class="label">${esc(c.cohort)}</div><div class="value ${sign(c.metrics.gross_profit)}">${signedMoney(c.metrics.gross_profit)}</div><div class="hint">${count(c.metrics.member_count)} books - ${count(c.metrics.closed_trades)} trades - DD ${percent(c.metrics.maximum_drawdown)}</div></div>`).join("")}</div></div></details>
-          ${data.cohorts.map((cohort) => `<details ${cohort.cohort !== "VF9" ? "open" : ""}><summary><span>${esc(cohort.cohort)}</span><small>${signedMoney(cohort.metrics.gross_profit)} - ${count(cohort.metrics.closed_trades)} trades</small></summary><div class="body"><p class="muted" style="margin-top:14px">${esc(cohort.description)}</p>${cohortStats(cohort.metrics)}${cohort.strategies.map(strategySection).join("")}</div></details>`).join("")}
-          ${data.limitations.length ? `<details><summary><span>Limitations</span><small>${data.limitations.length} recorded</small></summary><div class="body">${data.limitations.map((l) => `<p class="muted" style="margin-top:12px"><code>${esc(l.kind)}</code> ${esc(l.statement)}</p>`).join("")}</div></details>` : ""}
+          <details open>${sectionSummary("Overall OOS Evidence", esc(shortId(data.source.analysis_identity)))}<div class="body"><div class="grid">${data.cohorts.map((c) => `<div class="tile"><div class="label">${esc(c.cohort)}</div><div class="value ${sign(c.metrics.gross_profit)}">${signedMoney(c.metrics.gross_profit)}</div><div class="hint">${count(c.metrics.member_count)} books - ${count(c.metrics.closed_trades)} trades - DD ${percent(c.metrics.maximum_drawdown)}</div></div>`).join("")}</div></div></details>
+          ${data.cohorts.map((cohort) => `<details ${cohort.cohort !== "VF9" ? "open" : ""}>${sectionSummary(esc(cohort.cohort), `${signedMoney(cohort.metrics.gross_profit)} - ${count(cohort.metrics.closed_trades)} trades`)}<div class="body"><p class="muted" style="margin-top:14px">${esc(cohort.description)}</p>${cohortStats(cohort.metrics)}${cohort.strategies.map(strategySection).join("")}</div></details>`).join("")}
+          ${data.limitations.length ? `<details>${sectionSummary("Limitations", `${data.limitations.length} recorded`)}<div class="body">${data.limitations.map((l) => `<p class="muted" style="margin-top:12px"><code>${esc(l.kind)}</code> ${esc(l.statement)}</p>`).join("")}</div></details>` : ""}
         `;
+        document.getElementById("expand-all")?.addEventListener("click", () => document.querySelectorAll("details").forEach((section) => { section.open = true; }));
+        document.getElementById("collapse-all")?.addEventListener("click", () => document.querySelectorAll("details").forEach((section) => { section.open = false; }));
       }
 
       fetch("/api/backtests/project-report", { credentials: "same-origin" })

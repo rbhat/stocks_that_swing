@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 import { useApi } from "../api";
 import { CandlestickChart, LineChart, BarChart, type Series } from "../components/Chart";
 import { ErrorCard, IntegrityBanner, Loading, PageHead, Tile } from "../components/Layout";
@@ -18,6 +20,7 @@ const COHORT_ORDER = ["VF9", "MC5", "FO4"];
 
 export function ProjectReportView() {
   const { data, error, loading } = useApi<ProjectReport>("/api/backtests/project-report");
+  const reportRef = useRef<HTMLDivElement>(null);
 
   if (loading) return <Loading />;
   if (error) return <ErrorCard error={error} />;
@@ -42,12 +45,27 @@ export function ProjectReportView() {
     }))
     .sort((a, b) => b.value - a.value) ?? [];
 
+  function setAll(open: boolean) {
+    reportRef.current?.querySelectorAll("details").forEach((section) => {
+      section.open = open;
+    });
+  }
+
   return (
-    <>
+    <div className="project-report" ref={reportRef}>
       <PageHead
         title={data.title}
         subtitle={`Sealed OOS evidence ${data.source.evidence_start} to ${data.source.evidence_end_exclusive}; outcomes through ${data.source.outcome_end_exclusive}.`}
       />
+
+      <div className="report-actions" aria-label="Report section controls">
+        <button className="icon-button" type="button" onClick={() => setAll(true)} title="Expand all" aria-label="Expand all">
+          <ChevronsIcon direction="down" />
+        </button>
+        <button className="icon-button" type="button" onClick={() => setAll(false)} title="Collapse all" aria-label="Collapse all">
+          <ChevronsIcon direction="up" />
+        </button>
+      </div>
 
       <IntegrityBanner reports={{ "oos-cohort-comparison-v1": data.integrity }} />
 
@@ -66,6 +84,7 @@ export function ProjectReportView() {
 
       <details className="collapsible" open>
         <summary>
+          <DisclosureIcon />
           <span>Overall OOS Evidence</span>
           <small>{shortId(data.source.analysis_identity)}</small>
         </summary>
@@ -119,6 +138,7 @@ export function ProjectReportView() {
       {data.cohorts.map((cohort) => (
         <details className="collapsible cohort-report" key={cohort.cohort} open={cohort.cohort !== "VF9"}>
           <summary>
+            <DisclosureIcon />
             <span>{cohort.cohort}</span>
             <small>
               {signedMoney(cohort.metrics.gross_profit)} · {count(cohort.metrics.closed_trades)} trades
@@ -139,6 +159,7 @@ export function ProjectReportView() {
       {data.limitations.length > 0 && (
         <details className="collapsible">
           <summary>
+            <DisclosureIcon />
             <span>Limitations</span>
             <small>{data.limitations.length} recorded</small>
           </summary>
@@ -151,7 +172,33 @@ export function ProjectReportView() {
           </div>
         </details>
       )}
-    </>
+    </div>
+  );
+}
+
+function DisclosureIcon() {
+  return (
+    <svg className="disclosure-icon" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M6 3.5 10.5 8 6 12.5" />
+    </svg>
+  );
+}
+
+function ChevronsIcon({ direction }: { direction: "up" | "down" }) {
+  return (
+    <svg className="action-icon" viewBox="0 0 20 20" aria-hidden="true">
+      {direction === "down" ? (
+        <>
+          <path d="m5 6 5 5 5-5" />
+          <path d="m5 11 5 5 5-5" />
+        </>
+      ) : (
+        <>
+          <path d="m5 9 5-5 5 5" />
+          <path d="m5 14 5-5 5 5" />
+        </>
+      )}
+    </svg>
   );
 }
 
@@ -204,6 +251,7 @@ function StrategySection({ strategy }: { strategy: ReportStrategy }) {
   return (
     <details className="strategy-report">
       <summary>
+        <DisclosureIcon />
         <span>{shortStrategy(strategy.display_name || strategy.strategy_name)}</span>
         <small>
           {signedMoney(strategy.stats.gross_profit)} · {count(strategy.stats.closed_trades)} trades · DD{" "}

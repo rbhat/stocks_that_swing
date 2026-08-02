@@ -113,7 +113,7 @@ if [ "${STAGE_ONLY}" -eq 1 ]; then
     echo "Deployment staged; the scheduler and dashboard were not started."
 else
     # The scheduler is the single writer; start it deliberately, not here.
-    vm_ssh "cd ~/${REMOTE_ROOT} && STS_ROOT=. STS_LEGACY_ROOT=../sts STS_IMAGE=${IMAGE} STS_UID=${STS_UID} STS_GID=${STS_GID} \
+    vm_ssh "cd ~/${REMOTE_ROOT} && STS_ROOT=. STS_LEGACY_ROOT=../sts STS_DASHBOARD_CACHE_ROOT=../sts/cache STS_IMAGE=${IMAGE} STS_UID=${STS_UID} STS_GID=${STS_GID} \
         docker compose --profile legacy-admin up -d --wait --wait-timeout 120 dashboard scheduler legacy-admin"
     echo "Deployment active. Open it with deploy/open_remote.sh"
     echo "Backtests are not part of the image; push them with deploy/push_backtests.sh"
